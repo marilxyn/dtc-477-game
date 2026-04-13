@@ -1,11 +1,433 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 3</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 3: Into Unknown Land</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: black;
+        }
+
+        #gameContainer {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* LEFT SIDE LANDSCAPE */
+        #landscapeArea {
+            flex: 3;
+            position: relative;
+            background: url("img/unknown_land_bg.png");
+            background-size: cover;
+            background-position: center;
+            border-right: 4px solid #222;
+        }
+
+        .hiddenItem {
+            position: absolute;
+            width: 70px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .hiddenItem:hover {
+            transform: scale(1.1);
+        }
+
+        .selectedItem {
+            outline: 4px solid yellow;
+            border-radius: 10px;
+        }
+
+        /* RIGHT SIDE PANEL */
+        #outlinePanel {
+            flex: 1;
+            background: #2b2b2b;
+            color: white;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #outlinePanel h2 {
+            margin: 0;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .outlineSlot {
+            width: 90px;
+            height: 90px;
+            border: 3px solid #555;
+            border-radius: 12px;
+            background: #f2e3c6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .outlineSlot img {
+            width: 85%;
+            height: auto;
+            pointer-events: none;
+        }
+
+        /* SHAKE ANIMATION FOR WRONG MATCH */
+        @keyframes shake {
+            0% {
+                transform: translateX(0px);
+            }
+
+            25% {
+                transform: translateX(-6px);
+            }
+
+            50% {
+                transform: translateX(6px);
+            }
+
+            75% {
+                transform: translateX(-6px);
+            }
+
+            100% {
+                transform: translateX(0px);
+            }
+        }
+
+        .wrongMatch {
+            border-color: red;
+            animation: shake 0.3s;
+        }
+
+        /* INTRO SCREEN */
+        #introScreen {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+
+        #introBox {
+            background: #222;
+            border: 4px solid white;
+            padding: 30px;
+            width: 70%;
+            max-width: 600px;
+            text-align: center;
+            border-radius: 20px;
+        }
+
+        #introBox h1 {
+            color: gold;
+            margin-top: 0;
+        }
+
+        #introBox p {
+            font-size: 18px;
+            line-height: 1.4;
+            color: white;
+        }
+
+        #startBtn {
+            margin-top: 15px;
+            padding: 12px 25px;
+            font-size: 18px;
+            background: gold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #startBtn:hover {
+            background: orange;
+        }
+
+        /* WIN MESSAGE */
+        #winMessage {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 12px;
+            display: none;
+            font-size: 18px;
+            border: 2px solid gold;
+        }
+
+        #factPopup {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 2px solid gold;
+            font-size: 16px;
+            max-width: 280px;
+            display: none;
+            z-index: 10;
+        }
+
+        #continueBtn {
+            position: absolute;
+            top: 160px;
+            left: 20px;
+
+            padding: 12px 25px;
+            font-size: 18px;
+
+            background: gold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+
+            display: none;
+            z-index: 20;
+        }
+
+        #continueBtn:hover {
+            background: orange;
+        }
+
+        #errorPopup {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 2px solid red;
+
+            font-size: 16px;
+            max-width: 280px;
+
+            display: none;
+            z-index: 10;
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <div id="gameContainer">
+
+        <!-- INTRO SCREEN -->
+        <div id="introScreen">
+            <div id="introBox">
+                <h1>Chapter 3: Into Unknown Land</h1>
+                <p>
+                    Lewis and Clark are exploring new lands in 1805!<br><br>
+                    Click an animal or plant hiding in the landscape.<br>
+                    Then click the matching black outline on the right!
+                </p>
+                <button id="startBtn">Start Game</button>
+            </div>
+        </div>
+
+        <!-- LEFT LANDSCAPE -->
+        <div id="landscapeArea">
+
+            <div id="winMessage">Great job! You found everything!</div>
+
+            <div id="factPopup"></div>
+
+            <div id="errorPopup"></div>
+
+            <button id="continueBtn">Continue</button>
+
+            <!-- Hidden animals -->
+            <img src="img/bison.png" class="hiddenItem" data-name="bison" style="top: 22%; left: 20%;" />
+            <img src="img/grizzly.png" class="hiddenItem" data-name="grizzly" style="top: 50%; left: 70%;" />
+            <img src="img/prairiedog.png" class="hiddenItem" data-name="prairiedog" style="top: 70%; left: 40%;" />
+
+            <!-- Hidden plants -->
+            <img src="img/sagebrush.png" class="hiddenItem" data-name="sagebrush" style="top: 65%; left: 68%;" />
+            <img src="images/pine.png" class="hiddenItem" data-name="pine" style="top: 30%; left: 15%;" />
+            <img src="images/cactus.png" class="hiddenItem" data-name="cactus" style="top: 78%; left: 80%;" />
+
+        </div>
+
+        <!-- RIGHT OUTLINE PANEL -->
+        <div id="outlinePanel">
+            <h2>Match the Outlines</h2>
+
+            <div class="outlineSlot" data-name="bison">
+                <img src="img/bison_outline.png" />
+            </div>
+
+            <div class="outlineSlot" data-name="grizzly">
+                <img src="img/grizzly_outline.png" />
+            </div>
+
+            <div class="outlineSlot" data-name="prairiedog">
+                <img src="img/prairiedog_outline.png" />
+            </div>
+
+            <div class="outlineSlot" data-name="sagebrush">
+                <img src="img/sagebrush_outline.png" />
+            </div>
+
+            <div class="outlineSlot" data-name="pine">
+                <img src="images/pine_outline.png" />
+            </div>
+
+            <div class="outlineSlot" data-name="cactus">
+                <img src="images/cactus_outline.png" />
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let selectedItem = null;
+        let matchedCount = 0;
+        const totalItems = 6;
+
+        const hiddenItems = document.querySelectorAll(".hiddenItem");
+        const outlineSlots = document.querySelectorAll(".outlineSlot");
+
+        const introScreen = document.getElementById("introScreen");
+        const startBtn = document.getElementById("startBtn");
+        const winMessage = document.getElementById("winMessage");
+        const factPopup = document.getElementById("factPopup");
+        const continueBtn = document.getElementById("continueBtn");
+        const errorPopup = document.getElementById("errorPopup");
+
+        const facts = {
+            bison: "Lewis and Clark recorded massive herds of bison across the Great Plains during their expedition.",
+
+            grizzly: "Lewis and Clark described grizzly bears as extremely dangerous and much harder to stop than expected.",
+
+            prairiedog: "Lewis and Clark studied prairie dogs closely and even sent one back east as a living specimen.",
+
+            sagebrush: "Lewis and Clark traveled through vast plains covered in sagebrush and recorded it in their journals.",
+
+            pine: "Lewis and Clark relied on pine forests for wood used in shelters, tools, and campfires.",
+
+            cactus: "Lewis and Clark suffered injuries from prickly pear cactus during the Great Falls portage."
+        };
+
+        startBtn.addEventListener("click", function () {
+            introScreen.style.display = "none";
+        });
+
+        // CLICKING LANDSCAPE ITEMS
+        hiddenItems.forEach(function (item) {
+            item.addEventListener("click", function () {
+
+
+                if (item.dataset.matched === "true") {
+                    return;
+                }
+
+                factPopup.style.display = "none";
+
+                hiddenItems.forEach(function (i) {
+                    i.classList.remove("selectedItem");
+                });
+
+                selectedItem = item.dataset.name;
+                item.classList.add("selectedItem");
+            });
+        });
+
+        // CLICKING OUTLINE SLOTS
+        outlineSlots.forEach(function (slot) {
+            slot.addEventListener("click", function () {
+
+                if (slot.dataset.matched === "true") {
+                    return;
+                }
+
+                if (selectedItem === null) {
+                    return;
+                }
+
+                // Correct match
+                if (slot.dataset.name === selectedItem) {
+                    errorPopup.style.display = "none";
+
+                    slot.innerHTML = "";
+
+                    let matchedImg = document.createElement("img");
+                    matchedImg.src = "img/" + selectedItem + ".png";
+
+                    slot.appendChild(matchedImg);
+
+                    slot.dataset.matched = "true";
+
+                    factPopup.style.display = "block";
+                    factPopup.innerText = facts[selectedItem];
+
+                    const foundItem = document.querySelector(`.hiddenItem[data-name="${selectedItem}"]`);
+                    foundItem.dataset.matched = "true";
+                    foundItem.style.opacity = "0.3";
+                    foundItem.classList.remove("selectedItem");
+
+                    selectedItem = null;
+                    matchedCount++;
+
+                    if (matchedCount === totalItems) {
+
+                        // STEP 1: show win message first
+                        setTimeout(function () {
+                            winMessage.style.display = "block";
+                        }, 800);
+
+                        // STEP 2: show continue button AFTER win message
+                        setTimeout(function () {
+                            continueBtn.style.display = "block";
+                        }, 2000);
+
+                    }
+
+                } else {
+                    // Wrong match
+                    slot.classList.add("wrongMatch");
+
+                    errorPopup.style.display = "block";
+                    errorPopup.innerText = "Try again! Lewis and Clark would not have recorded this match.";
+
+                    setTimeout(function () {
+                        slot.classList.remove("wrongMatch");
+                    }, 400);
+                }
+
+            });
+        });
+
+        continueBtn.addEventListener("click", function () {
+
+            winMessage.style.display = "none";
+            continueBtn.style.display = "none";
+        });
+    </script>
+
 </body>
+
 </html>
