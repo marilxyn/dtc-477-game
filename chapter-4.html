@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 4: Grizzly Country</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        /* INTRO */
+        #introScreen {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        #introBox {
+            background: #111;
+            border: 4px solid gold;
+            padding: 30px;
+            width: 70%;
+            max-width: 600px;
+            text-align: center;
+            border-radius: 20px;
+        }
+
+        #introBox h1 {
+            color: gold;
+            margin-top: 0;
+        }
+
+        #introBox p {
+            font-size: 18px;
+            line-height: 1.4;
+            color: white;
+        }
+
+        #startBtn {
+            margin-top: 15px;
+            padding: 12px 25px;
+            font-size: 18px;
+            background: gold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #startBtn:hover {
+            background: orange;
+        }
+
+        /* CHOICE SCREEN */
+        #choiceScreen {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 20;
+        }
+
+        #choiceScreen h1 {
+            color: gold;
+        }
+
+        #choiceScreen button {
+            padding: 14px 28px;
+            font-size: 20px;
+            background: gold;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #choiceScreen button:hover {
+            background: orange;
+        }
+
+        #introBox h1 {
+            color: gold;
+            margin-top: 0;
+            font-family: "Pixelify Sans", sans-serif;
+        }
+
+        button {
+            font-family: "Pixelify Sans", sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="game"></canvas>
+
+    <!-- INTRO -->
+    <div id="introScreen">
+        <div id="introBox">
+            <h1>Chapter 4: Grizzly Country</h1>
+            <p>
+                Lewis and Clark are journaling in the Montana wilderness.<br><br>
+                The forest is silent... too silent.<br>
+                Something heavy moves through the brush.<br><br>
+                A grizzly steps into the open.
+            </p>
+            <button id="startBtn">Start Game</button>
+        </div>
+    </div>
+
+    <!-- CHOICE -->
+    <div id="choiceScreen">
+        <h1>What should Lewis and Clark do?</h1>
+        <button id="runBtn">Run</button>
+        <button id="standBtn">Stand Their Ground</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("game");
+        const ctx = canvas.getContext("2d");
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resize);
+        resize();
+
+        const introScreen = document.getElementById("introScreen");
+        const startBtn = document.getElementById("startBtn");
+
+        const choiceScreen = document.getElementById("choiceScreen");
+        const runBtn = document.getElementById("runBtn");
+        const standBtn = document.getElementById("standBtn");
+
+        let state = "intro"; // intro → choice → game
+
+        let player = { x: 200, y: 300, size: 20 };
+        let bear = { x: 900, y: 300, size: 40, speed: 1.2 };
+
+        let message = "";
+
+        // START → SHOW CHOICE
+        startBtn.addEventListener("click", () => {
+            introScreen.style.display = "none";
+            state = "choice";
+        });
+
+        runBtn.addEventListener("click", () => {
+            choiceScreen.style.display = "none";
+            state = "game";
+            message = "You chose to run...";
+        });
+
+        standBtn.addEventListener("click", () => {
+            choiceScreen.style.display = "none";
+            state = "game";
+            message = "You stand your ground...";
+            bear.speed = 0.6;
+        });
+
+        let keys = {};
+        document.addEventListener("keydown", (e) => keys[e.key.toLowerCase()] = true);
+        document.addEventListener("keyup", (e) => keys[e.key.toLowerCase()] = false);
+
+        function update() {
+            if (state !== "game") {
+                if (state === "choice") choiceScreen.style.display = "flex";
+                return;
+            }
+
+            let dx = player.x - bear.x;
+            let dy = player.y - bear.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist > 2) {
+                bear.x += (dx / dist) * bear.speed;
+                bear.y += (dy / dist) * bear.speed;
+            }
+
+            if (keys["r"]) {
+                player.x += 4;
+                message = "You run — the bear pursues!";
+            }
+
+            if (keys["s"]) {
+                message = "You stand firm...";
+                bear.speed = 0.5;
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "darkgreen";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (state === "intro" || state === "choice") return;
+
+            // PLAYER
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
+            ctx.fill();
+
+            // BEAR
+            ctx.fillStyle = "brown";
+            ctx.beginPath();
+            ctx.arc(bear.x, bear.y, bear.size, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = "gold";
+            ctx.font = "20px Arial";
+            ctx.fillText(message, 20, 40);
+        }
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        loop();
+    </script>
+
+</body>
+
+</html>
