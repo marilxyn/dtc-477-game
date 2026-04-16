@@ -2,61 +2,297 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Chapter 6: Nez Perce Help</title>
+<title>Lewis & Clark — Chapter 6: Nez Perce Help</title>
 <style>
-    body { font-family: sans-serif; padding: 20px; }
-    #wrap { max-width: 600px; margin: 0 auto; }
-    fieldset { margin-bottom: 20px; padding: 10px; }
-    button { display: block; margin: 5px 0; padding: 5px 10px; cursor: pointer; }
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-image: url("bg_tribe.png");
+        background-size: cover;
+        background-position: center;
+    }
+
+    #wrap {
+        max-width: 600px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* ── FIELDSET BASE STYLE ── */
+    fieldset {
+        margin-bottom: 20px;
+        padding: 15px 18px;
+        border: 3px solid gold;
+        border-radius: 14px;
+        background: rgba(20, 20, 20, 0.88);
+        color: white;
+    }
+
+    legend {
+        color: gold;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 0 8px;
+        letter-spacing: 1px;
+    }
+
+    h2 {
+        color: gold;
+        margin-top: 0;
+    }
+
+    p {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #ddd;
+    }
+
+    /* ── BUTTONS ── */
+    button {
+        display: block;
+        margin: 5px 0;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        background: gold;
+        color: black;
+        border: none;
+        border-radius: 10px;
+        transition: background 0.2s;
+    }
+
+    button:hover { background: orange; }
+
+    /* ── CHOICE BUTTONS ── */
+    .choice-btn {
+        background: #2a2a2a;
+        color: white;
+        border: 2px solid #555;
+        border-radius: 10px;
+        text-align: left;
+        padding: 9px 12px;
+        font-size: 13px;
+        line-height: 1.5;
+        width: 100%;
+        transition: background 0.2s, border-color 0.2s;
+    }
+
+    .choice-btn:hover:not(:disabled) {
+        background: #3a3a3a;
+        border-color: gold;
+    }
+
+    .choice-btn.correct {
+        background: #1a4d1a;
+        border-color: #4CAF50;
+        color: #90ff90;
+    }
+
+    .choice-btn.wrong {
+        background: #4d1a1a;
+        border-color: #f44;
+        color: #ff9090;
+        animation: shake 0.3s;
+    }
+
+    @keyframes shake {
+        0%   { transform: translateX(0); }
+        25%  { transform: translateX(-6px); }
+        50%  { transform: translateX(6px); }
+        75%  { transform: translateX(-6px); }
+        100% { transform: translateX(0); }
+    }
+
+    /* ── HUD ── */
+    #hud div {
+        font-size: 14px;
+        margin: 3px 0;
+        color: #ccc;
+    }
+
+    #hud span {
+        color: gold;
+        font-weight: bold;
+    }
+
+    #round-pips {
+        display: flex;
+        gap: 6px;
+        margin-top: 6px;
+    }
+
+    .pip {
+        width: 13px;
+        height: 13px;
+        border-radius: 3px;
+        background: #444;
+        border: 1px solid #666;
+    }
+
+    .pip.done    { background: #4CAF50; border-color: #4CAF50; }
+    .pip.current { background: gold;    border-color: gold; }
+
+    /* ── FEEDBACK ── */
+    #feedback {
+        margin-bottom: 12px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: bold;
+        border: 2px solid transparent;
+    }
+
+    #feedback.correct-fb { background: rgba(20,80,20,0.85); border-color: #4CAF50; color: #90ff90; }
+    #feedback.wrong-fb   { background: rgba(80,20,20,0.85); border-color: #f44;    color: #ff9090; }
+
+    /* ── DIALOGUE ── */
+    #dialogue .portrait-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 10px;
+    }
+
+    #portrait-img {
+        width: 72px;
+        height: 72px;
+        object-fit: cover;
+        object-position: top;
+        border: 3px solid gold;
+        border-radius: 10px;
+        background: #111;
+        flex-shrink: 0;
+    }
+
+    #speaker {
+        color: gold;
+        font-weight: bold;
+        font-size: 14px;
+        letter-spacing: 1px;
+    }
+
+    #dlg-text {
+        color: #e8e8d0;
+        font-size: 14px;
+        line-height: 1.7;
+        white-space: pre-line;
+        min-height: 50px;
+        margin: 8px 0 12px 0;
+    }
+
+    /* ── FACT BOX ── */
+    #fact-box {
+        border: 2px solid gold;
+        border-radius: 10px;
+        background: rgba(40, 35, 0, 0.88);
+        padding: 10px 14px;
+        margin-bottom: 12px;
+        font-size: 13px;
+        color: #f0e8a0;
+        line-height: 1.6;
+    }
+
+    #fact-box strong {
+        color: gold;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    /* ── OUTCOME ── */
+    #outcome ul {
+        padding-left: 18px;
+        margin: 10px 0;
+        font-size: 14px;
+        line-height: 1.9;
+        color: #ccc;
+    }
+
+    #outcome .hist-quote {
+        font-style: italic;
+        color: #b8e890;
+        font-size: 13px;
+        margin-top: 8px;
+    }
+
+    /* ── HIDDEN ── */
     .hidden { display: none !important; }
 </style>
 </head>
 <body>
 
 <div id="wrap">
+
+    <!-- INTRO -->
     <fieldset id="intro-screen">
-        <legend>Lewis & Clark</legend>
+        <legend>Lewis &amp; Clark</legend>
         <h2>Chapter 6: Nez Perce Help</h2>
-        <p><strong>Fall 1805. Idaho Territory.</strong></p>
-        <p>After crossing the brutal Bitterroot Mountains, exhausted and tired, Lewis and Clark find a local tribe in the area.</p>
-        <p>Help Lewis and Clark secure the trust of the Nez Perce people by clicking on the correct dialog.</p>
-        <p><em>Choose your words carefully.</em></p>
-        <button id="start-btn">START GAME</button>
+        <p><strong style="color:gold">Fall 1805. Idaho Territory.</strong></p>
+        <p>After crossing the brutal Bitterroot Mountains, Lewis and Clark's men arrive starving, exhausted, and sick.</p>
+        <p>Help Lewis and Clark secure the trust of the Nez Perce people by choosing the correct dialogue. <em style="color:gold">Choose your words carefully.</em></p>
+        <button id="start-btn">▶ START GAME</button>
     </fieldset>
 
+    <!-- HUD -->
     <fieldset id="hud" class="hidden">
         <legend>Game Status</legend>
         <div>Round: <span id="round-val">0</span> / 4</div>
         <div>Trust Score: <span id="trust-val">0</span> / 4</div>
+        <div id="round-pips">
+            <div class="pip" id="pip0"></div>
+            <div class="pip" id="pip1"></div>
+            <div class="pip" id="pip2"></div>
+            <div class="pip" id="pip3"></div>
+        </div>
     </fieldset>
 
+    <!-- FEEDBACK -->
     <div id="feedback" class="hidden">
         <strong id="fb-msg"></strong>
     </div>
 
+    <!-- DIALOGUE -->
     <fieldset id="dialogue" class="hidden">
         <legend>Dialogue</legend>
-        <div>
+
+        <div class="portrait-row">
+            <img id="portrait-img" src="ch6_chief.png" alt="character" />
             <strong id="speaker">NARRATOR</strong>
         </div>
-        <p id="dlg-text">...</p>
-        
+
+        <div id="dlg-text">...</div>
+
+        <!-- Fact box (inside dialogue, shown when relevant) -->
+        <div id="fact-box" class="hidden">
+            <strong>📜 Historical Fact</strong>
+            <span id="fact-text"></span>
+        </div>
+
         <div id="choices"></div>
-        <button id="cont-btn" class="hidden">CONTINUE</button>
+        <button id="cont-btn" class="hidden">CONTINUE ▶</button>
     </fieldset>
 
+    <!-- OUTCOME -->
     <fieldset id="outcome" class="hidden">
         <legend>End Result</legend>
         <h2 id="outcome-title"></h2>
         <p id="outcome-desc"></p>
         <ul id="outcome-facts"></ul>
-        <button onclick="location.reload()"> TRY AGAIN</button>
+        <p class="hist-quote">"The Nez Perce are the most friendly, honest and ingenious people."<br>— William Clark, 1805</p>
+        <button onclick="location.reload()">↺ TRY AGAIN</button>
     </fieldset>
+
 </div>
 
 <script>
 // ─────────────────────────────────────────────
-// DIALOGUE DATA (Game Content)
+// DIALOGUE DATA
 // ─────────────────────────────────────────────
 const DLGS = [
   // ROUND 1
@@ -113,79 +349,76 @@ const DLGS = [
           { t: 'D) Offer a gift of tobacco and beads.', cor: true, pts: 1 },
       ],
   },
-  { spk: 'CHIEF', text: '"We will guard your horses until you return from the great water. Go now! The Clearwater River will lead you to the Columbia, and the Columbia to the ocean."', cont: true }
+  { spk: 'CHIEF Twisted Hair', text: '"We will guard your horses until you return from the great water. Go now! The Clearwater River will lead you to the Columbia, and the Columbia to the ocean."', cont: true }
 ];
 
 // ─────────────────────────────────────────────
 // GAME STATE
 // ─────────────────────────────────────────────
-let gs = {
-  dlgIdx: 0,
-  trust: 0,
-  round: 0,
-  waiting: false,
-  chosen: false
-};
-
+let gs = { dlgIdx:0, trust:0, round:0, waiting:false, chosen:false };
 let tyTimer = null;
 
+// Speakers that show the portrait
+const PORTRAIT_SPEAKERS = ['CHIEF TWISTED HAIR','NEZ PERCE ELDER'];
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
 function typewrite(text, cb) {
   clearInterval(tyTimer);
   const el = document.getElementById('dlg-text');
-  let i = 0; 
-  el.textContent = '';
-  
-  const chars = text.replace(/\\n/g, '\n');
+  el.textContent = ''; let i = 0;
   tyTimer = setInterval(() => {
-    el.textContent += chars[i]; 
-    i++;
-    if(i >= chars.length) {
-      clearInterval(tyTimer); 
-      if(cb) cb();
-    }
+    el.textContent += text[i]; i++;
+    if (i >= text.length) { clearInterval(tyTimer); if (cb) cb(); }
   }, 15);
 }
 
-function updateStats() {
-  document.getElementById('trust-val').textContent = gs.trust;
+function updateHUD() {
   document.getElementById('round-val').textContent = gs.round;
+  document.getElementById('trust-val').textContent  = gs.trust;
+  for (let i = 0; i < 4; i++) {
+    const p = document.getElementById('pip' + i);
+    p.className = 'pip' + (i < gs.round ? ' done' : i === gs.round ? ' current' : '');
+  }
 }
 
 function showFact(text) {
-  const box = document.getElementById('fact-box');
   document.getElementById('fact-text').textContent = text;
-  box.classList.remove('hidden');
-  
-  setTimeout(() => box.classList.add('hidden'), 8000);
+  document.getElementById('fact-box').classList.remove('hidden');
+  setTimeout(() => document.getElementById('fact-box').classList.add('hidden'), 8000);
 }
 
-function showFeedback(msg) {
+function showFeedback(msg, type) {
   const fb = document.getElementById('feedback');
   document.getElementById('fb-msg').textContent = msg;
+  fb.className = type === 'correct' ? 'correct-fb' : 'wrong-fb';
   fb.classList.remove('hidden');
-  
-  setTimeout(() => fb.classList.add('hidden'), 1500);
+  setTimeout(() => fb.classList.add('hidden'), 1600);
 }
 
+// ─────────────────────────────────────────────
+// DIALOGUE ENGINE
+// ─────────────────────────────────────────────
 function showDialogue(idx) {
-  if (idx >= DLGS.length) {
-    showOutcome();
-    return;
-  }
-
-  const d = DLGS[idx]; 
+  if (idx >= DLGS.length) { showOutcome(); return; }
+  const d = DLGS[idx];
   gs.dlgIdx = idx;
 
   document.getElementById('speaker').textContent = d.spk;
 
+  // Show portrait only for Nez Perce characters
+  const img = document.getElementById('portrait-img');
+  img.style.display = PORTRAIT_SPEAKERS.includes(d.spk) ? 'block' : 'none';
+
   document.getElementById('choices').innerHTML = '';
   document.getElementById('cont-btn').classList.add('hidden');
-  gs.waiting = false; 
-  gs.chosen = false;
+  document.getElementById('fact-box').classList.add('hidden');
+  gs.waiting = false; gs.chosen = false;
 
   typewrite(d.text, () => {
     if (d.isQ) {
-      showChoices(d.choices, idx, d.fact);
+      buildChoices(d.choices, d.fact);
     } else if (d.cont) {
       document.getElementById('cont-btn').classList.remove('hidden');
       gs.waiting = true;
@@ -194,36 +427,39 @@ function showDialogue(idx) {
   });
 }
 
-function showChoices(choices, dlgIdx, fact) {
+function buildChoices(choices, fact) {
   const grid = document.getElementById('choices');
   grid.innerHTML = '';
-  
-  choices.forEach((ch) => {
+  choices.forEach(ch => {
     const btn = document.createElement('button');
+    btn.className = 'choice-btn';
     btn.textContent = ch.t;
-    btn.onclick = () => pickChoice(ch, choices, fact);
+    btn.onclick = () => pickChoice(ch, choices, btn, fact);
     grid.appendChild(btn);
   });
 }
 
-function pickChoice(choice, allChoices, fact) {
-  if(gs.chosen) return; 
+function pickChoice(choice, allChoices, clickedBtn, fact) {
+  if (gs.chosen) return;
   gs.chosen = true;
 
-  const buttons = document.getElementById('choices').querySelectorAll('button');
-  buttons.forEach(b => b.disabled = true);
+  const btns = document.querySelectorAll('.choice-btn');
+  allChoices.forEach((c, i) => {
+    btns[i].disabled = true;
+    if (c.cor) btns[i].classList.add('correct');
+    else if (btns[i] === clickedBtn) btns[i].classList.add('wrong');
+  });
 
   if (choice.cor) {
-    gs.trust += choice.pts; 
-    showFeedback('✓ CORRECT!');
+    gs.trust += choice.pts;
+    showFeedback('✓ CORRECT!', 'correct');
   } else {
-    showFeedback('✗ INCORRECT...');
+    showFeedback('✗ INCORRECT...', 'wrong');
   }
 
-  if(fact) showFact(fact);
-  
+  if (fact) showFact(fact);
   gs.round++;
-  updateStats();
+  updateHUD();
 
   setTimeout(() => {
     document.getElementById('choices').innerHTML = '';
@@ -233,57 +469,70 @@ function pickChoice(choice, allChoices, fact) {
 }
 
 document.getElementById('cont-btn').onclick = () => {
-  if(!gs.waiting) return;
+  if (!gs.waiting) return;
   gs.waiting = false;
   document.getElementById('cont-btn').classList.add('hidden');
-  showDialogue(gs.dlgIdx + 1); // Go to next dialogue node
+  showDialogue(gs.dlgIdx + 1);
 };
 
 // ─────────────────────────────────────────────
-// START GAME LOGIC
+// START GAME
 // ─────────────────────────────────────────────
 document.getElementById('start-btn').onclick = () => {
-
   document.getElementById('intro-screen').classList.add('hidden');
-  
   document.getElementById('hud').classList.remove('hidden');
   document.getElementById('dialogue').classList.remove('hidden');
-  
-  updateStats();
+  updateHUD();
   showDialogue(0);
 };
 
 // ─────────────────────────────────────────────
-// END GAME LOGIC
+// OUTCOME
 // ─────────────────────────────────────────────
 function showOutcome() {
+  const score = gs.trust;
+  let title, titleCol, desc, facts;
+
+  if (score >= 3) {
+    title = 'GREAT ALLIANCE!'; titleCol = '#4CDF4C';
+    desc = 'The Nez Perce decided to help you out. They shared food, helped build 5 dugout canoes, and Chief Twisted Hair guided you west.';
+    facts = [
+      '✓ Corps received dried salmon, camas root & berries',
+      '✓ 5 dugout canoes built with Nez Perce guidance',
+      '✓ Chief Twisted Hair drew a map on white elk skin',
+      '✓ 38 horses safely guarded until the return journey',
+      '✓ Corps launched onto the Clearwater River toward the Pacific',
+    ];
+  } else if (score >= 2) {
+    title = 'UNEASY PEACE'; titleCol = '#FFA020';
+    desc = 'The Nez Perce offered some help, but your approach caused hesitation. The Corps received basic aid but missed the chance for a full alliance.';
+    facts = [
+      '~ Corps received some food, but less than they needed',
+      '~ Fewer canoes were built without full cooperation',
+      '~ Chief remained cautious and watchful',
+      '✓ Horses were still kept safe by the Nez Perce',
+      '~ Journey continued with significantly more hardship',
+    ];
+  } else {
+    title = 'UH OH! TROUBLED CROSSING'; titleCol = '#FF4040';
+    desc = 'Your approach created tension with the Nez Perce. Without strong alliances, Lewis and Clark struggled.';
+    facts = [
+      '✗ Canoe building took much longer without Nez Perce help',
+      '✗ Relations remained strained throughout their stay',
+      '📖 Try again',
+    ];
+  }
 
   document.getElementById('dialogue').classList.add('hidden');
   document.getElementById('hud').classList.add('hidden');
-  
-  const score = gs.trust;
-  let title, desc, facts;
-
-  if (score >= 3) {
-    title = 'JOB SUCCESSFUL!';
-    desc = 'The Nez Perce decided to help you out. They provided food, helped build canoes, and shared their knowledge of the rivers. After Lewis and Clark were able to rest, they said goodbye and continued their journey.';
-  } else if (score >= 2) {
-    title = 'UNEASY ALLIANCE...';
-    desc = 'The Nez Perce offered some help, but your approach caused some hesitation and waryness. Lewis and Clark were able to continue, but they missed out on some crucial support and knowledge that could have made their journey easier.';
-  } else {
-    title = 'TROUBLED CROSSING';
-    desc = 'Your approach created tension and the Nez Perce remained cautious. Without strong alliances, Lewis and Clark struggled and their mission failed.';
-  }
+  document.getElementById('feedback').classList.add('hidden');
 
   document.getElementById('outcome-title').textContent = title;
+  document.getElementById('outcome-title').style.color = titleCol;
   document.getElementById('outcome-desc').textContent = desc;
-  
-  const list = document.getElementById('outcome-facts');
-  list.innerHTML = facts.map(f => `<li>${f}</li>`).join('');
-
+  document.getElementById('outcome-facts').innerHTML = facts.map(f => `<li>${f}</li>`).join('');
   document.getElementById('outcome').classList.remove('hidden');
 }
-
 </script>
 </body>
 </html>
