@@ -2,288 +2,327 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Chapter 6: Nez Perce Help</title>
+<title>Lewis & Clark — Chapter 6: Nez Perce Help</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
+
 <style>
-    body { font-family: sans-serif; padding: 20px; }
-    #wrap { max-width: 600px; margin: 0 auto; }
-    fieldset { margin-bottom: 20px; padding: 10px; }
-    button { display: block; margin: 5px 0; padding: 5px 10px; cursor: pointer; }
-    .hidden { display: none !important; }
+body {
+    margin: 0;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url("img/bg_tribe.png") no-repeat center center;
+    background-size: cover;
+    image-rendering: pixelated;
+    font-family: "Pixelify Sans", sans-serif;
+}
+
+#wrap {
+    max-width: 650px;
+    width: 100%;
+    padding: 15px;
+}
+
+fieldset {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 3px solid gold;
+    background: rgba(20,20,20,0.9);
+    color: white;
+}
+
+legend, h2 {
+    color: gold;
+}
+
+p {
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    color: #ddd;
+}
+
+button {
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px;
+    font-family: "Pixelify Sans", sans-serif;
+    background: gold;
+    border: 3px solid #222;
+    cursor: pointer;
+}
+
+button:hover {
+    background: orange;
+}
+
+.choice-btn {
+    background: #2a2a2a;
+    color: white;
+    border: 3px solid #555;
+    text-align: left;
+}
+
+.choice-btn.correct {
+    background: #1a4d1a;
+}
+
+.choice-btn.wrong {
+    background: #4d1a1a;
+}
+
+/* --- NEW LAYOUT STYLES --- */
+.dlg-layout {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+#portrait-img {
+    width: 82px;
+    height: 82px;
+    border: 3px solid gold;
+    flex-shrink: 0; /* Prevents the image from squishing */
+}
+
+.dlg-text-container {
+    flex-grow: 1; /* Allows text to fill the remaining space to the right */
+}
+
+#speaker {
+    color: gold;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+#dlg-text {
+    margin: 0;
+    min-height: 60px;
+    line-height: 1.4;
+}
+
+#feedback {
+    margin-bottom: 15px;
+    padding: 15px;
+    background: rgba(20,20,20,0.9);
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#feedback.correct {
+    border: 3px solid #4CAF50;
+    color: #4CAF50;
+}
+
+#feedback.wrong {
+    border: 3px solid #f44336;
+    color: #f44336;
+}
+
+.hidden { display: none !important; }
 </style>
 </head>
+
 <body>
 
 <div id="wrap">
-    <fieldset id="intro-screen">
-        <legend>Lewis & Clark</legend>
-        <h2>Chapter 6: Nez Perce Help</h2>
-        <p><strong>Fall 1805. Idaho Territory.</strong></p>
-        <p>After crossing the brutal Bitterroot Mountains, exhausted and tired, Lewis and Clark find a local tribe in the area.</p>
-        <p>Help Lewis and Clark secure the trust of the Nez Perce people by clicking on the correct dialog.</p>
-        <p><em>Choose your words carefully.</em></p>
-        <button id="start-btn">START GAME</button>
-    </fieldset>
 
-    <fieldset id="hud" class="hidden">
-        <legend>Game Status</legend>
-        <div>Round: <span id="round-val">0</span> / 4</div>
-        <div>Trust Score: <span id="trust-val">0</span> / 4</div>
-    </fieldset>
+<fieldset id="intro-screen">
+    <legend>Lewis & Clark</legend>
+    <h2>Chapter 6: Nez Perce Help</h2>
+    <p><strong style="color:gold">Fall 1805. Idaho Territory.</strong></p>
+    <p>After crossing the brutal Bitterroot Mountains, Lewis and Clark's men arrive starving, exhausted, and sick.</p>
+    <p>Help Lewis and Clark secure the trust of the Nez Perce people by choosing the correct dialogue.</p>
+    <button id="start-btn">▶ START GAME</button>
+</fieldset>
 
-    <div id="feedback" class="hidden">
-        <strong id="fb-msg"></strong>
+<fieldset id="hud" class="hidden">
+    <legend>Game Status</legend>
+    <div>Round: <span id="round-val">1</span> / 4</div>
+    <div>Trust Score: <span id="trust-val">0</span> / 4</div>
+</fieldset>
+
+<div id="feedback" class="hidden"></div>
+
+<fieldset id="dialogue" class="hidden">
+    <legend>Dialogue</legend>
+
+    <div class="dlg-layout">
+        <img id="portrait-img" src="img/chief_still.png" alt="Chief Portrait">
+        <div class="dlg-text-container">
+            <div id="speaker"></div>
+            <div id="dlg-text"></div>
+        </div>
     </div>
 
-    <fieldset id="dialogue" class="hidden">
-        <legend>Dialogue</legend>
-        <div>
-            <strong id="speaker">NARRATOR</strong>
-        </div>
-        <p id="dlg-text">...</p>
-        
-        <div id="choices"></div>
-        <button id="cont-btn" class="hidden">CONTINUE</button>
-    </fieldset>
+    <div id="choices"></div>
+    <button id="cont-btn" class="hidden">CONTINUE ▶</button>
+</fieldset>
 
-    <fieldset id="outcome" class="hidden">
-        <legend>End Result</legend>
-        <h2 id="outcome-title"></h2>
-        <p id="outcome-desc"></p>
-        <ul id="outcome-facts"></ul>
-        <button onclick="location.reload()"> TRY AGAIN</button>
-    </fieldset>
+<fieldset id="outcome" class="hidden">
+    <legend>End Result</legend>
+    <h2 id="outcome-title"></h2>
+    <p id="outcome-desc"></p>
+    <button onclick="location.reload()">↺ TRY AGAIN</button>
+</fieldset>
+
 </div>
 
 <script>
-// ─────────────────────────────────────────────
-// DIALOGUE DATA (Game Content)
-// ─────────────────────────────────────────────
 const DLGS = [
-  // ROUND 1
-  {
-      spk: 'ROUND 1',
-      text: '"Strangers from the east... You look hungry and very worn. Why do you come to our lands?"',
-      isQ: true,
-      choices: [
-          { t: 'A) "We come in peace. We are explorers making our way across the continent."', cor: true, pts: 1 },
-          { t: 'B) "I forgot."', cor: false, pts: 0 },
-          { t: 'C) "Give us food immediately! We are soldiers of America!"', cor: false, pts: 0 },
-          { t: 'D) "We come to ask for your help."', cor: true, pts: 1 },
-      ],
-  },
-  { spk: 'CHIEF', text: 'The chief studies you carefully."I see..."', cont: true },
-  
-  // ROUND 2
-  {
-      spk: 'ROUND 2',
-      text: '"Where are you going, and what do you seek beyond these mountains?"',
-      isQ: true,
-      choices: [
-          { t: 'A) "We are looking for a water route to the great ocean."', cor: true, pts: 1 },
-          { t: 'B) "We are mapping these lands so American settlers can sail there one day."', cor: false, pts: 0 },
-          { t: 'C) "We need to reach the ocean and return east. We mean no harm to your people."', cor: true, pts: 1 },
-          { t: 'D) "Just tell us how to get to the river!"', cor: false, pts: 0 },
-      ],
-  },
-  { spk: 'CHIEF', text: '"Well...we know very well of the rivers here."', cont: true },
-  
-  // ROUND 3
-  {
-      spk: 'ROUND 3',
-      text: '"We can help you with your horses and canoes, but first you must rest and eat with us."',
-      isQ: true,
-      choices: [
-          { t: 'A) Accept gratefully and share your tobacco, beads, and trade goods in return.', cor: true, pts: 1 },
-          { t: 'B) "We appreciate the offer, but we must continue our journey."', cor: false, pts: 0 },
-          { t: 'C) "Sorry dude, but we have plans."', cor: false, pts: 0 },
-          { t: 'D) Thank them warmly, rest for several days, eat together, and trade fairly.', cor: true, pts: 1 },
-      ],
-  },
-  { spk: 'CHIEF', text: '"Very well."', cont: true },
-  
-  // ROUND 4
-  {
-      spk: 'ROUND 4',
-      text: '"Before you go, what offerings do you bring to our people?"',
-      isQ: true,
-      choices: [
-          { t: 'A) Offer medals and some cloth.', cor: true, pts: 1 },
-          { t: 'B) "Ummm...about that..." slips away quietly.', cor: false, pts: 0 },
-          { t: 'C) Offer a small plant.', cor: false, pts: 0 },
-          { t: 'D) Offer a gift of tobacco and beads.', cor: true, pts: 1 },
-      ],
-  },
-  { spk: 'CHIEF', text: '"We will guard your horses until you return from the great water. Go now! The Clearwater River will lead you to the Columbia, and the Columbia to the ocean."', cont: true }
+{spk:'ROUND 1',text:'"Strangers from the east... You look hungry and very worn. Why do you come to our lands?"',isQ:true,choices:[
+{t:'A) "We come in peace. We are explorers making our way across the continent."',cor:true,pts:1},
+{t:'B) "I forgot."',cor:false,pts:0},
+{t:'C) "Give us food immediately! We are soldiers of America!"',cor:false,pts:0},
+{t:'D) "We come to ask for your help."',cor:true,pts:1}
+]},
+{spk:'CHIEF TWISTED HAIR',text:'The chief studies you carefully. "I see..."',cont:true},
+
+{spk:'ROUND 2',text:'"Where are you going, and what do you seek beyond these mountains?"',isQ:true,choices:[
+{t:'A) "We are looking for a water route to the great ocean."',cor:true,pts:1},
+{t:'B) "We are mapping these lands so American settlers can sail there one day."',cor:false,pts:0},
+{t:'C) "We need to reach the ocean and return east. We mean no harm to your people."',cor:true,pts:1},
+{t:'D) "Just tell us how to get to the river!"',cor:false,pts:0}
+]},
+{spk:'CHIEF TWISTED HAIR',text:'"Well...we know very well of the rivers here."',cont:true},
+
+{spk:'ROUND 3',text:'"We can help you with your horses and canoes, but first you must rest and eat with us."',isQ:true,choices:[
+{t:'A) Accept gratefully and share your goods.',cor:true,pts:1},
+{t:'B) "We must continue."',cor:false,pts:0},
+{t:'C) "Sorry dude..."',cor:false,pts:0},
+{t:'D) Thank them warmly and trade fairly.',cor:true,pts:1}
+]},
+{spk:'CHIEF TWISTED HAIR',text:'"Very well."',cont:true},
+
+{spk:'ROUND 4',text:'"Before you go, what offerings do you bring?"',isQ:true,choices:[
+{t:'A) Offer medals and cloth.',cor:true,pts:1},
+{t:'B) Slip away quietly.',cor:false,pts:0},
+{t:'C) Offer a plant.',cor:false,pts:0},
+{t:'D) Offer tobacco and beads.',cor:true,pts:1}
+]},
+{spk:'CHIEF TWISTED HAIR',text:'"We will guide you to the river."',cont:true}
 ];
 
-// ─────────────────────────────────────────────
-// GAME STATE
-// ─────────────────────────────────────────────
-let gs = {
-  dlgIdx: 0,
-  trust: 0,
-  round: 0,
-  waiting: false,
-  chosen: false
-};
+let i = 0;
+let trust = 0;
+let currentRound = 1; 
 
-let tyTimer = null;
+const dlg = document.getElementById("dlg-text");
+const choices = document.getElementById("choices");
+const fb = document.getElementById("feedback");
 
-function typewrite(text, cb) {
-  clearInterval(tyTimer);
-  const el = document.getElementById('dlg-text');
-  let i = 0; 
-  el.textContent = '';
-  
-  const chars = text.replace(/\\n/g, '\n');
-  tyTimer = setInterval(() => {
-    el.textContent += chars[i]; 
+let typeInterval; // Variable to store our typing timer
+
+function updateHUD() {
+    document.getElementById("round-val").textContent = Math.min(currentRound, 4);
+    document.getElementById("trust-val").textContent = trust;
+}
+
+// --- NEW TYPING ANIMATION FUNCTION ---
+function typeWriter(text, element, callback) {
+    // Clear any existing animation before starting a new one
+    clearInterval(typeInterval);
+    element.textContent = "";
+    
+    let index = 0;
+    const speed = 25; // Milliseconds per character (lower is faster)
+    
+    typeInterval = setInterval(() => {
+        element.textContent += text.charAt(index);
+        index++;
+        
+        if (index >= text.length) {
+            clearInterval(typeInterval);
+            if (callback) callback(); // Run the rest of the UI logic once typing is done
+        }
+    }, speed);
+}
+
+function show() {
+    if (i >= DLGS.length) return end();
+
+    let d = DLGS[i];
+    document.getElementById("speaker").textContent = d.spk;
+    
+    // Clear choices and hide buttons while typing
+    choices.innerHTML = "";
+    document.getElementById("cont-btn").classList.add("hidden");
+
+    updateHUD();
+
+    // Start typing animation, pass the UI logic as a callback to run after
+    typeWriter(d.text, dlg, () => {
+        if (d.isQ) {
+            d.choices.forEach((c) => {
+                let b = document.createElement("button");
+                b.className = "choice-btn";
+                b.textContent = c.t;
+
+                b.onclick = () => {
+                    const allButtons = choices.querySelectorAll('button');
+                    allButtons.forEach(btn => btn.disabled = true);
+
+                    if (c.cor) {
+                        trust += c.pts;
+                        fb.textContent = "✓ Correct!";
+                        fb.className = "correct"; 
+                    } else {
+                        fb.textContent = "✗ Wrong!";
+                        fb.className = "wrong"; 
+                    }
+
+                    currentRound++; 
+                    updateHUD();
+
+                    setTimeout(() => {
+                        fb.className = "hidden"; 
+                        i++;
+                        show();
+                    }, 1500); 
+                };
+
+                choices.appendChild(b);
+            });
+        } else {
+            document.getElementById("cont-btn").classList.remove("hidden");
+        }
+    });
+}
+
+document.getElementById("cont-btn").onclick = () => {
     i++;
-    if(i >= chars.length) {
-      clearInterval(tyTimer); 
-      if(cb) cb();
-    }
-  }, 15);
-}
-
-function updateStats() {
-  document.getElementById('trust-val').textContent = gs.trust;
-  document.getElementById('round-val').textContent = gs.round;
-}
-
-function showFact(text) {
-  const box = document.getElementById('fact-box');
-  document.getElementById('fact-text').textContent = text;
-  box.classList.remove('hidden');
-  
-  setTimeout(() => box.classList.add('hidden'), 8000);
-}
-
-function showFeedback(msg) {
-  const fb = document.getElementById('feedback');
-  document.getElementById('fb-msg').textContent = msg;
-  fb.classList.remove('hidden');
-  
-  setTimeout(() => fb.classList.add('hidden'), 1500);
-}
-
-function showDialogue(idx) {
-  if (idx >= DLGS.length) {
-    showOutcome();
-    return;
-  }
-
-  const d = DLGS[idx]; 
-  gs.dlgIdx = idx;
-
-  document.getElementById('speaker').textContent = d.spk;
-
-  document.getElementById('choices').innerHTML = '';
-  document.getElementById('cont-btn').classList.add('hidden');
-  gs.waiting = false; 
-  gs.chosen = false;
-
-  typewrite(d.text, () => {
-    if (d.isQ) {
-      showChoices(d.choices, idx, d.fact);
-    } else if (d.cont) {
-      document.getElementById('cont-btn').classList.remove('hidden');
-      gs.waiting = true;
-      if (d.fact) showFact(d.fact);
-    }
-  });
-}
-
-function showChoices(choices, dlgIdx, fact) {
-  const grid = document.getElementById('choices');
-  grid.innerHTML = '';
-  
-  choices.forEach((ch) => {
-    const btn = document.createElement('button');
-    btn.textContent = ch.t;
-    btn.onclick = () => pickChoice(ch, choices, fact);
-    grid.appendChild(btn);
-  });
-}
-
-function pickChoice(choice, allChoices, fact) {
-  if(gs.chosen) return; 
-  gs.chosen = true;
-
-  const buttons = document.getElementById('choices').querySelectorAll('button');
-  buttons.forEach(b => b.disabled = true);
-
-  if (choice.cor) {
-    gs.trust += choice.pts; 
-    showFeedback('✓ CORRECT!');
-  } else {
-    showFeedback('✗ INCORRECT...');
-  }
-
-  if(fact) showFact(fact);
-  
-  gs.round++;
-  updateStats();
-
-  setTimeout(() => {
-    document.getElementById('choices').innerHTML = '';
-    document.getElementById('cont-btn').classList.remove('hidden');
-    gs.waiting = true;
-  }, 2000);
-}
-
-document.getElementById('cont-btn').onclick = () => {
-  if(!gs.waiting) return;
-  gs.waiting = false;
-  document.getElementById('cont-btn').classList.add('hidden');
-  showDialogue(gs.dlgIdx + 1); // Go to next dialogue node
+    show();
 };
 
-// ─────────────────────────────────────────────
-// START GAME LOGIC
-// ─────────────────────────────────────────────
-document.getElementById('start-btn').onclick = () => {
+document.getElementById("start-btn").onclick = () => {
+    document.getElementById("intro-screen").classList.add("hidden");
+    document.getElementById("hud").classList.remove("hidden");
+    document.getElementById("dialogue").classList.remove("hidden");
 
-  document.getElementById('intro-screen').classList.add('hidden');
-  
-  document.getElementById('hud').classList.remove('hidden');
-  document.getElementById('dialogue').classList.remove('hidden');
-  
-  updateStats();
-  showDialogue(0);
+    updateHUD();
+    show();
 };
 
-// ─────────────────────────────────────────────
-// END GAME LOGIC
-// ─────────────────────────────────────────────
-function showOutcome() {
+function end() {
+    document.getElementById("dialogue").classList.add("hidden");
+    document.getElementById("hud").classList.add("hidden");
+    document.getElementById("outcome").classList.remove("hidden");
 
-  document.getElementById('dialogue').classList.add('hidden');
-  document.getElementById('hud').classList.add('hidden');
-  
-  const score = gs.trust;
-  let title, desc, facts;
-
-  if (score >= 3) {
-    title = 'JOB SUCCESSFUL!';
-    desc = 'The Nez Perce decided to help you out. They provided food, helped build canoes, and shared their knowledge of the rivers. After Lewis and Clark were able to rest, they said goodbye and continued their journey.';
-  } else if (score >= 2) {
-    title = 'UNEASY ALLIANCE...';
-    desc = 'The Nez Perce offered some help, but your approach caused some hesitation and waryness. Lewis and Clark were able to continue, but they missed out on some crucial support and knowledge that could have made their journey easier.';
-  } else {
-    title = 'TROUBLED CROSSING';
-    desc = 'Your approach created tension and the Nez Perce remained cautious. Without strong alliances, Lewis and Clark struggled and their mission failed.';
-  }
-
-  document.getElementById('outcome-title').textContent = title;
-  document.getElementById('outcome-desc').textContent = desc;
-  
-  const list = document.getElementById('outcome-facts');
-  list.innerHTML = facts.map(f => `<li>${f}</li>`).join('');
-
-  document.getElementById('outcome').classList.remove('hidden');
+    if (trust >= 3) {
+        document.getElementById("outcome-title").textContent = "Great Alliance!";
+        document.getElementById("outcome-desc").textContent =
+            "The Nez Perce helped you recover and continue west.";
+    } else {
+        document.getElementById("outcome-title").textContent = "Struggled Journey";
+        document.getElementById("outcome-desc").textContent =
+            "You lost their trust.";
+    }
 }
-
 </script>
+
 </body>
 </html>
