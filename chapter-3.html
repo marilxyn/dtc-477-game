@@ -21,7 +21,6 @@
             overflow: hidden;
         }
 
-        /* LEFT SIDE LANDSCAPE */
         #landscapeArea {
             flex: 3;
             position: relative;
@@ -47,7 +46,6 @@
             border-radius: 10px;
         }
 
-        /* RIGHT SIDE PANEL */
         #outlinePanel {
             flex: 1;
             background: #2b2b2b;
@@ -85,7 +83,6 @@
             pointer-events: none;
         }
 
-        /* SHAKE ANIMATION FOR WRONG MATCH */
         @keyframes shake {
             0% {
                 transform: translateX(0px);
@@ -113,7 +110,6 @@
             animation: shake 0.3s;
         }
 
-        /* INTRO SCREEN */
         #introScreen {
             position: absolute;
             width: 100vw;
@@ -161,7 +157,6 @@
             background: orange;
         }
 
-        /* WIN MESSAGE */
         #winMessage {
             position: absolute;
             top: 20px;
@@ -194,16 +189,13 @@
             position: absolute;
             top: 160px;
             left: 20px;
-
             padding: 12px 25px;
             font-size: 18px;
-
             background: gold;
             border: none;
             border-radius: 12px;
             cursor: pointer;
             font-weight: bold;
-
             display: none;
             z-index: 20;
         }
@@ -216,17 +208,13 @@
             position: absolute;
             top: 80px;
             left: 20px;
-
             background: rgba(0, 0, 0, 0.85);
             color: white;
-
             padding: 14px 18px;
             border-radius: 12px;
             border: 2px solid red;
-
             font-size: 16px;
             max-width: 280px;
-
             display: none;
             z-index: 10;
         }
@@ -284,8 +272,8 @@
 
             <!-- Hidden plants -->
             <img src="img/sagebrush.png" class="hiddenItem" data-name="sagebrush" style="top: 65%; left: 68%;" />
-            <img src="images/pine.png" class="hiddenItem" data-name="pine" style="top: 30%; left: 15%;" />
-            <img src="images/cactus.png" class="hiddenItem" data-name="cactus" style="top: 78%; left: 80%;" />
+            <img src="img/pine.png" class="hiddenItem" data-name="pine" style="top: 31%; left: 31%;" />
+            <img src="img/cactus.png" class="hiddenItem" data-name="cactus" style="top: 75%; left: 88%;" />
 
         </div>
 
@@ -310,18 +298,19 @@
             </div>
 
             <div class="outlineSlot" data-name="pine">
-                <img src="images/pine_outline.png" />
+                <img src="img/pine_outline.png" />
             </div>
 
             <div class="outlineSlot" data-name="cactus">
-                <img src="images/cactus_outline.png" />
+                <img src="img/cactus_outline.png" />
             </div>
         </div>
 
     </div>
 
     <script>
-        // https://chatgpt.com/share/69ded585-e448-83e8-962d-da16570ed73f //
+        //HTML JS Menor Link - https://chatgpt.com/share/69ded585-e448-83e8-962d-da16570ed73f //
+
         let selectedItem = null;
         let matchedCount = 0;
         const totalItems = 6;
@@ -345,7 +334,7 @@
 
             sagebrush: "Lewis and Clark traveled through vast plains covered in sagebrush and recorded it in their journals.",
 
-            pine: "Lewis and Clark relied on pine forests for wood used in shelters, tools, and campfires.",
+            pine: "Lewis and Clark relied on pine trees for wood used in shelters, tools, and campfires.",
 
             cactus: "Lewis and Clark suffered injuries from prickly pear cactus during the Great Falls portage."
         };

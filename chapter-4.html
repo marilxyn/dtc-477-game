@@ -1,28 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chapter 4: Grizzly Country</title>
+
+
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
+
 
     <style>
         body {
             margin: 0;
             overflow: hidden;
             background: black;
-            font-family: Arial, sans-serif;
+            font-family: "ariel", sans-serif;
         }
 
-        canvas {
+
+        #gameArea {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: url("img/montana_bg.png");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .sprite {
             position: absolute;
+            image-rendering: pixelated;
             top: 0;
             left: 0;
-            z-index: 0;
         }
 
-        /* INTRO */
         #introScreen {
             position: absolute;
             width: 100vw;
@@ -31,46 +45,53 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 10;
+            z-index: 50;
         }
+
 
         #introBox {
             background: #111;
             border: 4px solid gold;
             padding: 30px;
             width: 70%;
-            max-width: 600px;
+            max-width: 650px;
             text-align: center;
             border-radius: 20px;
         }
 
+
         #introBox h1 {
             color: gold;
             margin-top: 0;
+            font-family: "Pixelify Sans", sans-serif;
         }
+
 
         #introBox p {
             font-size: 18px;
-            line-height: 1.4;
+            line-height: 1.5;
             color: white;
         }
 
-        #startBtn {
+
+        button {
             margin-top: 15px;
             padding: 12px 25px;
-            font-size: 18px;
+            font-size: 20px;
             background: gold;
             border: none;
             border-radius: 12px;
             cursor: pointer;
             font-weight: bold;
+            font-family: "Pixelify Sans", sans-serif;
         }
 
-        #startBtn:hover {
+
+        button:hover {
             background: orange;
         }
 
-        /* CHOICE SCREEN */
+
         #choiceScreen {
             position: absolute;
             width: 100vw;
@@ -81,172 +102,557 @@
             flex-direction: column;
             gap: 20px;
             background: rgba(0, 0, 0, 0.9);
-            z-index: 20;
+            z-index: 40;
         }
+
 
         #choiceScreen h1 {
             color: gold;
+            font-size: 34px;
         }
 
-        #choiceScreen button {
-            padding: 14px 28px;
+
+        #dialogueBox {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-width: 900px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid gold;
+            border-radius: 16px;
+            padding: 15px;
+            color: white;
             font-size: 20px;
-            background: gold;
-            border: none;
+            display: none;
+            z-index: 20;
+        }
+
+
+        #speedBarContainer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 260px;
+            height: 26px;
+            border: 3px solid gold;
             border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            z-index: 25;
         }
 
-        #choiceScreen button:hover {
-            background: orange;
+
+        #speedBarFill {
+            height: 100%;
+            width: 0%;
+            border-radius: 8px;
+            background: gold;
+            box-shadow: 0 0 12px gold;
         }
 
-        #introBox h1 {
+
+        #winScreen {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 60;
             color: gold;
-            margin-top: 0;
+            text-align: center;
+        }
+
+
+        #winScreen h1 {
             font-family: "Pixelify Sans", sans-serif;
         }
 
-        button {
+
+        #failScreen {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 60;
+            color: red;
+            text-align: center;
+        }
+
+
+        #failScreen h1 {
             font-family: "Pixelify Sans", sans-serif;
+        }
+
+
+        #lewis {
+            width: 120px;
+            height: 120px;
+            background-image: url("img/Lewis_running.png");
+            background-repeat: no-repeat;
+            position: absolute;
+            overflow: hidden;
+            background-size: 720px 720px;
+            image-rendering: pixelated;
+        }
+
+        #bear {
+            width: 120px;
+            height: 120px;
+            background-image: url("img/Bear_running.png");
+            background-repeat: no-repeat;
+            image-rendering: pixelated;
+            background-size: 720px 720px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #clark {
+            width: 120px;
+            height: 120px;
+            background-image: url("img/Clark_running.png");
+            background-repeat: no-repeat;
+            image-rendering: pixelated;
+            background-size: 720px 720px;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
     </style>
 </head>
 
+
 <body>
 
-    <canvas id="game"></canvas>
 
-    <!-- INTRO -->
-    <div id="introScreen">
-        <div id="introBox">
-            <h1>Chapter 4: Grizzly Country</h1>
-            <p>
-                Lewis and Clark are journaling in the Montana wilderness.<br><br>
-                The forest is silent... too silent.<br>
-                Something heavy moves through the brush.<br><br>
-                A grizzly steps into the open.
-            </p>
-            <button id="startBtn">Start Game</button>
+    <div id="gameArea">
+
+
+        <!-- SPRITES -->
+        <div id="lewis" class="sprite"></div>
+        <div id="clark" class="sprite"></div>
+        <div id="bear" class="sprite"></div>
+
+
+        <!-- SPEED BAR -->
+        <div id="speedBarContainer">
+            <div id="speedBarFill"></div>
         </div>
+
+
+        <!-- DIALOGUE BOX -->
+        <div id="dialogueBox"></div>
+
+
+        <!-- INTRO -->
+        <div id="introScreen">
+            <div id="introBox">
+                <h1>Chapter 4: Grizzly Country</h1>
+                <p>
+                    Lewis and Clark are journaling in the Montana wilderness.<br><br>
+                    The forest is silent... too silent.<br>
+                    Something heavy moves through the brush.<br><br>
+                    A grizzly steps into the open.
+                </p>
+                <button id="startBtn">Start Game</button>
+            </div>
+        </div>
+
+
+        <!-- CHOICE -->
+        <div id="choiceScreen">
+            <h1>What should Lewis and Clark do?</h1>
+            <button id="runBtn">Run</button>
+            <button id="standBtn">Stand Their Ground</button>
+        </div>
+
+
+        <!-- WIN -->
+        <div id="winScreen">
+            <h1>You Escaped the Grizzly!</h1>
+            <p style="color:white; font-size:20px; max-width:600px;">
+                Lewis later wrote that grizzlies were far more dangerous than expected.
+                Some bears charged repeatedly, and rifles sometimes failed to stop them quickly.
+            </p>
+            <button id="continueBtn">Continue</button>
+        </div>
+
+
+        <!-- FAIL -->
+        <div id="failScreen">
+            <h1>They Did Not Survive...</h1>
+            <p style="color:white; font-size:20px; max-width:600px;">
+                Standing your ground against a charging grizzly was extremely dangerous.
+                Lewis wrote that grizzlies were far more powerful than they expected.
+            </p>
+            <button id="restartBtn">Restart</button>
+        </div>
+
+
     </div>
 
-    <!-- CHOICE -->
-    <div id="choiceScreen">
-        <h1>What should Lewis and Clark do?</h1>
-        <button id="runBtn">Run</button>
-        <button id="standBtn">Stand Their Ground</button>
-    </div>
 
     <script>
-        const canvas = document.getElementById("game");
-        const ctx = canvas.getContext("2d");
+        //HTML JS Mentor Link - https://chatgpt.com/share/69e53c9d-60e0-83e8-8a2b-760bcffd9590 //
 
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener("resize", resize);
-        resize();
 
         const introScreen = document.getElementById("introScreen");
         const startBtn = document.getElementById("startBtn");
+
 
         const choiceScreen = document.getElementById("choiceScreen");
         const runBtn = document.getElementById("runBtn");
         const standBtn = document.getElementById("standBtn");
 
-        let state = "intro"; // intro → choice → game
 
-        let player = { x: 200, y: 300, size: 20 };
-        let bear = { x: 900, y: 300, size: 40, speed: 1.2 };
+        const dialogueBox = document.getElementById("dialogueBox");
 
-        let message = "";
 
-        // START → SHOW CHOICE
+        const speedBarContainer = document.getElementById("speedBarContainer");
+        const speedBarFill = document.getElementById("speedBarFill");
+
+
+        const winScreen = document.getElementById("winScreen");
+        const continueBtn = document.getElementById("continueBtn");
+
+
+        const failScreen = document.getElementById("failScreen");
+        const restartBtn = document.getElementById("restartBtn");
+
+
+        const lewis = document.getElementById("lewis");
+        const clark = document.getElementById("clark");
+        const bear = document.getElementById("bear");
+
+
+        let state = "intro";
+
+
+        // positions
+        let playerX = 300;
+        let bearX = 1200;
+        let gameStarted = false;
+
+        const sheetCols = 6;
+        const sheetRows = 6;
+
+        const runStartRow = 2;
+        const runEndRow = 5;
+
+        let frameX = 0;
+        let frameY = 0;
+
+        let lewisFrameX = 0;
+        let lewisFrameY = runStartRow;
+
+        const lewisFrame = { w: 120, h: 120 };
+        const bearFrame = { w: 120, h: 120 };
+        const clarkFrame = { w: 120, h: 120 };
+
+
+        let bearFrameX = 0;
+        let bearFrameY = 0;
+
+        let clarkFrameX = 0;
+        let clarkFrameY = 0;
+
+        let gameStopped = false;
+
+
+        let playerY = window.innerHeight * 0.50;
+        let bearY = window.innerHeight * 0.55;
+
+
+        // chase settings
+        let bearSpeed = 1.2;
+        let playerSpeed = 0;
+
+
+        // speed meter system
+        let speedMeter = 0;
+        let maxSpeedMeter = 90;
+        let animTick = 0;
+
+
+        let spacePressed = false;
+
+
+        function resetGame() {
+            state = "intro";
+            gameStopped = false;
+
+
+            playerX = window.innerWidth * 0.45;
+            bearX = window.innerWidth * 0.15;
+
+            playerY = window.innerHeight * 0.60;
+            bearY = window.innerHeight * 0.60;
+
+            bearSpeed = 1.2;
+            playerSpeed = 0;
+
+
+            speedMeter = 0;
+
+
+            speedBarFill.style.width = "0%";
+
+
+            frameX = 0;
+            frameY = 0;
+            animTick = 0;
+
+
+            introScreen.style.display = "flex";
+            choiceScreen.style.display = "none";
+            winScreen.style.display = "none";
+            failScreen.style.display = "none";
+
+
+            dialogueBox.style.display = "none";
+            speedBarContainer.style.display = "none";
+        }
+
+
+        function updateSprites() {
+            lewis.style.left = playerX + "px";
+            lewis.style.top = playerY + "px";
+
+
+            // Clark is locked to Lewis completely (same position)
+            clark.style.left = (playerX - 80) + "px";
+            clark.style.top = playerY + "px";
+
+
+            bear.style.left = bearX + "px";
+            bear.style.top = bearY + "px";
+        }
+
+
         startBtn.addEventListener("click", () => {
             introScreen.style.display = "none";
+            choiceScreen.style.display = "flex";
             state = "choice";
         });
 
+
         runBtn.addEventListener("click", () => {
             choiceScreen.style.display = "none";
-            state = "game";
-            message = "You chose to run...";
+            state = "escape";
+
+
+            // ✅ RESET GAME POSITIONS (THIS IS THE IMPORTANT PART)
+            playerX = window.innerWidth * 0.50;
+            bearX = window.innerWidth * 0.10;
+
+            speedMeter = 0;
+            bearSpeed = 1.2;
+            playerSpeed = 0;
+            spacePressed = false;
+
+
+            // UI
+            dialogueBox.style.display = "block";
+            dialogueBox.innerHTML = "Hold down the SPACE BAR to build speed and escape!";
+
+
+            speedBarContainer.style.display = "block";
         });
 
         standBtn.addEventListener("click", () => {
             choiceScreen.style.display = "none";
-            state = "game";
-            message = "You stand your ground...";
-            bear.speed = 0.6;
+            state = "fail";
+            message = "Standing your ground was a deadly mistake...";
+            state = "fail";
+            failScreen.style.display = "flex";
         });
 
-        let keys = {};
-        document.addEventListener("keydown", (e) => keys[e.key.toLowerCase()] = true);
-        document.addEventListener("keyup", (e) => keys[e.key.toLowerCase()] = false);
 
-        function update() {
-            if (state !== "game") {
-                if (state === "choice") choiceScreen.style.display = "flex";
-                return;
+        continueBtn.addEventListener("click", () => {
+            alert("Continue button works! (connect to Chapter 5 later)");
+        });
+
+
+        restartBtn.addEventListener("click", () => {
+            resetGame();
+        });
+
+
+        document.addEventListener("keydown", (e) => {
+            if (e.code === "Space") {
+                e.preventDefault();
+                spacePressed = true;
             }
+        });
 
-            let dx = player.x - bear.x;
-            let dy = player.y - bear.y;
-            let dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist > 2) {
-                bear.x += (dx / dist) * bear.speed;
-                bear.y += (dy / dist) * bear.speed;
+        document.addEventListener("keyup", (e) => {
+            if (e.code === "Space") {
+                e.preventDefault();
+                spacePressed = false;
             }
+        });
 
-            if (keys["r"]) {
-                player.x += 4;
-                message = "You run — the bear pursues!";
-            }
 
-            if (keys["s"]) {
-                message = "You stand firm...";
-                bear.speed = 0.5;
-            }
-        }
+        // detect rapid presses
 
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = "darkgreen";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            if (state === "intro" || state === "choice") return;
+        function updateFrames() {
 
-            // PLAYER
-            ctx.fillStyle = "white";
-            ctx.beginPath();
-            ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
-            ctx.fill();
+            // LEWIS
+            lewis.style.backgroundPosition =
+                `-${lewisFrameX * lewisFrame.w}px -${lewisFrameY * lewisFrame.h}px`;
 
             // BEAR
-            ctx.fillStyle = "brown";
-            ctx.beginPath();
-            ctx.arc(bear.x, bear.y, bear.size, 0, Math.PI * 2);
-            ctx.fill();
+            bear.style.backgroundPosition =
+                `-${bearFrameX * bearFrame.w}px -${bearFrameY * bearFrame.h}px`;
 
-            ctx.fillStyle = "gold";
-            ctx.font = "20px Arial";
-            ctx.fillText(message, 20, 40);
+            // CLARK
+            clark.style.backgroundPosition =
+                `-${clarkFrameX * clarkFrame.w}px -${clarkFrameY * clarkFrame.h}px`;
         }
 
-        function loop() {
-            update();
-            draw();
-            requestAnimationFrame(loop);
+        function gameLoop() {
+            if (state === "escape" && !gameStopped) {
+
+
+                // animate only when space is held
+                animTick++;
+
+                if (animTick % 6 === 0) {
+
+                    // 🧍 Lewis + Clark ONLY animate when SPACE is pressed
+                    if (spacePressed) {
+
+                        // LEWIS
+                        lewisFrameX++;
+                        if (lewisFrameX >= sheetCols) {
+                            lewisFrameX = 0;
+                            lewisFrameY++;
+                        }
+                        if (lewisFrameY > runEndRow) {
+                            lewisFrameY = runStartRow;
+                        }
+
+                        // CLARK
+                        clarkFrameX++;
+                        if (clarkFrameX >= sheetCols) {
+                            clarkFrameX = 0;
+                            clarkFrameY++;
+                        }
+                        if (clarkFrameY > runEndRow) {
+                            clarkFrameY = runStartRow;
+                        }
+                    }
+
+                    // 🐻 BEAR ALWAYS ANIMATES (leave unchanged)
+                    bearFrameX++;
+                    if (bearFrameX >= sheetCols) {
+                        bearFrameX = 0;
+                        bearFrameY++;
+                    }
+                    if (bearFrameY > runEndRow) {
+                        bearFrameY = runStartRow;
+                    }
+                }
+
+
+                // ===== MOVEMENT + CHASE SYSTEM (STAYS INSIDE ESCAPE) =====
+
+
+                if (spacePressed) {
+                    playerSpeed += 0.08;
+                } else {
+                    playerSpeed -= 0.05;
+                }
+
+
+                if (playerSpeed < 0) playerSpeed = 0;
+                if (playerSpeed > 6) playerSpeed = 6;
+
+
+                playerX += playerSpeed;
+
+
+                let distance = playerX - bearX;
+
+                let baseBearSpeed = spacePressed ? 3.2 : 2.4;
+
+                let fatigue = distance * 0.0012;
+
+                if (distance < 0) fatigue = 0;
+                if (fatigue > 0.9) fatigue = 0.9;
+
+                let bearSpeedCurrent = baseBearSpeed - fatigue;
+
+                if (bearSpeedCurrent < 0.8) bearSpeedCurrent = 0.8; // 🔥 higher minimum speed
+
+                bearX += bearSpeedCurrent;
+
+
+                // SPEED METER
+                if (spacePressed) {
+                    speedMeter += 0.7;
+                } else {
+                    speedMeter -= 0.2;
+                }
+
+
+                if (speedMeter < 0) speedMeter = 0;
+                if (speedMeter > maxSpeedMeter) speedMeter = maxSpeedMeter;
+
+
+                let percent = (speedMeter / maxSpeedMeter) * 100;
+                speedBarFill.style.width = percent + "%";
+
+
+                // WIN
+                if (speedMeter >= maxSpeedMeter) {
+                    state = "win";
+                    gameStopped = true;
+
+
+                    winScreen.style.display = "flex";
+                    dialogueBox.style.display = "none";
+                    speedBarContainer.style.display = "none";
+                }
+
+
+                // FAIL
+                if (Math.abs(bearX - playerX) < 40) {
+                    state = "fail";
+                    gameStopped = true;
+
+
+                    failScreen.style.display = "flex";
+                    dialogueBox.style.display = "none";
+                    speedBarContainer.style.display = "none";
+                }
+            }
+
+
+            updateSprites();
+            updateFrames();
+            requestAnimationFrame(gameLoop);
         }
 
-        loop();
+
+        resetGame();
+        gameStopped = false;
+        gameLoop();
     </script>
 
+
 </body>
+
 
 </html>
