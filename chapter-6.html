@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Lewis & Clark — Chapter 6: Nez Perce Help</title>
+<title>Chapter 6: Nez Perce Help</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
 
@@ -65,15 +65,10 @@ button:hover {
     text-align: left;
 }
 
-.choice-btn.correct {
-    background: #1a4d1a;
-}
+.choice-btn.correct { background: #1a4d1a; }
+.choice-btn.wrong { background: #4d1a1a; }
 
-.choice-btn.wrong {
-    background: #4d1a1a;
-}
-
-/* --- NEW LAYOUT STYLES --- */
+/* Dialogue layout */
 .dlg-layout {
     display: flex;
     gap: 15px;
@@ -85,12 +80,10 @@ button:hover {
     width: 82px;
     height: 82px;
     border: 3px solid gold;
-    flex-shrink: 0; /* Prevents the image from squishing */
+    flex-shrink: 0;
 }
 
-.dlg-text-container {
-    flex-grow: 1; /* Allows text to fill the remaining space to the right */
-}
+.dlg-text-container { flex-grow: 1; }
 
 #speaker {
     color: gold;
@@ -99,7 +92,6 @@ button:hover {
 }
 
 #dlg-text {
-    margin: 0;
     min-height: 60px;
     line-height: 1.4;
 }
@@ -107,7 +99,6 @@ button:hover {
 #feedback {
     margin-bottom: 15px;
     padding: 15px;
-    background: rgba(20,20,20,0.9);
     text-align: center;
     font-size: 18px;
     font-weight: bold;
@@ -131,6 +122,7 @@ button:hover {
 
 <div id="wrap">
 
+<!-- INTRO -->
 <fieldset id="intro-screen">
     <legend>Lewis & Clark</legend>
     <h2>Chapter 6: Nez Perce Help</h2>
@@ -140,6 +132,7 @@ button:hover {
     <button id="start-btn">▶ START GAME</button>
 </fieldset>
 
+<!-- HUD -->
 <fieldset id="hud" class="hidden">
     <legend>Game Status</legend>
     <div>Round: <span id="round-val">1</span> / 4</div>
@@ -148,11 +141,12 @@ button:hover {
 
 <div id="feedback" class="hidden"></div>
 
+<!-- DIALOGUE -->
 <fieldset id="dialogue" class="hidden">
     <legend>Dialogue</legend>
 
     <div class="dlg-layout">
-        <img id="portrait-img" src="img/chief_still.png" alt="Chief Portrait">
+        <img id="portrait-img" src="img/chief_still.png">
         <div class="dlg-text-container">
             <div id="speaker"></div>
             <div id="dlg-text"></div>
@@ -163,11 +157,12 @@ button:hover {
     <button id="cont-btn" class="hidden">CONTINUE ▶</button>
 </fieldset>
 
+<!-- OUTCOME -->
 <fieldset id="outcome" class="hidden">
     <legend>End Result</legend>
     <h2 id="outcome-title"></h2>
     <p id="outcome-desc"></p>
-    <button onclick="location.reload()">↺ TRY AGAIN</button>
+    <button id="next-btn"></button>
 </fieldset>
 
 </div>
@@ -209,37 +204,15 @@ const DLGS = [
 
 let i = 0;
 let trust = 0;
-let currentRound = 1; 
+let currentRound = 1;
 
 const dlg = document.getElementById("dlg-text");
 const choices = document.getElementById("choices");
 const fb = document.getElementById("feedback");
 
-let typeInterval; // Variable to store our typing timer
-
 function updateHUD() {
     document.getElementById("round-val").textContent = Math.min(currentRound, 4);
     document.getElementById("trust-val").textContent = trust;
-}
-
-// --- NEW TYPING ANIMATION FUNCTION ---
-function typeWriter(text, element, callback) {
-    // Clear any existing animation before starting a new one
-    clearInterval(typeInterval);
-    element.textContent = "";
-    
-    let index = 0;
-    const speed = 25; // Milliseconds per character (lower is faster)
-    
-    typeInterval = setInterval(() => {
-        element.textContent += text.charAt(index);
-        index++;
-        
-        if (index >= text.length) {
-            clearInterval(typeInterval);
-            if (callback) callback(); // Run the rest of the UI logic once typing is done
-        }
-    }, speed);
 }
 
 function show() {
@@ -247,50 +220,44 @@ function show() {
 
     let d = DLGS[i];
     document.getElementById("speaker").textContent = d.spk;
-    
-    // Clear choices and hide buttons while typing
+    dlg.textContent = d.text;
+
     choices.innerHTML = "";
     document.getElementById("cont-btn").classList.add("hidden");
 
     updateHUD();
 
-    // Start typing animation, pass the UI logic as a callback to run after
-    typeWriter(d.text, dlg, () => {
-        if (d.isQ) {
-            d.choices.forEach((c) => {
-                let b = document.createElement("button");
-                b.className = "choice-btn";
-                b.textContent = c.t;
+    if (d.isQ) {
+        d.choices.forEach((c) => {
+            let b = document.createElement("button");
+            b.className = "choice-btn";
+            b.textContent = c.t;
 
-                b.onclick = () => {
-                    const allButtons = choices.querySelectorAll('button');
-                    allButtons.forEach(btn => btn.disabled = true);
+            b.onclick = () => {
+                if (c.cor) {
+                    trust += c.pts;
+                    fb.textContent = "✓ Correct!";
+                    fb.className = "correct";
+                } else {
+                    fb.textContent = "✗ Wrong!";
+                    fb.className = "wrong";
+                }
 
-                    if (c.cor) {
-                        trust += c.pts;
-                        fb.textContent = "✓ Correct!";
-                        fb.className = "correct"; 
-                    } else {
-                        fb.textContent = "✗ Wrong!";
-                        fb.className = "wrong"; 
-                    }
+                currentRound++;
+                updateHUD();
 
-                    currentRound++; 
-                    updateHUD();
+                setTimeout(() => {
+                    fb.className = "hidden";
+                    i++;
+                    show();
+                }, 1200);
+            };
 
-                    setTimeout(() => {
-                        fb.className = "hidden"; 
-                        i++;
-                        show();
-                    }, 1500); 
-                };
-
-                choices.appendChild(b);
-            });
-        } else {
-            document.getElementById("cont-btn").classList.remove("hidden");
-        }
-    });
+            choices.appendChild(b);
+        });
+    } else {
+        document.getElementById("cont-btn").classList.remove("hidden");
+    }
 }
 
 document.getElementById("cont-btn").onclick = () => {
@@ -302,7 +269,6 @@ document.getElementById("start-btn").onclick = () => {
     document.getElementById("intro-screen").classList.add("hidden");
     document.getElementById("hud").classList.remove("hidden");
     document.getElementById("dialogue").classList.remove("hidden");
-
     updateHUD();
     show();
 };
@@ -312,14 +278,25 @@ function end() {
     document.getElementById("hud").classList.add("hidden");
     document.getElementById("outcome").classList.remove("hidden");
 
+    const btn = document.getElementById("next-btn");
+
     if (trust >= 3) {
         document.getElementById("outcome-title").textContent = "Great Alliance!";
         document.getElementById("outcome-desc").textContent =
             "The Nez Perce helped you recover and continue west.";
+
+        btn.textContent = "▶ CONTINUE";
+        btn.onclick = () => {
+            window.location.href = "chapter7.html"; // CHANGE THIS FILE NAME
+        };
+
     } else {
         document.getElementById("outcome-title").textContent = "Struggled Journey";
         document.getElementById("outcome-desc").textContent =
             "You lost their trust.";
+
+        btn.textContent = "↺ TRY AGAIN";
+        btn.onclick = () => location.reload();
     }
 }
 </script>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+
+        /* ─── BASE ─── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #2c2c2c; /* Matched to Chapter 7 theme */
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ─── OUTER WRAPPER ─── */
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* ─── SCENE BACKGROUND IMAGE ─── */
+        #scene-img {
+            display: block;
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            object-position: center;
+            border: 6px solid #5c4033;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            background-color: #87CEEB; /* fallback sky color */
+            image-rendering: pixelated;
+        }
+
+        /* Scene label badge */
+        #scene-label {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            font-size: 8px;
+            color: #f4e7c3;
+            background: rgba(62, 39, 35, 0.85);
+            border: 2px solid #5c4033;
+            padding: 6px 12px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            z-index: 5;
+        }
+
+        /* ─── RPG DIALOGUE BOX ─── */
+        #dialogue-box {
+            position: relative;
+            width: 100%;
+            background-color: #f4e7c3;
+            border: 6px solid #3e2723;
+            border-top: 3px solid #5c4033;
+            padding: 16px 18px 14px;
+            color: #3e2723;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.15), 5px 5px 0px rgba(0,0,0,0.45);
+            min-height: 120px;
+            border-radius: 0 0 8px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #dialogue-speaker {
+            font-size: 8px;
+            color: #7a3a10;
+            border-bottom: 2px dashed #c0a87a;
+            padding-bottom: 7px;
+            letter-spacing: 1px;
+            min-height: 20px;
+        }
+
+        #dialogue-text {
+            font-size: 10px;
+            line-height: 1.8;
+            color: #3e2723;
+            flex: 1;
+        }
+
+        #dialogue-text.is-quote {
+            color: #5c2800;
+            font-style: italic;
+        }
+
+        .dialogue-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        /* Step pips */
+        #step-pips { display: flex; gap: 6px; }
+        .pip {
+            width: 10px; height: 10px;
+            background: #c0a87a;
+            border: 2px solid #8a6a40;
+            border-radius: 2px;
+        }
+        .pip.done    { background: #5c4033; }
+        .pip.current { background: #27ae60; border-color: #1e8449; }
+
+        #next-btn {
+            background-color: #27ae60;
+            color: white;
+            border: 4px solid #1e8449;
+            padding: 10px 14px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        #next-btn:hover  { background-color: #2ecc71; }
+        #next-btn:active { transform: scale(0.95); }
+
+        /* ─── JOURNAL SUMMARY OVERLAY ─── */
+        #journal-overlay {
+            display: none;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: calc(100% - 20px);
+            background: rgba(244, 231, 195, 0.96);
+            border: 4px solid #3e2723;
+            padding: 15px;
+            z-index: 6;
+            border-radius: 4px;
+        }
+        #journal-overlay h3 {
+            font-size: 10px;
+            color: #5c4033;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #c0a87a;
+            padding-bottom: 8px;
+            text-align: center;
+        }
+        .journal-cols {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .journal-col { flex: 1; text-align: center; }
+        .journal-col h4 {
+            font-size: 7px;
+            color: #c09010;
+            margin-bottom: 8px;
+        }
+        .journal-col p {
+            font-size: 7px;
+            line-height: 2.2;
+            color: #3e2723;
+        }
+
+        /* ─── STATIC END CARD / CREDITS ─── */
+        #credits-screen {
+            display: none; /* Hidden until end */
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            height: calc(300px + 120px + 12px); /* Covers the whole game area */
+            background-color: #2c2c2c;
+            border: 6px solid #5c4033;
+            border-radius: 8px;
+            z-index: 20;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .c-big-title {
+            font-size: 24px;
+            color: #f1c40f;
+            margin-bottom: 15px;
+        }
+
+        #credits-end-img {
+            display: block;
+            width: 280px;
+            height: 160px;
+            margin: 0 auto 20px;
+            object-fit: cover;
+            border: 6px solid #3e2723;
+            border-radius: 6px;
+            background: #87CEEB; /* Fallback */
+            image-rendering: pixelated;
+        }
+
+        .c-quote {
+            font-size: 10px;
+            color: #fff;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .c-creators {
+            font-size: 8px;
+            color: #aaa;
+            line-height: 2;
+            margin-bottom: 25px;
+        }
+
+        #play-again-btn {
+            background-color: #27ae60;
+            color: white;
+            border: 4px solid #1e8449;
+            padding: 12px 20px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        #play-again-btn:hover { background-color: #2ecc71; }
+        #play-again-btn:active { transform: scale(0.95); }
+
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+
+    <img id="scene-img" src="bg_placeholder.png" alt="scene background">
+
+    <div id="scene-label">NOVEMBER 7, 1805</div>
+
+    <div id="journal-overlay">
+        <h3>📖 EXPEDITION SUMMARY</h3>
+        <div class="journal-cols">
+            <div class="journal-col">
+                <h4>DISCOVERIES</h4>
+                <p>122 Animal Species<br>178 Plant Species<br>Pacific Ocean Route</p>
+            </div>
+            <div class="journal-col">
+                <h4>HARDSHIPS</h4>
+                <p>Grizzly Bears<br>Freezing Winters<br>Starvation<br>Dangerous Rapids</p>
+            </div>
+            <div class="journal-col">
+                <h4>ALLIANCES</h4>
+                <p>Mandan Nation<br>Shoshone Tribe<br>Nez Perce<br>Clatsop People</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="dialogue-box">
+        <div id="dialogue-speaker"></div>
+        <div id="dialogue-text">...</div>
+        <div class="dialogue-footer">
+            <div id="step-pips"></div>
+            <button id="next-btn" onclick="advanceStory()">NEXT ►</button>
+        </div>
+    </div>
+
+    <div id="credits-screen">
+        <div class="c-big-title">THE END</div>
+        
+        <img id="credits-end-img" src="img/outro_6.png" alt="end card"
+             onerror="this.style.background='#4a6b7c';">
+             
+        <div class="c-quote">"We have crossed a continent.<br>And now we must find our way home."</div>
+        
+        <div class="c-creators">
+            A Lewis & Clark Educational Game<br>
+            Created by Dalila, Marilyn & Sophia
+        </div>
+        
+        <button id="play-again-btn" onclick="playAgain()">↺ PLAY AGAIN</button>
+    </div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// SIMPLIFIED STORY DATA
+// ─────────────────────────────────────────────
+const STORY = [
+    {
+        bg:      'img/outro_1.png',
+        label:   'NOVEMBER 7, 1805',
+        speaker: 'NARRATOR',
+        text:    'After 18 months and 4,000 miles, the Columbia River opens wide.\n\nThe Pacific Ocean is finally in view.',
+    },
+    {
+        bg:      'img/outro_1.png',
+        label:   'NOVEMBER 7, 1805',
+        speaker: 'WILLIAM CLARK',
+        text:    '"Ocian in view! O! the joy!"\n\nThe men cheered, fired rifles, and wept.',
+        isQuote: true,
+    },
+    {
+        bg:      'img/outro_2.png',
+        label:   'WINTER 1805',
+        speaker: 'NARRATOR',
+        text:    'Winter arrived fast. The crew voted together on a camp location and built Fort Clatsop to survive the bitter cold.',
+    },
+    {
+        bg:      'img/outro_3.png',
+        label:   'THE LONG DARK',
+        speaker: 'MERIWETHER LEWIS',
+        text:    '"We have been wet and uncomfortable for so many days..."\n\nThey endured freezing rain, fleas, and sickness.',
+        isQuote: true,
+    },
+    {
+        bg:          'img/outro_4.png',
+        label:       'JOURNAL COMPLETE',
+        speaker:     'NARRATOR',
+        text:        'Yet, they succeeded. They mapped new rivers, recorded hundreds of new species, and made vital tribal alliances.',
+        showJournal: true,
+    },
+    {
+        bg:        'img/outro_5.png',
+        label:     'SPRING 1806',
+        speaker:   'MERIWETHER LEWIS',
+        text:      '"We have crossed a continent. And now we must find our way home."\n\nThe Corps returned to St. Louis as heroes.',
+        isQuote:   true,
+        nextLabel: 'FINISH ►',
+        isLast:    true,
+    },
+];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let step      = 0;
+let typeTimer = null;
+let typing    = false;
+let fullText  = '';
+
+// ─────────────────────────────────────────────
+// TYPEWRITER
+// ─────────────────────────────────────────────
+function typewrite(str, el) {
+    clearInterval(typeTimer);
+    el.innerHTML = '';
+    typing = true;
+    let i = 0;
+    typeTimer = setInterval(() => {
+        const ch = str[i];
+        el.innerHTML += (ch === '\n') ? '<br>' : ch;
+        i++;
+        if (i >= str.length) {
+            clearInterval(typeTimer);
+            typing = false;
+        }
+    }, 25); // Slightly faster typing for kids
+}
+
+// ─────────────────────────────────────────────
+// LOAD STEP
+// ─────────────────────────────────────────────
+function loadStep(idx) {
+    const s = STORY[idx];
+
+    // Background image
+    document.getElementById('scene-img').src = s.bg || 'bg_placeholder.png';
+
+    // Scene label
+    document.getElementById('scene-label').textContent = s.label || '';
+
+    // Journal overlay
+    document.getElementById('journal-overlay').style.display =
+        s.showJournal ? 'block' : 'none';
+
+    // Speaker
+    document.getElementById('dialogue-speaker').textContent = s.speaker || '';
+
+    // Text style
+    const textEl = document.getElementById('dialogue-text');
+    textEl.className = s.isQuote ? 'is-quote' : '';
+
+    // Next button label
+    document.getElementById('next-btn').textContent = s.nextLabel || 'NEXT ►';
+
+    // Pips
+    buildPips(idx);
+
+    // Typewrite
+    fullText = s.text;
+    typewrite(s.text, textEl);
+}
+
+// ─────────────────────────────────────────────
+// PIPS
+// ─────────────────────────────────────────────
+function buildPips(current) {
+    const container = document.getElementById('step-pips');
+    container.innerHTML = '';
+    STORY.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'pip' +
+            (i < current  ? ' done'    :
+             i === current ? ' current' : '');
+        container.appendChild(d);
+    });
+}
+
+// ─────────────────────────────────────────────
+// ADVANCE
+// ─────────────────────────────────────────────
+function advanceStory() {
+    // Click while typing → skip to full text
+    if (typing) {
+        clearInterval(typeTimer);
+        typing = false;
+        const textEl = document.getElementById('dialogue-text');
+        textEl.innerHTML = fullText.replace(/\n/g, '<br>');
+        return;
+    }
+
+    const s = STORY[step];
+
+    // Last scene → show static credits card
+    if (s.isLast) {
+        showEndCard();
+        return;
+    }
+
+    step++;
+    loadStep(step);
+}
+
+// ─────────────────────────────────────────────
+// STATIC END CARD
+// ─────────────────────────────────────────────
+function showEndCard() {
+    // Display the static credits screen (uses flexbox for centering)
+    document.getElementById('credits-screen').style.display = 'flex';
+}
+
+function playAgain() {
+    // Reloads the page to restart the scene
+    window.location.reload();
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+loadStep(0);
+</script>
+</body>
+</html>

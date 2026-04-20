@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 7: Down the Columbia River</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #2c2c2c;
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-crisp-edges;
+            image-rendering: pixelated;
+            border: 6px solid #5c4033;
+            background-color: #87CEEB;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            cursor: crosshair;
+        }
+
+        /* Journal Overlay */
+        #journal-modal {
+            display: none;
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            background-color: #f4e7c3;
+            border: 6px solid #3e2723;
+            box-sizing: border-box;
+            padding: 20px;
+            color: #3e2723;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2), 10px 10px 0px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        #journal-title {
+            text-align: center;
+            font-size: 16px;
+            border-bottom: 4px dashed #3e2723;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        #journal-content {
+            font-size: 12px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            color: white;
+            padding: 10px 15px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .close-btn {
+            background-color: #c0392b;
+            border: 4px solid #78281f;
+        }
+        
+        button:hover {
+    background: orange;
+}
+
+        .continue-btn {
+            background-color: #27ae60;
+            border: 4px solid #1e8449;
+            display: none; /* Hidden until game is complete */
+        }
+
+        .continue-btn:hover {
+            background-color: #2ecc71;
+        }
+
+        .ui-bar {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #f4e7c3;
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <canvas id="gameCanvas" width="400" height="240"></canvas>
+        
+        <div id="journal-modal">
+            <div id="journal-title">NEW ENTRY!</div>
+            <div id="journal-content">Discovered a new species!</div>
+            <button class="btn close-btn" id="close-btn" onclick="closeJournal()">CLOSE JOURNAL</button>
+            <button class="btn continue-btn" id="continue-btn" onclick="nextChapter()">CONTINUE</button>
+        </div>
+    </div>
+
+    <div class="ui-bar">
+        <span>Species Found: <span id="score">0</span>/5</span>
+        <span>CHAPTER 7: Columbia River</span>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+
+        const modal = document.getElementById('journal-modal');
+        const journalTitle = document.getElementById('journal-title');
+        const journalContent = document.getElementById('journal-content');
+        const scoreDisplay = document.getElementById('score');
+        const closeBtn = document.getElementById('close-btn');
+        const continueBtn = document.getElementById('continue-btn');
+
+        let isPaused = false;
+        let score = 0;
+        let cameraX = 0;
+        
+        // SPEED INCREASED HERE (Was 0.6)
+        const scrollSpeed = 1.0; 
+
+        // --- EXTENDED PIXEL PALETTE ---
+        const palettes = {
+            'x': 'transparent',
+            'b': '#000000', // Black
+            'w': '#ffffff', // White
+            'y': '#f1c40f', // Yellow
+            'g': '#27ae60', // Green
+            'd': '#8B4513', // Dark Brown
+            'l': '#D2B48C', // Light Wood / Tan
+            'r': '#e74c3c', // Red
+            'p': '#ffb6c1', // Pink
+            'c': '#FFDEAD', // Skin tone
+            's': '#95a5a6', // Grey / Silver
+            'm': '#2c3e50'  // Dark Blue/Grey (Coats)
+        };
+
+        const spritesData = {
+            cedar: [
+                "xxxxxxxgxxxxxxx",
+                "xxxxxxgggxxxxxx",
+                "xxxxxgggggxxxxx",
+                "xxxxgggggggxxxx",
+                "xxxgggggggggxxx",
+                "xxxxxxgggxxxxxx",
+                "xxxxxgggggxxxxx",
+                "xxxxgggggggxxxx",
+                "xxxgggggggggxxx",
+                "xxgggggggggggxx",
+                "xxxxxxdddxxxxxx",
+                "xxxxxxdddxxxxxx"
+            ],
+            salmon: [
+                "xxxrrrrrxxxx",
+                "xrrppppprrxx",
+                "rrppppppprrr",
+                "xrrppppprrxx",
+                "xxxrrrrrxxxx"
+            ],
+            eagle: [
+                "xxxwwwxxx",
+                "xxwyyyxxx",
+                "xxwwwwxxx",
+                "xxddddxxx",
+                "xddddddxx",
+                "ddddddddd",
+                "xddddddxx"
+            ],
+            seal: [
+                "xxxsssxxx",
+                "xxsssssxx",
+                "xxsbsbsxx",
+                "xxsssssxx",
+                "xsssssssx",
+                "sssssssss"
+            ],
+            magpie: [
+                "xxxxxbbb",
+                "xxbbbbbb",
+                "xxwbbwww",
+                "xwwwwwxx",
+                "xxbbbbxx"
+            ],
+            raft: [
+                "xllllllllllllllllllx",
+                "llllllllllllllllllll",
+                "dddddddddddddddddddd"
+            ],
+            clark: [ 
+                "xxxddxxx",
+                "xxddddxx",
+                "xxxccxxx",
+                "xxmmmmxx",
+                "xmwwmmmx",
+                "xxmmmmxx",
+                "xxxddxxx"
+            ],
+            lewisSpyglassDown: [
+                "xxxddxxx",
+                "xxddddxx",
+                "xxxccxxx",
+                "xxmmmmxx",
+                "xmmmmmmx",
+                "xxmmmmxx",
+                "xxxddxxx"
+            ],
+            lewisSpyglassUp: [
+                "xxxddxxx",
+                "xxddddxx",
+                "xxxccxxx",
+                "cssmmmmm",
+                "xmmmmmmx",
+                "xxmmmmxx",
+                "xxxddxxx"
+            ],
+            seaman: [
+                "xxbbxxx",
+                "xbbbbxx",
+                "bbbbbbb",
+                "bxbbxbx"
+            ]
+        };
+
+        function createSprite(artArray, isSilhouette = false, scale = 2) {
+            const width = artArray[0].length;
+            const height = artArray.length;
+            const offCanvas = document.createElement('canvas');
+            offCanvas.width = width * scale;
+            offCanvas.height = height * scale;
+            const oCtx = offCanvas.getContext('2d');
+            oCtx.imageSmoothingEnabled = false;
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const char = artArray[y][x];
+                    if (char !== 'x') {
+                        oCtx.fillStyle = isSilhouette ? palettes['b'] : palettes[char];
+                        oCtx.fillRect(x * scale, y * scale, scale, scale);
+                    }
+                }
+            }
+            return { img: offCanvas, w: offCanvas.width, h: offCanvas.height };
+        }
+
+        // --- GAME OBJECTS ---
+        const targets = [
+            { id: "cedar", x: 150, y: 80, art: spritesData.cedar, scale: 6, discovered: false, name: "Western Red Cedar", fact: "Lewis noted: 'The timber here is larger than any I have ever seen.' These massive trees provided wood for canoes." },
+            { id: "magpie", x: 450, y: 30, art: spritesData.magpie, scale: 3, discovered: false, name: "Black-Billed Magpie", fact: "The explorers were fascinated by these bold, noisy birds, which were unknown to science back East." },
+            { id: "salmon", x: 700, y: 190, art: spritesData.salmon, scale: 3, discovered: false, name: "Pacific Salmon", fact: "A crucial food source! The expedition traded with the Chinookan tribes for dried salmon to survive the winter." },
+            { id: "seal", x: 1000, y: 180, art: spritesData.seal, scale: 4, discovered: false, name: "Harbor Seal", fact: "Spotting seals meant one glorious thing: the salty water of the Pacific Ocean was finally getting close!" },
+            { id: "eagle", x: 1300, y: 60, art: spritesData.eagle, scale: 4, discovered: false, name: "Bald Eagle", fact: "A majestic sight along the riverbanks. The expedition frequently noted these birds fishing in the rich Columbia waters." }
+        ];
+
+        targets.forEach(t => {
+            t.spriteHidden = createSprite(t.art, true, t.scale);
+            t.spriteRevealed = createSprite(t.art, false, t.scale);
+            t.bobOffset = Math.random() * 100; 
+        });
+
+        const raftImg = createSprite(spritesData.raft, false, 4).img;
+        const clarkImg = createSprite(spritesData.clark, false, 3).img;
+        const lewisDownImg = createSprite(spritesData.lewisSpyglassDown, false, 3).img;
+        const lewisUpImg = createSprite(spritesData.lewisSpyglassUp, false, 3).img;
+        const seamanImg = createSprite(spritesData.seaman, false, 3).img;
+
+        function update() {
+            if (!isPaused) {
+                cameraX += scrollSpeed;
+
+                targets.forEach(t => {
+                    if (t.x - cameraX < -250) {
+                        // Spawns them slightly closer together now so the action is faster
+                        t.x = cameraX + canvas.width + 50 + Math.random() * 200;
+                    }
+                });
+            }
+        }
+
+        function drawBackground() {
+            ctx.fillStyle = '#87CEEB';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#4a6b7c';
+            for(let i=0; i<8; i++) {
+                let mx = (i * 120 - (cameraX * 0.2)) % 960;
+                ctx.beginPath();
+                ctx.moveTo(mx, 140);
+                ctx.lineTo(mx + 60, 60);
+                ctx.lineTo(mx + 120, 140);
+                ctx.fill();
+            }
+
+            ctx.fillStyle = '#2d4c1e';
+            ctx.fillRect(0, 130, canvas.width, 30);
+
+            ctx.fillStyle = '#2980b9';
+            ctx.fillRect(0, 150, canvas.width, canvas.height - 150);
+
+            ctx.fillStyle = '#3498db';
+            for(let i=0; i<15; i++) {
+                let wx = ((i * 50) - cameraX) % 600;
+                if(wx < -50) wx += 600;
+                ctx.fillRect(wx, 170 + (i%3)*20, 30, 2);
+            }
+        }
+
+        function drawTargets() {
+            targets.forEach(t => {
+                let drawX = t.x - cameraX;
+                
+                if (drawX > -100 && drawX < canvas.width + 100) {
+                    let sprite = t.discovered ? t.spriteRevealed : t.spriteHidden;
+                    let drawY = t.y;
+                    
+                    if (t.id === "salmon" || t.id === "seal") {
+                        drawY += Math.sin((Date.now() + t.bobOffset) / 200) * 4;
+                    }
+                    ctx.drawImage(sprite.img, drawX, drawY);
+                }
+            });
+        }
+
+        function drawForeground() {
+            // Sped up raft bobbing to match faster river
+            const raftYOffset = Math.sin(Date.now() / 250) * 3;
+            const baseY = 160 + raftYOffset;
+            const raftX = 40;
+
+            ctx.drawImage(raftImg, raftX, baseY + 20);
+            ctx.drawImage(clarkImg, raftX + 10, baseY);
+            ctx.drawImage(seamanImg, raftX + 35, baseY + 10);
+
+            // Sped up spyglass animation
+            const isLooking = Math.floor(Date.now() / 500) % 2 === 0;
+            ctx.drawImage(isLooking ? lewisUpImg : lewisDownImg, raftX + 50, baseY);
+        }
+
+        function draw() {
+            drawBackground();
+            drawTargets();
+            drawForeground(); 
+        }
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        // --- INTERACTION ---
+        canvas.addEventListener('click', (e) => {
+            if (isPaused) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const clickX = (e.clientX - rect.left) * scaleX;
+            const clickY = (e.clientY - rect.top) * scaleY;
+
+            targets.forEach(t => {
+                let drawX = t.x - cameraX;
+                if (!t.discovered && 
+                    clickX >= drawX && 
+                    clickX <= drawX + t.spriteHidden.w &&
+                    clickY >= t.y && 
+                    clickY <= t.y + t.spriteHidden.h) {
+                    
+                    t.discovered = true;
+                    score++;
+                    scoreDisplay.innerText = score;
+                    openJournal(t.name, t.fact);
+                }
+            });
+        });
+
+        // --- JOURNAL UI ---
+        function openJournal(name, fact) {
+            isPaused = true;
+            journalTitle.innerText = "JOURNAL ENTRY: " + name;
+            journalContent.innerText = fact;
+            modal.style.display = 'block';
+        }
+
+        function closeJournal() {
+            if(score >= targets.length && journalTitle.innerText !== "CHAPTER COMPLETE!") {
+                journalTitle.innerText = "CHAPTER COMPLETE!";
+                journalContent.innerText = "William Clark: 'Ocian in view! O! the joy!'\n\nYou have recorded the local wildlife and successfully navigated to the Pacific Coast!";
+                closeBtn.style.display = 'none';
+                continueBtn.style.display = 'block';
+                return; 
+            }
+
+            modal.style.display = 'none';
+            isPaused = false;
+        }
+
+        function nextChapter() {
+            alert("Proceeding to Outro & Map Summary!");
+            // window.location.href = 'outro.html'; 
+        }
+
+        // Start Game
+        loop();
+    </script>
+</body>
+</html>
