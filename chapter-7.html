@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +23,7 @@
         #game-container {
             position: relative;
             width: 100%;
-            max-width: 800px;
+            /* max-width: 800px; */
         }
 
         canvas {
@@ -34,7 +35,7 @@
             border: 6px solid #5c4033;
             background-color: #87CEEB;
             border-radius: 8px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
             cursor: crosshair;
         }
 
@@ -51,7 +52,7 @@
             box-sizing: border-box;
             padding: 20px;
             color: #3e2723;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.2), 10px 10px 0px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2), 10px 10px 0px rgba(0, 0, 0, 0.5);
             z-index: 10;
         }
 
@@ -85,15 +86,16 @@
             background-color: #c0392b;
             border: 4px solid #78281f;
         }
-        
+
         button:hover {
-    background: orange;
-}
+            background: orange;
+        }
 
         .continue-btn {
             background-color: #27ae60;
             border: 4px solid #1e8449;
-            display: none; /* Hidden until game is complete */
+            display: none;
+            /* Hidden until game is complete */
         }
 
         .continue-btn:hover {
@@ -112,11 +114,12 @@
         }
     </style>
 </head>
+
 <body>
 
     <div id="game-container">
         <canvas id="gameCanvas" width="400" height="240"></canvas>
-        
+
         <div id="journal-modal">
             <div id="journal-title">NEW ENTRY!</div>
             <div id="journal-content">Discovered a new species!</div>
@@ -145,9 +148,9 @@
         let isPaused = false;
         let score = 0;
         let cameraX = 0;
-        
+
         // SPEED INCREASED HERE (Was 0.6)
-        const scrollSpeed = 1.0; 
+        const scrollSpeed = 1.0;
 
         // --- EXTENDED PIXEL PALETTE ---
         const palettes = {
@@ -216,7 +219,7 @@
                 "llllllllllllllllllll",
                 "dddddddddddddddddddd"
             ],
-            clark: [ 
+            clark: [
                 "xxxddxxx",
                 "xxddddxx",
                 "xxxccxxx",
@@ -284,7 +287,7 @@
         targets.forEach(t => {
             t.spriteHidden = createSprite(t.art, true, t.scale);
             t.spriteRevealed = createSprite(t.art, false, t.scale);
-            t.bobOffset = Math.random() * 100; 
+            t.bobOffset = Math.random() * 100;
         });
 
         const raftImg = createSprite(spritesData.raft, false, 4).img;
@@ -311,7 +314,7 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             ctx.fillStyle = '#4a6b7c';
-            for(let i=0; i<8; i++) {
+            for (let i = 0; i < 8; i++) {
                 let mx = (i * 120 - (cameraX * 0.2)) % 960;
                 ctx.beginPath();
                 ctx.moveTo(mx, 140);
@@ -327,21 +330,21 @@
             ctx.fillRect(0, 150, canvas.width, canvas.height - 150);
 
             ctx.fillStyle = '#3498db';
-            for(let i=0; i<15; i++) {
+            for (let i = 0; i < 15; i++) {
                 let wx = ((i * 50) - cameraX) % 600;
-                if(wx < -50) wx += 600;
-                ctx.fillRect(wx, 170 + (i%3)*20, 30, 2);
+                if (wx < -50) wx += 600;
+                ctx.fillRect(wx, 170 + (i % 3) * 20, 30, 2);
             }
         }
 
         function drawTargets() {
             targets.forEach(t => {
                 let drawX = t.x - cameraX;
-                
+
                 if (drawX > -100 && drawX < canvas.width + 100) {
                     let sprite = t.discovered ? t.spriteRevealed : t.spriteHidden;
                     let drawY = t.y;
-                    
+
                     if (t.id === "salmon" || t.id === "seal") {
                         drawY += Math.sin((Date.now() + t.bobOffset) / 200) * 4;
                     }
@@ -368,7 +371,7 @@
         function draw() {
             drawBackground();
             drawTargets();
-            drawForeground(); 
+            drawForeground();
         }
 
         function loop() {
@@ -389,12 +392,12 @@
 
             targets.forEach(t => {
                 let drawX = t.x - cameraX;
-                if (!t.discovered && 
-                    clickX >= drawX && 
+                if (!t.discovered &&
+                    clickX >= drawX &&
                     clickX <= drawX + t.spriteHidden.w &&
-                    clickY >= t.y && 
+                    clickY >= t.y &&
                     clickY <= t.y + t.spriteHidden.h) {
-                    
+
                     t.discovered = true;
                     score++;
                     scoreDisplay.innerText = score;
@@ -412,12 +415,12 @@
         }
 
         function closeJournal() {
-            if(score >= targets.length && journalTitle.innerText !== "CHAPTER COMPLETE!") {
+            if (score >= targets.length && journalTitle.innerText !== "CHAPTER COMPLETE!") {
                 journalTitle.innerText = "CHAPTER COMPLETE!";
                 journalContent.innerText = "William Clark: 'Ocian in view! O! the joy!'\n\nYou have recorded the local wildlife and successfully navigated to the Pacific Coast!";
                 closeBtn.style.display = 'none';
                 continueBtn.style.display = 'block';
-                return; 
+                return;
             }
 
             modal.style.display = 'none';
@@ -433,4 +436,5 @@
         loop();
     </script>
 </body>
+
 </html>
