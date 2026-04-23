@@ -5,166 +5,260 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 7: Down the Columbia River</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
+
     <style>
+        /* ==============================
+           CHAPTER 5 BASE STYLES
+           ============================== */
         body {
-            background-color: #2c2c2c;
-            color: #fff;
-            font-family: 'Press Start 2P', cursive;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
             margin: 0;
             overflow: hidden;
+            background: black;
+            font-family: "Arial", sans-serif;
         }
 
-        #game-container {
+        #gameArea {
             position: relative;
-            width: 100%;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #87CEEB; /* River Sky Background */
         }
 
+        /* Full Screen Canvas for Chapter 7 */
         canvas {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: cover;
             image-rendering: -moz-crisp-edges;
             image-rendering: -webkit-crisp-edges;
             image-rendering: pixelated;
-            border: 6px solid #5c4033;
-            background-color: #87CEEB;
-            border-radius: 8px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
             cursor: crosshair;
         }
 
-        /* Journal Overlay */
-        #journal-modal {
-            display: none;
+        #introScreen {
             position: absolute;
-            top: 10%;
-            left: 10%;
-            width: 80%;
-            height: 80%;
-            background-color: #f4e7c3;
-            border: 6px solid #3e2723;
-            box-sizing: border-box;
-            padding: 20px;
-            color: #3e2723;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2), 10px 10px 0px rgba(0, 0, 0, 0.5);
-            z-index: 10;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
         }
 
-        #journal-title {
+        #introBox {
+            background: #111;
+            border: 4px solid gold;
+            padding: 30px;
+            width: 70%;
+            max-width: 650px;
             text-align: center;
-            font-size: 16px;
-            border-bottom: 4px dashed #3e2723;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            border-radius: 20px;
+        }
+
+        #introBox h1 {
+            color: gold;
+            margin-top: 0;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 32px;
+        }
+
+        #introBox p {
+            font-size: 18px;
             line-height: 1.5;
-        }
-
-        #journal-content {
-            font-size: 12px;
-            line-height: 1.8;
-            margin-bottom: 20px;
-        }
-
-        .btn {
             color: white;
-            padding: 10px 15px;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
-            cursor: pointer;
-            display: block;
-            margin: 0 auto;
-            text-align: center;
         }
 
-        .close-btn {
-            background-color: #c0392b;
-            border: 4px solid #78281f;
+        button {
+            margin-top: 15px;
+            padding: 12px 25px;
+            font-size: 20px;
+            background: gold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: "Pixelify Sans", sans-serif;
         }
 
         button:hover {
             background: orange;
         }
 
-        .continue-btn {
-            background-color: #27ae60;
-            border: 4px solid #1e8449;
+        /* Progress Bar modified for Species Found */
+        #scoreBarContainer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 260px;
+            height: 26px;
+            border: 3px solid gold;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.7);
             display: none;
-            /* Hidden until game is complete */
+            z-index: 25;
         }
 
-        .continue-btn:hover {
-            background-color: #2ecc71;
+        #scoreBarFill {
+            height: 100%;
+            width: 0%; /* Starts at 0 */
+            border-radius: 8px;
+            background: gold;
+            box-shadow: 0 0 12px gold;
+            transition: width 0.3s ease-in-out;
         }
 
-        .ui-bar {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #f4e7c3;
+        .bar-label {
+            position: absolute;
+            top: -22px;
+            left: 0;
+            color: gold;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 18px;
+            text-shadow: 2px 2px 0px black;
+        }
+
+        /* Journal Box replacing Chapter 5 Dialogue Box */
+        #journalBox {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 3px solid gold;
+            border-radius: 16px;
+            padding: 25px;
+            color: white;
+            font-size: 20px;
+            display: none;
+            z-index: 40;
             text-align: center;
-            width: 100%;
-            max-width: 800px;
-            display: flex;
-            justify-content: space-between;
+        }
+
+        #journalBox h2 {
+            color: gold;
+            font-family: "Pixelify Sans", sans-serif;
+            margin-top: 0;
+            border-bottom: 2px dashed gold;
+            padding-bottom: 10px;
+        }
+
+        #journalBox p {
+            line-height: 1.6;
+        }
+
+        #winScreen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 60;
+            color: gold;
+            text-align: center;
+        }
+
+        #winScreen h1 {
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 40px;
         }
     </style>
 </head>
 
 <body>
 
-    <div id="game-container">
+    <div id="gameArea">
         <canvas id="gameCanvas" width="400" height="240"></canvas>
 
-        <div id="journal-modal">
-            <div id="journal-title">NEW ENTRY!</div>
-            <div id="journal-content">Discovered a new species!</div>
-            <button class="btn close-btn" id="close-btn" onclick="closeJournal()">CLOSE JOURNAL</button>
-            <button class="btn continue-btn" id="continue-btn" onclick="nextChapter()">CONTINUE</button>
+        <div id="scoreBarContainer">
+            <div class="bar-label">Species Recorded: <span id="scoreText">0</span>/5</div>
+            <div id="scoreBarFill"></div>
         </div>
-    </div>
 
-    <div class="ui-bar">
-        <span>Species Found: <span id="score">0</span>/5</span>
-        <span>CHAPTER 7: Columbia River</span>
+        <div id="journalBox">
+            <h2 id="journalTitle">New Entry!</h2>
+            <p id="journalContent">Fact goes here.</p>
+            <button id="closeJournalBtn">Close Journal</button>
+        </div>
+
+        <div id="introScreen">
+            <div id="introBox">
+                <h1>Chapter 7: Down the Columbia</h1>
+                <p>
+                    Lewis and Clark are nearing the Pacific Ocean.<br><br>
+                    <b>How to Play:</b><br>
+                    - Click on the moving wildlife to record them in your journal.<br>
+                    - Find all 5 species to complete the journey!<br>
+                </p>
+                <button id="startBtn">Start Journey</button>
+            </div>
+        </div>
+
+        <div id="winScreen">
+            <h1>Ocean in View! O! The Joy!</h1>
+            <p style="color:white; font-size:20px; max-width:700px;">
+                You have recorded the local wildlife and successfully navigated to the Pacific Coast.<br><br>
+                William Clark: "Ocian in view! O! the joy!"<br>
+                The Corps of Discovery has crossed the continent!
+            </p>
+            <button id="continueBtn">Continue</button>
+        </div>
+
     </div>
 
     <script>
+        // ==============================
+        // UI & STATE ELEMENTS
+        // ==============================
+        const introScreen = document.getElementById('introScreen');
+        const startBtn = document.getElementById('startBtn');
+        const scoreBarContainer = document.getElementById('scoreBarContainer');
+        const scoreBarFill = document.getElementById('scoreBarFill');
+        const scoreText = document.getElementById('scoreText');
+        const journalBox = document.getElementById('journalBox');
+        const journalTitle = document.getElementById('journalTitle');
+        const journalContent = document.getElementById('journalContent');
+        const closeJournalBtn = document.getElementById('closeJournalBtn');
+        const winScreen = document.getElementById('winScreen');
+        const continueBtn = document.getElementById('continueBtn');
+
+        let isPaused = true; // Start paused on intro screen
+        let score = 0;
+        const maxScore = 5;
+
+        // ==============================
+        // CANVAS SETUP & ENGINE
+        // ==============================
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;
 
-        const modal = document.getElementById('journal-modal');
-        const journalTitle = document.getElementById('journal-title');
-        const journalContent = document.getElementById('journal-content');
-        const scoreDisplay = document.getElementById('score');
-        const closeBtn = document.getElementById('close-btn');
-        const continueBtn = document.getElementById('continue-btn');
-
-        let isPaused = false;
-        let score = 0;
         let cameraX = 0;
-
-        // SPEED INCREASED HERE (Was 0.6)
         const scrollSpeed = 1.0;
 
-        // --- EXTENDED PIXEL PALETTE ---
         const palettes = {
             'x': 'transparent',
-            'b': '#000000', // Black
-            'w': '#ffffff', // White
-            'y': '#f1c40f', // Yellow
-            'g': '#27ae60', // Green
-            'd': '#8B4513', // Dark Brown
-            'l': '#D2B48C', // Light Wood / Tan
-            'r': '#e74c3c', // Red
-            'p': '#ffb6c1', // Pink
-            'c': '#FFDEAD', // Skin tone
-            's': '#95a5a6', // Grey / Silver
-            'm': '#2c3e50'  // Dark Blue/Grey (Coats)
+            'b': '#000000', 
+            'w': '#ffffff', 
+            'y': '#f1c40f', 
+            'g': '#27ae60', 
+            'd': '#8B4513', 
+            'l': '#D2B48C', 
+            'r': '#e74c3c', 
+            'p': '#ffb6c1', 
+            'c': '#FFDEAD', 
+            's': '#95a5a6', 
+            'm': '#2c3e50'  
         };
 
         const spritesData = {
@@ -274,7 +368,6 @@
             return { img: offCanvas, w: offCanvas.width, h: offCanvas.height };
         }
 
-        // --- GAME OBJECTS ---
         const targets = [
             { id: "cedar", x: 150, y: 80, art: spritesData.cedar, scale: 6, discovered: false, name: "Western Red Cedar", fact: "Lewis noted: 'The timber here is larger than any I have ever seen.' These massive trees provided wood for canoes." },
             { id: "magpie", x: 450, y: 30, art: spritesData.magpie, scale: 3, discovered: false, name: "Black-Billed Magpie", fact: "The explorers were fascinated by these bold, noisy birds, which were unknown to science back East." },
@@ -298,10 +391,8 @@
         function update() {
             if (!isPaused) {
                 cameraX += scrollSpeed;
-
                 targets.forEach(t => {
                     if (t.x - cameraX < -250) {
-                        // Spawns them slightly closer together now so the action is faster
                         t.x = cameraX + canvas.width + 50 + Math.random() * 200;
                     }
                 });
@@ -339,11 +430,9 @@
         function drawTargets() {
             targets.forEach(t => {
                 let drawX = t.x - cameraX;
-
                 if (drawX > -100 && drawX < canvas.width + 100) {
                     let sprite = t.discovered ? t.spriteRevealed : t.spriteHidden;
                     let drawY = t.y;
-
                     if (t.id === "salmon" || t.id === "seal") {
                         drawY += Math.sin((Date.now() + t.bobOffset) / 200) * 4;
                     }
@@ -353,7 +442,6 @@
         }
 
         function drawForeground() {
-            // Sped up raft bobbing to match faster river
             const raftYOffset = Math.sin(Date.now() / 250) * 3;
             const baseY = 160 + raftYOffset;
             const raftX = 40;
@@ -362,7 +450,6 @@
             ctx.drawImage(clarkImg, raftX + 10, baseY);
             ctx.drawImage(seamanImg, raftX + 35, baseY + 10);
 
-            // Sped up spyglass animation
             const isLooking = Math.floor(Date.now() / 500) % 2 === 0;
             ctx.drawImage(isLooking ? lewisUpImg : lewisDownImg, raftX + 50, baseY);
         }
@@ -379,7 +466,22 @@
             requestAnimationFrame(loop);
         }
 
-        // --- INTERACTION ---
+        // ==============================
+        // LOGIC & EVENTS
+        // ==============================
+        
+        function updateScoreBar() {
+            let percent = (score / maxScore) * 100;
+            scoreBarFill.style.width = percent + "%";
+            scoreText.innerText = score;
+        }
+
+        startBtn.addEventListener("click", () => {
+            introScreen.style.display = "none";
+            scoreBarContainer.style.display = "block";
+            isPaused = false;
+        });
+
         canvas.addEventListener('click', (e) => {
             if (isPaused) return;
 
@@ -399,41 +501,37 @@
 
                     t.discovered = true;
                     score++;
-                    scoreDisplay.innerText = score;
-                    openJournal(t.name, t.fact);
+                    updateScoreBar();
+                    
+                    // Show Journal Entry
+                    isPaused = true;
+                    journalTitle.innerText = "JOURNAL ENTRY: " + t.name;
+                    journalContent.innerText = t.fact;
+                    journalBox.style.display = "block";
                 }
             });
         });
 
-        // --- JOURNAL UI ---
-        function openJournal(name, fact) {
-            isPaused = true;
-            journalTitle.innerText = "JOURNAL ENTRY: " + name;
-            journalContent.innerText = fact;
-            modal.style.display = 'block';
-        }
-
-        function closeJournal() {
-            if (score >= targets.length && journalTitle.innerText !== "CHAPTER COMPLETE!") {
-                journalTitle.innerText = "CHAPTER COMPLETE!";
-                journalContent.innerText = "William Clark: 'Ocian in view! O! the joy!'\n\nYou have recorded the local wildlife and successfully navigated to the Pacific Coast!";
-                closeBtn.style.display = 'none';
-                continueBtn.style.display = 'block';
-                return;
+        closeJournalBtn.addEventListener("click", () => {
+            journalBox.style.display = "none";
+            
+            if (score >= maxScore) {
+                // Trigger Win Screen
+                winScreen.style.display = "flex";
+                scoreBarContainer.style.display = "none";
+            } else {
+                // Resume Game
+                isPaused = false;
             }
+        });
 
-            modal.style.display = 'none';
-            isPaused = false;
-        }
-
-        function nextChapter() {
+        continueBtn.addEventListener("click", () => {
             alert("Proceeding to Outro & Map Summary!");
             // window.location.href = 'outro.html'; 
-        }
+        });
 
-        // Start Game
+        // Initialize Background Loop
         loop();
     </script>
 </body>
-
 </html>

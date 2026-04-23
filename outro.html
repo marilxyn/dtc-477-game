@@ -3,263 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Outro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>Outro: Ocean in View!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
     <style>
-
-        /* ─── BASE ─── */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        /* ==============================
+           CHAPTER 5 / 6 / 7 BASE STYLES
+           ============================== */
         body {
-            background-color: #2c2c2c; /* Matched to Chapter 7 theme */
-            color: #fff;
-            font-family: 'Press Start 2P', cursive;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            margin: 0;
             overflow: hidden;
+            background: black;
+            font-family: "Arial", sans-serif;
         }
 
-        /* ─── OUTER WRAPPER ─── */
-        #game-container {
+        #gameArea {
             position: relative;
-            width: 100%;
-            max-width: 800px;
-        }
-
-        /* ─── SCENE BACKGROUND IMAGE ─── */
-        #scene-img {
-            display: block;
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            object-position: center;
-            border: 6px solid #5c4033;
-            border-bottom: none;
-            border-radius: 8px 8px 0 0;
-            background-color: #87CEEB; /* fallback sky color */
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            /* Default background, will be swapped via JS */
+            background: url("img/bg_placeholder.png") no-repeat center center;
+            background-size: cover;
             image-rendering: pixelated;
+            transition: background-image 0.5s ease-in-out;
         }
 
-        /* Scene label badge */
+        /* ─── SCENE LABEL ─── */
         #scene-label {
             position: absolute;
-            top: 14px;
-            left: 14px;
-            font-size: 8px;
+            top: 20px;
+            left: 20px;
+            font-size: 16px;
             color: #f4e7c3;
-            background: rgba(62, 39, 35, 0.85);
-            border: 2px solid #5c4033;
-            padding: 6px 12px;
-            border-radius: 4px;
-            letter-spacing: 1px;
-            z-index: 5;
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid gold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: "Pixelify Sans", sans-serif;
+            text-shadow: 2px 2px 0px black;
+            z-index: 10;
+            transition: opacity 0.3s;
         }
 
-        /* ─── RPG DIALOGUE BOX ─── */
-        #dialogue-box {
-            position: relative;
-            width: 100%;
-            background-color: #f4e7c3;
-            border: 6px solid #3e2723;
-            border-top: 3px solid #5c4033;
-            padding: 16px 18px 14px;
-            color: #3e2723;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.15), 5px 5px 0px rgba(0,0,0,0.45);
-            min-height: 120px;
-            border-radius: 0 0 8px 8px;
+        /* ==============================
+           DIALOGUE BOX (Centered)
+           ============================== */
+        #dialogueBox {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-width: 900px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 3px solid gold;
+            border-radius: 16px;
+            padding: 25px;
+            color: white;
+            font-size: 20px;
+            z-index: 20;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
-            gap: 10px;
         }
 
-        #dialogue-speaker {
-            font-size: 8px;
-            color: #7a3a10;
-            border-bottom: 2px dashed #c0a87a;
-            padding-bottom: 7px;
-            letter-spacing: 1px;
-            min-height: 20px;
+        .dlg-layout {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
         }
 
-        #dialogue-text {
-            font-size: 10px;
-            line-height: 1.8;
-            color: #3e2723;
-            flex: 1;
+        #portrait-img {
+            width: 120px;
+            height: 120px;
+            border: 3px solid gold;
+            border-radius: 8px;
+            flex-shrink: 0;
+            background: #222;
+            object-fit: cover;
         }
 
-        #dialogue-text.is-quote {
-            color: #5c2800;
+        .dlg-text-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #speaker {
+            color: gold;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 28px;
+            margin-bottom: 10px;
+            border-bottom: 2px dashed #555;
+            padding-bottom: 5px;
+        }
+
+        #dlg-text {
+            min-height: 60px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        #dlg-text.is-quote {
+            color: #f1c40f;
             font-style: italic;
         }
 
+        /* ─── FOOTER & PIPS ─── */
         .dialogue-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 5px;
+            margin-top: 10px;
         }
 
-        /* Step pips */
-        #step-pips { display: flex; gap: 6px; }
+        #step-pips { 
+            display: flex; 
+            gap: 8px; 
+        }
+        
         .pip {
-            width: 10px; height: 10px;
-            background: #c0a87a;
-            border: 2px solid #8a6a40;
-            border-radius: 2px;
-        }
-        .pip.done    { background: #5c4033; }
-        .pip.current { background: #27ae60; border-color: #1e8449; }
-
-        #next-btn {
-            background-color: #27ae60;
-            color: white;
-            border: 4px solid #1e8449;
-            padding: 10px 14px;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-        #next-btn:hover  { background-color: #2ecc71; }
-        #next-btn:active { transform: scale(0.95); }
-
-        /* ─── JOURNAL SUMMARY OVERLAY ─── */
-        #journal-overlay {
-            display: none;
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: calc(100% - 20px);
-            background: rgba(244, 231, 195, 0.96);
-            border: 4px solid #3e2723;
-            padding: 15px;
-            z-index: 6;
+            width: 14px; 
+            height: 14px;
+            background: #444;
+            border: 2px solid #888;
             border-radius: 4px;
         }
-        #journal-overlay h3 {
-            font-size: 10px;
-            color: #5c4033;
-            margin-bottom: 12px;
-            border-bottom: 2px solid #c0a87a;
-            padding-bottom: 8px;
-            text-align: center;
+        .pip.done    { background: #888; border-color: #aaa; }
+        .pip.current { background: gold; border-color: white; box-shadow: 0 0 8px gold;}
+
+        button.main-btn {
+            padding: 12px 25px;
+            font-size: 16px;
+            background: gold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: "Pixelify Sans", sans-serif;
+            color: black;
+            transition: background 0.2s, transform 0.1s;
         }
-        .journal-cols {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-        .journal-col { flex: 1; text-align: center; }
-        .journal-col h4 {
-            font-size: 7px;
-            color: #c09010;
-            margin-bottom: 8px;
-        }
-        .journal-col p {
-            font-size: 7px;
-            line-height: 2.2;
+        button.main-btn:hover { background: orange; }
+        button.main-btn:active { transform: scale(0.95); }
+
+        /* ==============================
+           JOURNAL OVERLAY
+           ============================== */
+        #journal-overlay {
+            display: none; /* Hidden by default */
+            margin-top: 15px;
+            background: rgba(244, 231, 195, 0.95);
+            border: 4px solid #3e2723;
+            border-radius: 8px;
+            padding: 20px;
             color: #3e2723;
         }
 
-        /* ─── STATIC END CARD / CREDITS ─── */
-        #credits-screen {
-            display: none; /* Hidden until end */
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            height: calc(300px + 120px + 12px); /* Covers the whole game area */
-            background-color: #2c2c2c;
-            border: 6px solid #5c4033;
-            border-radius: 8px;
-            z-index: 20;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        #journal-overlay h3 {
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 24px;
+            color: #5c4033;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #c0a87a;
+            padding-bottom: 10px;
             text-align: center;
-            padding: 20px;
+        }
+
+        .journal-cols {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .journal-col { 
+            flex: 1; 
+            text-align: center; 
+        }
+
+        .journal-col h4 {
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 16px;
+            color: #8B4513;
+            margin-bottom: 10px;
+        }
+
+        .journal-col p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #3e2723;
+            font-weight: bold;
+        }
+
+        /* ==============================
+           CREDITS / END SCREEN
+           ============================== */
+        #credits-screen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            display: none; 
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 60;
+            text-align: center;
+            color: white;
         }
 
         .c-big-title {
-            font-size: 24px;
-            color: #f1c40f;
-            margin-bottom: 15px;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 60px;
+            color: gold;
+            margin-bottom: 30px;
+            text-shadow: 4px 4px 0px #5c4033;
         }
 
         #credits-end-img {
             display: block;
-            width: 280px;
-            height: 160px;
-            margin: 0 auto 20px;
+            width: 400px;
+            height: 250px;
+            margin-bottom: 30px;
             object-fit: cover;
-            border: 6px solid #3e2723;
-            border-radius: 6px;
-            background: #87CEEB; /* Fallback */
+            border: 6px solid gold;
+            border-radius: 12px;
+            background: #87CEEB; 
             image-rendering: pixelated;
         }
 
         .c-quote {
-            font-size: 10px;
-            color: #fff;
+            font-size: 20px;
+            font-style: italic;
+            color: #ccc;
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            max-width: 600px;
         }
 
         .c-creators {
-            font-size: 8px;
-            color: #aaa;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 16px;
+            color: gold;
             line-height: 2;
-            margin-bottom: 25px;
+            margin-bottom: 40px;
         }
-
-        #play-again-btn {
-            background-color: #27ae60;
-            color: white;
-            border: 4px solid #1e8449;
-            padding: 12px 20px;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
-            cursor: pointer;
-        }
-        #play-again-btn:hover { background-color: #2ecc71; }
-        #play-again-btn:active { transform: scale(0.95); }
 
     </style>
 </head>
 <body>
 
-<div id="game-container">
-
-    <img id="scene-img" src="bg_placeholder.png" alt="scene background">
+<div id="gameArea">
 
     <div id="scene-label">NOVEMBER 7, 1805</div>
 
-    <div id="journal-overlay">
-        <h3>📖 EXPEDITION SUMMARY</h3>
-        <div class="journal-cols">
-            <div class="journal-col">
-                <h4>DISCOVERIES</h4>
-                <p>122 Animal Species<br>178 Plant Species<br>Pacific Ocean Route</p>
-            </div>
-            <div class="journal-col">
-                <h4>HARDSHIPS</h4>
-                <p>Grizzly Bears<br>Freezing Winters<br>Starvation<br>Dangerous Rapids</p>
-            </div>
-            <div class="journal-col">
-                <h4>ALLIANCES</h4>
-                <p>Mandan Nation<br>Shoshone Tribe<br>Nez Perce<br>Clatsop People</p>
-            </div>
-        </div>
-    </div>
+    <div id="dialogueBox">
+        <div class="dlg-layout">
+            <img id="portrait-img" src="" alt="portrait" style="display: none;">
+            
+            <div class="dlg-text-container">
+                <div id="speaker">NARRATOR</div>
+                <div id="dlg-text">...</div>
+                
+                <div id="journal-overlay">
+                    <h3>EXPEDITION SUMMARY</h3>
+                    <div class="journal-cols">
+                        <div class="journal-col">
+                            <h4>DISCOVERIES</h4>
+                            <p>122 Animal Species<br>178 Plant Species<br>Pacific Ocean Route</p>
+                        </div>
+                        <div class="journal-col">
+                            <h4>HARDSHIPS</h4>
+                            <p>Grizzly Bears<br>Freezing Winters<br>Starvation<br>Dangerous Rapids</p>
+                        </div>
+                        <div class="journal-col">
+                            <h4>ALLIANCES</h4>
+                            <p>Mandan Nation<br>Shoshone Tribe<br>Nez Perce<br>Clatsop People</p>
+                        </div>
+                    </div>
+                </div>
 
-    <div id="dialogue-box">
-        <div id="dialogue-speaker"></div>
-        <div id="dialogue-text">...</div>
-        <div class="dialogue-footer">
-            <div id="step-pips"></div>
-            <button id="next-btn" onclick="advanceStory()">NEXT ►</button>
+                <div class="dialogue-footer">
+                    <div id="step-pips"></div>
+                    <button class="main-btn" id="next-btn" onclick="advanceStory()">NEXT ►</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -276,53 +306,56 @@
             Created by Dalila, Marilyn & Sophia
         </div>
         
-        <button id="play-again-btn" onclick="playAgain()">↺ PLAY AGAIN</button>
+        <button class="main-btn" onclick="playAgain()">↺ PLAY AGAIN</button>
     </div>
 
 </div>
 
 <script>
 // ─────────────────────────────────────────────
-// SIMPLIFIED STORY DATA
+// STORY DATA
 // ─────────────────────────────────────────────
 const STORY = [
     {
-        bg:      'img/outro_1.png',
+        bg:      'url("img/outro_1.png")',
         label:   'NOVEMBER 7, 1805',
         speaker: 'NARRATOR',
         text:    'After 18 months and 4,000 miles, the Columbia River opens wide.\n\nThe Pacific Ocean is finally in view.',
     },
     {
-        bg:      'img/outro_1.png',
+        bg:      'url("img/outro_1.png")',
         label:   'NOVEMBER 7, 1805',
         speaker: 'WILLIAM CLARK',
+        img:     'img/clark_front.webp',
         text:    '"Ocian in view! O! the joy!"\n\nThe men cheered, fired rifles, and wept.',
         isQuote: true,
     },
     {
-        bg:      'img/outro_2.png',
+        bg:      'url("img/outro_2.png")',
         label:   'WINTER 1805',
         speaker: 'NARRATOR',
         text:    'Winter arrived fast. The crew voted together on a camp location and built Fort Clatsop to survive the bitter cold.',
     },
     {
-        bg:      'img/outro_3.png',
+        bg:      'url("img/outro_3.png")',
         label:   'THE LONG DARK',
         speaker: 'MERIWETHER LEWIS',
+        img:     'img/lewis_front.webp',
         text:    '"We have been wet and uncomfortable for so many days..."\n\nThey endured freezing rain, fleas, and sickness.',
         isQuote: true,
     },
     {
-        bg:          'img/outro_4.png',
+        bg:          'url("img/outro_4.png")',
         label:       'JOURNAL COMPLETE',
         speaker:     'NARRATOR',
         text:        'Yet, they succeeded. They mapped new rivers, recorded hundreds of new species, and made vital tribal alliances.',
         showJournal: true,
     },
     {
-        bg:        'img/outro_5.png',
+        bg:        'url("img/outro_5.png")',
         label:     'SPRING 1806',
         speaker:   'MERIWETHER LEWIS',
+        img:       'img/lewis_front.webp',
         text:      '"We have crossed a continent. And now we must find our way home."\n\nThe Corps returned to St. Louis as heroes.',
         isQuote:   true,
         nextLabel: 'FINISH ►',
@@ -354,7 +387,7 @@ function typewrite(str, el) {
             clearInterval(typeTimer);
             typing = false;
         }
-    }, 25); // Slightly faster typing for kids
+    }, 25);
 }
 
 // ─────────────────────────────────────────────
@@ -364,20 +397,34 @@ function loadStep(idx) {
     const s = STORY[idx];
 
     // Background image
-    document.getElementById('scene-img').src = s.bg || 'bg_placeholder.png';
+    document.getElementById('gameArea').style.backgroundImage = s.bg;
 
     // Scene label
-    document.getElementById('scene-label').textContent = s.label || '';
+    const labelEl = document.getElementById('scene-label');
+    if (s.label) {
+        labelEl.textContent = s.label;
+        labelEl.style.opacity = 1;
+    } else {
+        labelEl.style.opacity = 0;
+    }
+
+    // Portrait Box Toggle
+    const portraitImg = document.getElementById('portrait-img');
+    if (s.img) {
+        portraitImg.src = s.img;
+        portraitImg.style.display = 'block';
+    } else {
+        portraitImg.style.display = 'none';
+    }
+    
+    // Speaker
+    document.getElementById('speaker').textContent = s.speaker || '';
 
     // Journal overlay
-    document.getElementById('journal-overlay').style.display =
-        s.showJournal ? 'block' : 'none';
-
-    // Speaker
-    document.getElementById('dialogue-speaker').textContent = s.speaker || '';
+    document.getElementById('journal-overlay').style.display = s.showJournal ? 'block' : 'none';
 
     // Text style
-    const textEl = document.getElementById('dialogue-text');
+    const textEl = document.getElementById('dlg-text');
     textEl.className = s.isQuote ? 'is-quote' : '';
 
     // Next button label
@@ -399,9 +446,7 @@ function buildPips(current) {
     container.innerHTML = '';
     STORY.forEach((_, i) => {
         const d = document.createElement('div');
-        d.className = 'pip' +
-            (i < current  ? ' done'    :
-             i === current ? ' current' : '');
+        d.className = 'pip' + (i < current ? ' done' : i === current ? ' current' : '');
         container.appendChild(d);
     });
 }
@@ -414,7 +459,7 @@ function advanceStory() {
     if (typing) {
         clearInterval(typeTimer);
         typing = false;
-        const textEl = document.getElementById('dialogue-text');
+        const textEl = document.getElementById('dlg-text');
         textEl.innerHTML = fullText.replace(/\n/g, '<br>');
         return;
     }
@@ -423,7 +468,9 @@ function advanceStory() {
 
     // Last scene → show static credits card
     if (s.isLast) {
-        showEndCard();
+        document.getElementById('dialogueBox').style.display = 'none';
+        document.getElementById('scene-label').style.display = 'none';
+        document.getElementById('credits-screen').style.display = 'flex';
         return;
     }
 
@@ -431,16 +478,7 @@ function advanceStory() {
     loadStep(step);
 }
 
-// ─────────────────────────────────────────────
-// STATIC END CARD
-// ─────────────────────────────────────────────
-function showEndCard() {
-    // Display the static credits screen (uses flexbox for centering)
-    document.getElementById('credits-screen').style.display = 'flex';
-}
-
 function playAgain() {
-    // Reloads the page to restart the scene
     window.location.reload();
 }
 
