@@ -123,7 +123,8 @@
 
         #introBox {
             background: #222;
-            border: 4px solid white;
+            border: 4px solid gold;
+            ;
             padding: 30px;
             width: 70%;
             max-width: 600px;
@@ -154,6 +155,55 @@
         }
 
         #startBtn:hover {
+            background: orange;
+        }
+
+        #winScreen {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 60;
+        }
+
+        #winBox {
+            background: #222;
+            border: 4px solid gold;
+            padding: 30px;
+            width: 70%;
+            max-width: 600px;
+            text-align: center;
+            border-radius: 20px;
+        }
+
+        #winBox h1 {
+            color: gold;
+            margin-top: 0;
+            font-family: "Pixelify Sans", sans-serif;
+        }
+
+        #winBox p {
+            font-size: 18px;
+            line-height: 1.4;
+            color: white;
+        }
+
+        #continueWinBtn {
+            margin-top: 15px;
+            padding: 12px 25px;
+            font-size: 18px;
+            background: gold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: "Pixelify Sans", sans-serif;
+        }
+
+        #continueWinBtn:hover {
             background: orange;
         }
 
@@ -247,23 +297,33 @@
                 <h1>Chapter 3: Into Unknown Land</h1>
                 <p>
                     Lewis and Clark are exploring new lands in 1805!<br><br>
-                    Click an animal or plant hiding in the landscape.<br>
-                    Then click the matching black outline on the right!
+                    <b>How to Play:</b><br>
+                    - Click an animal or plant hiding in the landscape.<br>
+                    - Then click the matching black outline on the right. <br>
+                    - Match all animals to win! <br>
                 </p>
                 <button id="startBtn">Start Game</button>
+            </div>
+        </div>
+
+        <!-- WIN SCREEN -->
+        <div id="winScreen">
+            <div id="winBox">
+                <h1>You Found Everything!</h1>
+                <p>
+                    Lewis and Clark carefully recorded new animals and plants during their expedition.
+                    Their journals helped Americans learn what the western lands were like.
+                </p>
+                <button id="continueWinBtn">Continue</button>
             </div>
         </div>
 
         <!-- LEFT LANDSCAPE -->
         <div id="landscapeArea">
 
-            <div id="winMessage">Great job! You found everything!</div>
-
             <div id="factPopup"></div>
 
             <div id="errorPopup"></div>
-
-            <button id="continueBtn">Continue</button>
 
             <!-- Hidden animals -->
             <img src="img/bison.png" class="hiddenItem" data-name="bison" style="top: 22%; left: 20%;" />
@@ -309,7 +369,8 @@
     </div>
 
     <script>
-        //HTML JS Menor Link - https://chatgpt.com/share/69ded585-e448-83e8-962d-da16570ed73f //
+        // HTML JS Menor Link - https://chatgpt.com/share/69ded585-e448-83e8-962d-da16570ed73f //
+        // HTML JS Mentor Link 2 - https://chatgpt.com/share/69eab560-8e20-83e8-ad06-7331acb46a23 //
 
         let selectedItem = null;
         let matchedCount = 0;
@@ -324,6 +385,8 @@
         const factPopup = document.getElementById("factPopup");
         const continueBtn = document.getElementById("continueBtn");
         const errorPopup = document.getElementById("errorPopup");
+        const winScreen = document.getElementById("winScreen");
+        const continueWinBtn = document.getElementById("continueWinBtn");
 
         const facts = {
             bison: "Lewis and Clark recorded massive herds of bison across the Great Plains during their expedition.",
@@ -337,7 +400,18 @@
             pine: "Lewis and Clark relied on pine trees for wood used in shelters, tools, and campfires.",
 
             cactus: "Lewis and Clark suffered injuries from prickly pear cactus during the Great Falls portage."
+
         };
+
+        let currentSound = null;
+
+        const sounds = {
+            bison: new Audio("sounds/bison.mp3"),
+            grizzly: new Audio("sounds/grizzly.mp3"),
+            prairiedog: new Audio("sounds/prairiedog.mp3")
+        };
+
+
 
         startBtn.addEventListener("click", function () {
             introScreen.style.display = "none";
@@ -377,7 +451,21 @@
 
                 // Correct match
                 if (slot.dataset.name === selectedItem) {
+                    let lastItem = selectedItem;
                     errorPopup.style.display = "none";
+
+                    if (currentSound) {
+                        currentSound.pause();
+                        currentSound.currentTime = 0;
+                    }
+
+                    const sound = sounds[selectedItem];
+
+                    if (sound) {
+                        sound.currentTime = 0;
+                        sound.play();
+                        currentSound = sound;
+                    }
 
                     slot.innerHTML = "";
 
@@ -401,16 +489,14 @@
 
                     if (matchedCount === totalItems) {
 
-                        // STEP 1: show win message first
-                        setTimeout(function () {
-                            winMessage.style.display = "block";
-                        }, 800);
+                        factPopup.style.display = "block";
+                        factPopup.innerText = facts[lastItem];
 
-                        // STEP 2: show continue button AFTER win message
                         setTimeout(function () {
-                            continueBtn.style.display = "block";
-                        }, 2000);
-
+                            winScreen.style.display = "flex";
+                            factPopup.style.display = "none";
+                            errorPopup.style.display = "none";
+                        }, 6000);
                     }
 
                 } else {
@@ -432,6 +518,10 @@
 
             winMessage.style.display = "none";
             continueBtn.style.display = "none";
+        });
+
+        continueWinBtn.addEventListener("click", function () {
+            alert("Continue button works! (connect to Chapter 4 later)");
         });
     </script>
 

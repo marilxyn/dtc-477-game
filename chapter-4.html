@@ -172,6 +172,28 @@
             font-family: "Pixelify Sans", sans-serif;
         }
 
+        #winBox {
+            background: #111;
+            border: 4px solid gold;
+            padding: 30px;
+            width: 70%;
+            max-width: 650px;
+            text-align: center;
+            border-radius: 20px;
+        }
+
+        #winBox h1 {
+            color: gold;
+            margin-top: 0;
+            font-family: "Pixelify Sans", sans-serif;
+        }
+
+        #winBox p {
+            font-size: 18px;
+            line-height: 1.5;
+            color: white;
+        }
+
 
         #failScreen {
             position: absolute;
@@ -190,6 +212,28 @@
 
         #failScreen h1 {
             font-family: "Pixelify Sans", sans-serif;
+        }
+
+        #failBox {
+            background: #111;
+            border: 4px solid red;
+            padding: 30px;
+            width: 70%;
+            max-width: 650px;
+            text-align: center;
+            border-radius: 20px;
+        }
+
+        #failBox h1 {
+            color: red;
+            margin-top: 0;
+            font-family: "Pixelify Sans", sans-serif;
+        }
+
+        #failBox p {
+            font-size: 18px;
+            line-height: 1.5;
+            color: white;
         }
 
 
@@ -278,31 +322,35 @@
 
         <!-- WIN -->
         <div id="winScreen">
-            <h1>You Escaped the Grizzly!</h1>
-            <p style="color:white; font-size:20px; max-width:600px;">
-                Lewis later wrote that grizzlies were far more dangerous than expected.
-                Some bears charged repeatedly, and rifles sometimes failed to stop them quickly.
-            </p>
-            <button id="continueBtn">Continue</button>
+            <div id="winBox">
+                <h1>You Escaped the Grizzly!</h1>
+                <p>
+                    Lewis later wrote that grizzlies were far more dangerous than expected.
+                    Some bears charged repeatedly, and rifles sometimes failed to stop them quickly.
+                </p>
+                <button id="continueBtn">Continue</button>
+            </div>
         </div>
 
 
         <!-- FAIL -->
         <div id="failScreen">
-            <h1>They Did Not Survive...</h1>
-            <p style="color:white; font-size:20px; max-width:600px;">
-                Standing your ground against a charging grizzly was extremely dangerous.
-                Lewis wrote that grizzlies were far more powerful than they expected.
-            </p>
-            <button id="restartBtn">Restart</button>
+            <div id="failBox">
+                <h1>They Did Not Survive...</h1>
+                <p>
+                    Standing your ground against a charging grizzly was extremely dangerous.
+                    Lewis wrote that grizzlies were far more powerful than they expected.
+                </p>
+                <button id="restartBtn">Restart</button>
+            </div>
         </div>
-
 
     </div>
 
 
     <script>
-        //HTML JS Mentor Link - https://chatgpt.com/share/69e53c9d-60e0-83e8-8a2b-760bcffd9590 //
+        // HTML JS Mentor Link - https://chatgpt.com/share/69e53c9d-60e0-83e8-8a2b-760bcffd9590 //
+        // HTML JS Mentor Link 2 - https://chatgpt.com/share/69eab560-8e20-83e8-ad06-7331acb46a23 //
 
 
         const introScreen = document.getElementById("introScreen");
@@ -332,6 +380,18 @@
         const lewis = document.getElementById("lewis");
         const clark = document.getElementById("clark");
         const bear = document.getElementById("bear");
+
+        // SOUNDS
+        const runningSound = new Audio("sounds/running.mp3");
+        const bearRunningSound = new Audio("sounds/running_bear.mp3");
+
+        // make them loop so they don’t restart every frame
+        runningSound.loop = true;
+        bearRunningSound.loop = true;
+
+        // optional volume control
+        runningSound.volume = 0.6;
+        bearRunningSound.volume = 0.6;
 
 
         let state = "intro";
@@ -466,6 +526,9 @@
 
 
             speedBarContainer.style.display = "block";
+            // start bear running sound
+            bearRunningSound.currentTime = 0;
+            bearRunningSound.play();
         });
 
         standBtn.addEventListener("click", () => {
@@ -490,6 +553,13 @@
         document.addEventListener("keydown", (e) => {
             if (e.code === "Space") {
                 e.preventDefault();
+
+                // only start sound once (prevents stacking)
+                if (!spacePressed) {
+                    runningSound.currentTime = 0;
+                    runningSound.play();
+                }
+
                 spacePressed = true;
             }
         });
@@ -498,9 +568,12 @@
             if (e.code === "Space") {
                 e.preventDefault();
                 spacePressed = false;
+
+                // 🔇 stop player sound
+                runningSound.pause();
+                runningSound.currentTime = 0;
             }
         });
-
 
         // detect rapid presses
 
@@ -619,6 +692,13 @@
                 if (speedMeter >= maxSpeedMeter) {
                     state = "win";
                     gameStopped = true;
+
+                    // 🔇 STOP ALL SOUNDS
+                    runningSound.pause();
+                    bearRunningSound.pause();
+
+                    runningSound.currentTime = 0;
+                    bearRunningSound.currentTime = 0;
 
 
                     winScreen.style.display = "flex";
