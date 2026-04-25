@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 6: Nez Perce Help</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
-
     <style>
         /* ==============================
-           CHAPTER 5 / 7 BASE STYLES
+           CHAPTER 5 / 6 / 7 BASE STYLES
            ============================== */
         body {
             margin: 0;
@@ -40,6 +37,7 @@
             align-items: center;
             flex-direction: column;
             z-index: 50;
+            text-align: center;
         }
 
         #introBox {
@@ -82,7 +80,7 @@
         }
 
         /* ==============================
-           TRUST BAR (Adapted from Stamina)
+           TRUST BAR 
            ============================== */
         #trustBarContainer {
             position: absolute;
@@ -115,12 +113,6 @@
             font-size: 18px;
             text-shadow: 2px 2px 0px black;
             width: 350px;
-        }
-
-        .bar-label span.round-info {
-            color: #ccc;
-            font-size: 14px;
-            margin-left: 15px;
         }
 
         .goodFlash { background: lime !important; box-shadow: 0 0 14px lime !important; }
@@ -239,7 +231,15 @@
         /* End Screens */
         #winScreen h1 { color: gold; font-size: 40px; }
         #failScreen h1 { color: red; font-size: 40px; }
-        .end-desc { color: white; font-size: 20px; max-width: 700px; line-height: 1.6; margin-bottom: 20px; }
+        
+        .end-desc { 
+            color: white; 
+            font-size: 20px; 
+            max-width: 700px; 
+            line-height: 1.6; 
+            margin-bottom: 20px; 
+            text-align: center; /* Added to center text inside the block */
+        }
 
         .hidden { display: none !important; }
     </style>
@@ -265,7 +265,6 @@
         <div id="trustBarContainer">
             <div class="bar-label">
                 Trust: <span id="trust-val">0</span>/4 
-                <span class="round-info">Round <span id="round-val">1</span>/4</span>
             </div>
             <div id="trustBarFill"></div>
         </div>
@@ -302,6 +301,25 @@
     </div>
 
     <script>
+        // ==========================================
+        // AUDIO SETUP (Requires files in an 'audio' folder)
+        // ==========================================
+        const sfxBGM = new Audio("sounds/music_ch.6.mp3");
+        sfxBGM.loop = true;
+        sfxBGM.volume = 0.4; 
+
+        const sfxClick = new Audio("sounds/button_click.mp3");
+        const sfxType = new Audio("sounds/talking_noise.mp3"); 
+        sfxType.volume = 0.5; 
+        
+        const sfxCorrect = new Audio("sounds/correct.mp3");
+        const sfxWrong = new Audio("sounds/incorrect.mp3");
+
+        function playSound(audioObj) {
+            audioObj.currentTime = 0; 
+            audioObj.play().catch(e => console.log("Audio play blocked by browser:", e));
+        }
+
         const DLGS = [
             {
                 spk: 'NARRATOR', text: '"Strangers from the east... You look hungry and very worn. Why do you come to our lands?"', isQ: true, choices: [
@@ -341,13 +359,12 @@
                     { t: 'D) Offer tobacco and beads.', cor: true, pts: 1 }
                 ]
             },
-            { spk: 'CHIEF TWISTED HAIR', text: '"We will guide you to the river."', cont: true }
+            { spk: 'CHIEF TWISTED HAIR', text: '...', cont: true } // Text gets swapped dynamically in the show() function
         ];
 
         let i = 0;
         let trust = 0;
         const maxTrust = 4;
-        let currentRound = 1;
 
         const dlg = document.getElementById("dlg-text");
         const choices = document.getElementById("choices");
@@ -357,10 +374,7 @@
         let typeInterval;
 
         function updateHUD() {
-            document.getElementById("round-val").textContent = Math.min(currentRound, 4);
             document.getElementById("trust-val").textContent = trust;
-
-            // Fill the bar width
             let percent = (trust / maxTrust) * 100;
             trustBarFill.style.width = percent + "%";
         }
@@ -379,13 +393,23 @@
             clearInterval(typeInterval);
             element.textContent = "";
             let index = 0;
-            const speed = 25; 
+            
+            const totalDuration = 1200; 
+            const speed = totalDuration / text.length; 
 
             typeInterval = setInterval(() => {
                 element.textContent += text.charAt(index);
+                
+                if (index % 3 === 0) playSound(sfxType);
+
                 index++;
                 if (index >= text.length) {
                     clearInterval(typeInterval);
+                    
+                    // Force the sound to stop playing immediately when typing ends
+                    sfxType.pause();
+                    sfxType.currentTime = 0;
+
                     if (callback) callback();
                 }
             }, speed);
@@ -396,9 +420,18 @@
 
             let d = DLGS[i];
             
-            // Toggle portrait depending on speaker
-            document.getElementById("portrait-img").src = (d.spk === 'NARRATOR') ? 'img/chief_still.png' : 'img/chief_still.png';
-            document.getElementById("speaker").textContent = (d.spk === 'NARRATOR') ? `ROUND ${currentRound}` : d.spk;
+            // --- DYNAMIC FINAL DIALOGUE ---
+            // Checks if this is the very last array item
+            if (i === DLGS.length - 1) {
+                if (trust >= 3) {
+                    d.text = '"You have spoken well. We will guide you to the river."';
+                } else {
+                    d.text = '"Your words are empty. We will not help your men."';
+                }
+            }
+            // ------------------------------
+            
+            document.getElementById("speaker").textContent = d.spk;
 
             choices.innerHTML = "";
             document.getElementById("cont-btn").classList.add("hidden");
@@ -414,6 +447,8 @@
                         b.textContent = c.t;
 
                         b.onclick = () => {
+                            playSound(sfxClick); 
+
                             const allButtons = choices.querySelectorAll('button');
                             allButtons.forEach(btn => btn.disabled = true);
 
@@ -422,13 +457,14 @@
                                 fb.textContent = "✓ Good Diplomacy!";
                                 fb.className = "correct";
                                 flashTrustBar("good");
+                                playSound(sfxCorrect); 
                             } else {
                                 fb.textContent = "✗ Not Ideal...";
                                 fb.className = "wrong";
                                 flashTrustBar("bad");
+                                playSound(sfxWrong); 
                             }
 
-                            currentRound++;
                             updateHUD();
                             fb.classList.remove("hidden");
 
@@ -447,11 +483,15 @@
         }
 
         document.getElementById("cont-btn").onclick = () => {
+            playSound(sfxClick); 
             i++;
             show();
         };
 
         document.getElementById("start-btn").onclick = () => {
+            playSound(sfxClick); 
+            sfxBGM.play().catch(e => console.log("BGM Blocked:", e)); 
+
             document.getElementById("introScreen").classList.add("hidden");
             document.getElementById("trustBarContainer").style.display = "block";
             document.getElementById("dialogueBox").style.display = "block";
@@ -464,15 +504,17 @@
             document.getElementById("trustBarContainer").style.display = "none";
 
             if (trust >= 3) {
+                playSound(sfxCorrect); 
                 document.getElementById("winScreen").classList.remove("hidden");
                 document.getElementById("next-btn").onclick = () => {
-                    window.location.href = "chapter7.html"; // Change to your Chapter 7 file name
+                    playSound(sfxClick);
+                    window.location.href = "chapter7.html"; 
                 };
             } else {
+                playSound(sfxWrong); 
                 document.getElementById("failScreen").classList.remove("hidden");
             }
         }
     </script>
 </body>
-
 </html>
