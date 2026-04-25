@@ -28,6 +28,20 @@
             transition: background-image 0.5s ease-in-out;
         }
 
+        /* ─── START SCREEN ─── */
+        #introScreen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 100;
+        }
+
         /* ─── SCENE LABEL ─── */
         #scene-label {
             position: absolute;
@@ -43,6 +57,7 @@
             text-shadow: 2px 2px 0px black;
             z-index: 10;
             transition: opacity 0.3s;
+            display: none; /* Hidden until start */
         }
 
         /* ==============================
@@ -63,7 +78,7 @@
             font-size: 20px;
             z-index: 20;
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            display: flex;
+            display: none; /* Hidden until start */
             flex-direction: column;
         }
 
@@ -257,6 +272,11 @@
 
 <div id="gameArea">
 
+    <div id="introScreen">
+        <h1 style="color: gold; font-family: 'Pixelify Sans', sans-serif; font-size: 40px; margin-bottom: 20px;">Journey's End</h1>
+        <button class="main-btn" id="start-btn" onclick="startOutro()">▶ VIEW OUTRO</button>
+    </div>
+
     <div id="scene-label">NOVEMBER 7, 1805</div>
 
     <div id="dialogueBox">
@@ -268,7 +288,7 @@
                 <div id="dlg-text">...</div>
                 
                 <div id="journal-overlay">
-                    <h3>EXPEDITION SUMMARY</h3>
+                    <h3>📖 EXPEDITION SUMMARY</h3>
                     <div class="journal-cols">
                         <div class="journal-col">
                             <h4>DISCOVERIES</h4>
@@ -312,6 +332,22 @@
 </div>
 
 <script>
+// ─────────────────────────────────────────────
+// AUDIO SETUP 
+// ─────────────────────────────────────────────
+const sfxBGM = new Audio("sounds/music_outro.mp3");
+sfxBGM.loop = true;
+sfxBGM.volume = 0.4; 
+
+const sfxClick = new Audio("sounds/button_click.mp3");
+const sfxType = new Audio("sounds/talking_noise.mp3"); 
+sfxType.volume = 0.4; 
+
+function playSound(audioObj) {
+    audioObj.currentTime = 0; 
+    audioObj.play().catch(e => console.log("Audio play blocked:", e));
+}
+
 // ─────────────────────────────────────────────
 // STORY DATA
 // ─────────────────────────────────────────────
@@ -372,6 +408,20 @@ let typing    = false;
 let fullText  = '';
 
 // ─────────────────────────────────────────────
+// START OUTRO (Unlocks Audio)
+// ─────────────────────────────────────────────
+function startOutro() {
+    playSound(sfxClick);
+    sfxBGM.play().catch(e => console.log("BGM Blocked:", e));
+    
+    document.getElementById('introScreen').style.display = 'none';
+    document.getElementById('scene-label').style.display = 'block';
+    document.getElementById('dialogueBox').style.display = 'flex';
+    
+    loadStep(0);
+}
+
+// ─────────────────────────────────────────────
 // TYPEWRITER
 // ─────────────────────────────────────────────
 function typewrite(str, el) {
@@ -379,13 +429,20 @@ function typewrite(str, el) {
     el.innerHTML = '';
     typing = true;
     let i = 0;
+    
     typeTimer = setInterval(() => {
         const ch = str[i];
         el.innerHTML += (ch === '\n') ? '<br>' : ch;
+        
+        // Play typing blip sound periodically
+        if (i % 3 === 0) playSound(sfxType);
+        
         i++;
         if (i >= str.length) {
             clearInterval(typeTimer);
             typing = false;
+            sfxType.pause();
+            sfxType.currentTime = 0;
         }
     }, 25);
 }
@@ -455,9 +512,13 @@ function buildPips(current) {
 // ADVANCE
 // ─────────────────────────────────────────────
 function advanceStory() {
+    playSound(sfxClick);
+
     // Click while typing → skip to full text
     if (typing) {
         clearInterval(typeTimer);
+        sfxType.pause();
+        sfxType.currentTime = 0;
         typing = false;
         const textEl = document.getElementById('dlg-text');
         textEl.innerHTML = fullText.replace(/\n/g, '<br>');
@@ -479,13 +540,12 @@ function advanceStory() {
 }
 
 function playAgain() {
-    window.location.reload();
+    playSound(sfxClick);
+    setTimeout(() => {
+        window.location.reload();
+    }, 200); // Give the click sound a tiny moment to play before the reload cuts it off
 }
 
-// ─────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────
-loadStep(0);
 </script>
 </body>
 </html>
