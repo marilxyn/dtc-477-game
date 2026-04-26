@@ -1,3 +1,22 @@
+<!-- DEVELOPER: DALILA DRUGOVIC -->
+<!-- LOGIC STEPS:
+ 1.  Intro Model is shown with instructions and start button.
+ 2. When start button is clicked, the first scene is loaded with background, label, dialogue, and button (some have a character portrait).
+ 3. The game listens when player clicks "Next" to advance dialogue and move to the next scene.
+ 4. A progress visual aid is at the bottom and shows how many scenes are completed. The game listens when player picks "Next" and updates the progress.
+ 6. Once player reaches to the final scene, a static credits card is shown with a "Play Again" button.
+ 7. Clicking "Play Again" brings the player back to the intro screen.
+
+AI CHATS USED:
+- HTML5 GAME MENTOR: https://chatgpt.com/share/69ed9697-1c7c-83e8-9628-272cf4ac69cc
+- Backgrounds and Images: https://gemini.google.com/share/368a919f998b 
+- Some Code and Background Images for Outro: https://gemini.google.com/share/1392a6073abd 
+- For Background Images: https://chatgpt.com/share/69ed916c-fc6c-83e8-9e88-70c73d72c206 
+- Some Code: https://gemini.google.com/share/df6319c225fa
+-->
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,9 +25,7 @@
     <title>Outro: Ocean in View!</title>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
     <style>
-        /* ==============================
-           CHAPTER 5 / 6 / 7 BASE STYLES
-           ============================== */
+
         body {
             margin: 0;
             overflow: hidden;
@@ -21,14 +38,12 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            /* Default background, will be swapped via JS */
             background: url("img/bg_placeholder.png") no-repeat center center;
             background-size: cover;
             image-rendering: pixelated;
             transition: background-image 0.5s ease-in-out;
         }
 
-        /* ─── START SCREEN ─── */
         #introScreen {
             position: absolute;
             top: 0; left: 0;
@@ -42,7 +57,6 @@
             z-index: 100;
         }
 
-        /* ─── SCENE LABEL ─── */
         #scene-label {
             position: absolute;
             top: 20px;
@@ -57,12 +71,9 @@
             text-shadow: 2px 2px 0px black;
             z-index: 10;
             transition: opacity 0.3s;
-            display: none; /* Hidden until start */
+            display: none;
         }
 
-        /* ==============================
-           DIALOGUE BOX (Centered)
-           ============================== */
         #dialogueBox {
             position: absolute;
             top: 50%;
@@ -78,7 +89,7 @@
             font-size: 20px;
             z-index: 20;
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            display: none; /* Hidden until start */
+            display: none;
             flex-direction: column;
         }
 
@@ -124,7 +135,6 @@
             font-style: italic;
         }
 
-        /* ─── FOOTER & PIPS ─── */
         .dialogue-footer {
             display: flex;
             justify-content: space-between;
@@ -162,11 +172,9 @@
         button.main-btn:hover { background: orange; }
         button.main-btn:active { transform: scale(0.95); }
 
-        /* ==============================
-           JOURNAL OVERLAY
-           ============================== */
+        
         #journal-overlay {
-            display: none; /* Hidden by default */
+            display: none; 
             margin-top: 15px;
             background: rgba(244, 231, 195, 0.95);
             border: 4px solid #3e2723;
@@ -211,9 +219,7 @@
             font-weight: bold;
         }
 
-        /* ==============================
-           CREDITS / END SCREEN
-           ============================== */
+
         #credits-screen {
             position: absolute;
             top: 0; left: 0;
@@ -332,9 +338,7 @@
 </div>
 
 <script>
-// ─────────────────────────────────────────────
-// AUDIO SETUP 
-// ─────────────────────────────────────────────
+
 const sfxBGM = new Audio("sounds/music_outro.mp3");
 sfxBGM.loop = true;
 sfxBGM.volume = 0.4; 
@@ -348,9 +352,7 @@ function playSound(audioObj) {
     audioObj.play().catch(e => console.log("Audio play blocked:", e));
 }
 
-// ─────────────────────────────────────────────
-// STORY DATA
-// ─────────────────────────────────────────────
+
 const STORY = [
     {
         bg:      'url("img/outro_1.png")',
@@ -399,17 +401,12 @@ const STORY = [
     },
 ];
 
-// ─────────────────────────────────────────────
-// STATE
-// ─────────────────────────────────────────────
+
 let step      = 0;
 let typeTimer = null;
 let typing    = false;
 let fullText  = '';
 
-// ─────────────────────────────────────────────
-// START OUTRO (Unlocks Audio)
-// ─────────────────────────────────────────────
 function startOutro() {
     playSound(sfxClick);
     sfxBGM.play().catch(e => console.log("BGM Blocked:", e));
@@ -421,9 +418,7 @@ function startOutro() {
     loadStep(0);
 }
 
-// ─────────────────────────────────────────────
-// TYPEWRITER
-// ─────────────────────────────────────────────
+
 function typewrite(str, el) {
     clearInterval(typeTimer);
     el.innerHTML = '';
@@ -434,7 +429,6 @@ function typewrite(str, el) {
         const ch = str[i];
         el.innerHTML += (ch === '\n') ? '<br>' : ch;
         
-        // Play typing blip sound periodically
         if (i % 3 === 0) playSound(sfxType);
         
         i++;
@@ -447,16 +441,12 @@ function typewrite(str, el) {
     }, 25);
 }
 
-// ─────────────────────────────────────────────
-// LOAD STEP
-// ─────────────────────────────────────────────
+
 function loadStep(idx) {
     const s = STORY[idx];
 
-    // Background image
     document.getElementById('gameArea').style.backgroundImage = s.bg;
 
-    // Scene label
     const labelEl = document.getElementById('scene-label');
     if (s.label) {
         labelEl.textContent = s.label;
@@ -465,7 +455,6 @@ function loadStep(idx) {
         labelEl.style.opacity = 0;
     }
 
-    // Portrait Box Toggle
     const portraitImg = document.getElementById('portrait-img');
     if (s.img) {
         portraitImg.src = s.img;
@@ -474,30 +463,22 @@ function loadStep(idx) {
         portraitImg.style.display = 'none';
     }
     
-    // Speaker
     document.getElementById('speaker').textContent = s.speaker || '';
 
-    // Journal overlay
     document.getElementById('journal-overlay').style.display = s.showJournal ? 'block' : 'none';
 
-    // Text style
     const textEl = document.getElementById('dlg-text');
     textEl.className = s.isQuote ? 'is-quote' : '';
 
-    // Next button label
     document.getElementById('next-btn').textContent = s.nextLabel || 'NEXT ►';
 
-    // Pips
     buildPips(idx);
 
-    // Typewrite
     fullText = s.text;
     typewrite(s.text, textEl);
 }
 
-// ─────────────────────────────────────────────
-// PIPS
-// ─────────────────────────────────────────────
+
 function buildPips(current) {
     const container = document.getElementById('step-pips');
     container.innerHTML = '';
@@ -508,13 +489,10 @@ function buildPips(current) {
     });
 }
 
-// ─────────────────────────────────────────────
-// ADVANCE
-// ─────────────────────────────────────────────
+
 function advanceStory() {
     playSound(sfxClick);
 
-    // Click while typing → skip to full text
     if (typing) {
         clearInterval(typeTimer);
         sfxType.pause();
@@ -527,7 +505,6 @@ function advanceStory() {
 
     const s = STORY[step];
 
-    // Last scene → show static credits card
     if (s.isLast) {
         document.getElementById('dialogueBox').style.display = 'none';
         document.getElementById('scene-label').style.display = 'none';
@@ -543,7 +520,7 @@ function playAgain() {
     playSound(sfxClick);
     setTimeout(() => {
         window.location.reload();
-    }, 200); // Give the click sound a tiny moment to play before the reload cuts it off
+    }, 200);
 }
 
 </script>

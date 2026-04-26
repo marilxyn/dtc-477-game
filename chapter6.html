@@ -1,3 +1,25 @@
+
+<!-- DEVELOPER: DALILA DRUGOVIC -->
+<!-- LOGIC STEPS:
+ 1. Intro Model is shown with instructions and start button.
+ 2. Start button is clicked and game starts.
+ 3. Dialogue is displayed with the text and 4 choices. 
+    If player chooses a correct answer, trust increases by one point and feedback is shown. 
+    If player chooses a wrong answer, feedback is shown but trust does not increase.
+4. After feedback, the next dialogue is shown with a continue button.
+5. Steps 3-4 repeat until the end of the dialogue array.
+6. Once the rounds finish, the game checks the trust score. 
+    If it's 3 or higher, the player wins and sees the win screen. Players then press continue to move to chapter 7.
+    If it's below 3, the player sees the fail screen. Players must press try again to restart the chapter.
+
+AI CHATS USED:
+HTML5 GAME MENTOR: https://chatgpt.com/share/69ed9697-1c7c-83e8-9628-272cf4ac69cc 
+For code help: https://chatgpt.com/share/69ed916c-fc6c-83e8-9e88-70c73d72c206 
+Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0 
+-->
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,9 +28,6 @@
     <title>Chapter 6: Nez Perce Help</title>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
     <style>
-        /* ==============================
-           CHAPTER 5 / 6 / 7 BASE STYLES
-           ============================== */
         body {
             margin: 0;
             overflow: hidden;
@@ -63,7 +82,6 @@
             color: white;
         }
 
-        /* NEW: The ending box style (matches introBox) */
         .end-box {
             background: #111;
             border: 4px solid gold;
@@ -90,9 +108,6 @@
             background: orange;
         }
 
-        /* ==============================
-           TRUST BAR 
-           ============================== */
         #trustBarContainer {
             position: absolute;
             top: 35px;
@@ -129,9 +144,6 @@
         .goodFlash { background: lime !important; box-shadow: 0 0 14px lime !important; }
         .badFlash { background: red !important; box-shadow: 0 0 14px red !important; }
 
-        /* ==============================
-           DIALOGUE BOX (Centered)
-           ============================== */
         #dialogueBox {
             position: absolute;
             top: 50%;
@@ -186,7 +198,6 @@
             margin-bottom: 15px;
         }
 
-        /* Choice Buttons */
         #choices {
             display: flex;
             flex-direction: column;
@@ -239,7 +250,6 @@
         #feedback.correct { color: lime; }
         #feedback.wrong { color: red; }
 
-        /* End Screens Styling */
         #winScreen h1 { 
             color: gold; 
             font-size: 40px; 
@@ -324,9 +334,6 @@
     </div>
 
     <script>
-        // ==========================================
-        // AUDIO SETUP (Requires files in an 'audio' folder)
-        // ==========================================
         const sfxBGM = new Audio("sounds/music_ch.6.mp3");
         sfxBGM.loop = true;
         sfxBGM.volume = 0.4; 
@@ -382,7 +389,7 @@
                     { t: 'D) Offer tobacco and beads.', cor: true, pts: 1 }
                 ]
             },
-            { spk: 'CHIEF TWISTED HAIR', text: '...', cont: true } // Text gets swapped dynamically in the show() function
+            { spk: 'CHIEF TWISTED HAIR', text: '...', cont: true }
         ];
 
         let i = 0;
@@ -429,7 +436,6 @@
                 if (index >= text.length) {
                     clearInterval(typeInterval);
                     
-                    // Force the sound to stop playing immediately when typing ends
                     sfxType.pause();
                     sfxType.currentTime = 0;
 
@@ -443,8 +449,6 @@
 
             let d = DLGS[i];
             
-            // --- DYNAMIC FINAL DIALOGUE ---
-            // Checks if this is the very last array item
             if (i === DLGS.length - 1) {
                 if (trust >= 3) {
                     d.text = '"You have spoken well. We will guide you to the river."';

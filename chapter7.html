@@ -1,3 +1,23 @@
+<!-- DEVELOPER: DALILA DRUGOVIC -->
+<!-- LOGIC STEPS:
+ 1. Intro Model is shown with instructions and start button.
+ 2. Start button is clicked and game starts.
+ 3. When player clicks on a target, it checks if the click is within an expanded hitbox around the target.
+ 4. If a target is discovered, it updates the score and increases by 1.
+ 5. The game is paused and then shows the journal entry.
+ 6. Player can then close the journal using a button. 
+ 7. When clicking on the button, the game checks if the score is 5 (all targets found). 
+    If so, it shows the win screen with a message and button to continue to the outro. 
+    If not, it unpauses the game and allows the player to continue searching for remaining targets. Repeat steps 3-7 until all targets are found.
+
+AI CHATS USED:
+HTML5 GAME MENTOR: https://chatgpt.com/share/69ed9697-1c7c-83e8-9628-272cf4ac69cc
+Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0 
+Code Help: https://gemini.google.com/share/a6eae9d74b9e 
+-->
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,9 +29,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
 
     <style>
-        /* ==============================
-           CHAPTER 5 / 6 / 7 BASE STYLES
-           ============================== */
         body {
             margin: 0;
             overflow: hidden;
@@ -24,10 +41,9 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            background-color: #87CEEB; /* River Sky Background */
+            background-color: #87CEEB;
         }
 
-        /* Full Screen Canvas for Chapter 7 */
         canvas {
             width: 100%;
             height: 100%;
@@ -73,7 +89,6 @@
             color: white;
         }
 
-        /* NEW: The ending box style (matches introBox) */
         .end-box {
             background: #111;
             border: 4px solid gold;
@@ -100,7 +115,6 @@
             background: orange;
         }
 
-        /* Progress Bar modified for Species Found */
         #scoreBarContainer {
             position: absolute;
             top: 20px;
@@ -133,7 +147,6 @@
             text-shadow: 2px 2px 0px black;
         }
 
-        /* Journal Box replacing Chapter 5 Dialogue Box */
         #journalBox {
             position: absolute;
             top: 50%;
@@ -165,7 +178,6 @@
             margin-bottom: 20px;
         }
 
-        /* Real Life Image Styling */
         #journal-img {
             display: none;
             width: 100%;
@@ -256,9 +268,7 @@
     </div>
 
     <script>
-        // ==========================================
-        // AUDIO SETUP 
-        // ==========================================
+
         const sfxBGM = new Audio("sounds/music_ch.7.mp3"); 
         sfxBGM.loop = true;
         sfxBGM.volume = 0.4; 
@@ -271,9 +281,7 @@
             audioObj.play().catch(e => console.log("Audio play blocked by browser:", e));
         }
 
-        // ==============================
-        // UI & STATE ELEMENTS
-        // ==============================
+
         const introScreen = document.getElementById('introScreen');
         const startBtn = document.getElementById('startBtn');
         const scoreBarContainer = document.getElementById('scoreBarContainer');
@@ -291,9 +299,7 @@
         let score = 0;
         const maxScore = 5;
 
-        // ==============================
-        // CANVAS SETUP & ENGINE
-        // ==============================
+
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;
@@ -521,9 +527,6 @@
             requestAnimationFrame(loop);
         }
 
-        // ==============================
-        // LOGIC & EVENTS
-        // ==============================
         
         function updateScoreBar() {
             let percent = (score / maxScore) * 100;
@@ -549,13 +552,11 @@
             const clickX = (e.clientX - rect.left) * scaleX;
             const clickY = (e.clientY - rect.top) * scaleY;
 
-            // EXPANDED HITBOX: Add padding to make clicking easier
             const hitboxPadding = 30; 
 
             targets.forEach(t => {
                 let drawX = t.x - cameraX;
                 
-                // Calculate boundaries with padding
                 let leftBound = drawX - hitboxPadding;
                 let rightBound = drawX + t.spriteHidden.w + hitboxPadding;
                 let topBound = t.y - hitboxPadding;
