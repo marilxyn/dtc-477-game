@@ -9,283 +9,157 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #3d2b1a;
-            --bg-dark: #2a1c0f;
-            --paper: #efe0c1;
-            --paper-edge: #d7c19c;
-            --ink: #2d2017;
-            --hud-bg: rgba(247, 236, 210, 0.93);
-            --button: #8d5a35;
-            --button-text: #f8efdf;
-            --bank: #7a8f45;
-            --bank-dark: #5a6a32;
-            --bank-mid: #8ea050;
-            --river-dark: #3a5f6e;
-            --river-mid: #4d7a8a;
-            --river-light: #6598a8;
-            --river-bright: #7fb0bc;
-            --foam: rgba(210, 240, 245, 0.55);
-            --wood: #8a5a30;
-            --wood-dark: #5f3920;
-            --wood-light: #b07840;
-            --rock: #726660;
-            --rock-dark: #4e443e;
-            --rock-light: #9a8e84;
-            --rock-hi: #c8bfb5;
-            --dirt: #8c6840;
-            --dirt-dark: #6b4e2c;
-            --grass-hi: #afc060;
-            --sky: #5c7a9a;
-            --progress: #9f5538;
-            --water-dark: #2e4f5e;
-        }
-
-        * {
-            box-sizing: border-box
-        }
-
-        html,
         body {
+            background-color: #623529;
             margin: 0;
-            width: 100%;
-            height: 100%;
             overflow: hidden;
-            background: var(--bg)
-        }
-
-        body {
-            color: var(--ink);
-            image-rendering: pixelated
         }
 
         h1,
         h2,
-        h3,
         button,
-        .stat-label,
-        .stat-value {
-            font-family: "Pixelify Sans", sans-serif;
-            letter-spacing: 0.5px
+        a {
+            font-family: 'Pixelify Sans', sans-serif;
         }
 
-        p,
-        li {
-            font-family: Arial, sans-serif
+        p {
+            font-family: Arial, sans-serif;
         }
 
-        main {
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(to bottom, var(--bg) 0%, var(--bg-dark) 100%)
-        }
-
-        canvas {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-            image-rendering: pixelated;
-            background: transparent
-        }
-
-        .hud {
+        #startOverlay,
+        #infoOverlay,
+        #crashOverlay,
+        #finishOverlay {
             position: fixed;
-            top: 16px;
-            left: 16px;
-            z-index: 5;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            max-width: calc(100vw - 32px)
-        }
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
 
-        .stat {
-            min-width: 120px;
-            padding: 11px 13px;
-            border: 3px solid rgba(45, 32, 23, 0.8);
-            border-radius: 10px;
-            background: var(--hud-bg);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22)
-        }
-
-        .stat-label {
-            display: block;
-            font-size: 0.9rem;
-            line-height: 1;
-            text-transform: uppercase;
-            margin-bottom: 8px
-        }
-
-        .stat-value {
-            font-size: 1.45rem;
-            line-height: 1;
-            font-weight: 700
-        }
-
-        .overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 20;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            background-color: rgba(22, 12, 8, 0.55)
+
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
         }
 
-        .overlay.hidden {
-            display: none
+        #finishOverlay {
+            z-index: 1002;
         }
 
-        .modal {
-            width: min(92vw, 420px);
-            min-height: 360px;
-            padding: 30px 28px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 20px;
-            background-color: var(--paper);
-            border: 3px solid var(--paper-edge);
-            border-radius: 12px;
+        .hidden {
+            display: none !important;
+        }
+
+        .modal-content {
+            background: rgba(0, 0, 0, 0.88);
+            padding: 30px;
+            border: 3px solid gold;
+            border-radius: 16px;
+            width: 85%;
+            max-width: 520px;
             text-align: center;
-            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.3)
+            color: white;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
         }
 
-        .modal-copy {
-            display: flex;
-            flex-direction: column;
-            gap: 16px
+        .modal-content h2 {
+            color: gold;
+            font-size: 32px;
+            margin-top: 0;
+            margin-bottom: 18px;
+            text-shadow: 3px 3px 0px #5c4033;
         }
 
-        h1,
-        h2 {
-            margin: 0;
-            font-size: clamp(2rem, 3.8vw, 2.9rem);
-            line-height: 1
+        .modal-content p {
+            color: #f4e7c3;
+            font-size: 17px;
+            line-height: 1.6;
+            margin-bottom: 16px;
         }
 
-        h3 {
-            margin: 0;
-            font-size: clamp(1.2rem, 2vw, 1.45rem);
-            text-transform: uppercase
-        }
-
-        p,
-        li {
-            margin: 0;
-            font-size: clamp(1rem, 1.55vw, 1.08rem);
-            line-height: 1.45
-        }
-
-        ul {
-            margin: 0;
-            padding-left: 1.2rem;
-            text-align: left;
-            display: grid;
-            gap: 8px
-        }
-
-        .button-row {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            margin-top: auto;
-            padding-top: 8px
-        }
-
-        button {
+        .modal-content button {
+            margin-top: 12px;
+            padding: 12px 25px;
+            font-size: 16px;
+            background: gold;
             border: none;
-            border-radius: 10px;
-            background: var(--button);
-            color: var(--button-text);
-            font-size: 1.18rem;
-            font-weight: 700;
-            padding: 14px 22px;
+            border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18)
+            font-weight: bold;
+            color: black;
+            transition: background 0.2s, transform 0.1s;
         }
 
-        button:hover,
-        button:focus-visible {
-            filter: brightness(1.08)
+        .modal-content button:hover {
+            background: orange;
         }
 
-        @media(max-width:700px) {
-            .hud {
-                gap: 8px
-            }
+        .modal-content button:active {
+            transform: scale(0.95);
+        }
 
-            .stat {
-                min-width: 100px;
-                padding: 8px 10px
-            }
-
-            .modal {
-                width: min(94vw, 420px);
-                padding: 26px 22px
-            }
+        /* HUD */
+        #hud {
+            position: fixed;
+            top: 12px;
+            right: 16px;
+            z-index: 500;
+            color: #f4e7c3;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-size: 15px;
+            text-shadow: 1px 1px 3px #000;
+            text-align: right;
+            pointer-events: none;
         }
     </style>
 </head>
 
 <body>
-    <main>
-        <section class="hud" aria-label="Heads up display">
-            <div class="stat"><span class="stat-label">Distance</span>
-                <div class="stat-value"><span id="distanceValue">0</span>%</div>
-            </div>
-            <div class="stat"><span class="stat-label">Restarts</span>
-                <div class="stat-value" id="restartValue">0</div>
-            </div>
-            <div class="stat"><span class="stat-label">Status</span>
-                <div class="stat-value" id="statusValue">Ready</div>
-            </div>
-        </section>
-        <canvas id="game" width="1280" height="720" aria-describedby="gameInstructions"></canvas>
-        <div class="overlay" id="startOverlay">
-            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="introTitle">
-                <div class="modal-copy">
-                    <h1 id="introTitle">Up the Missouri River</h1>
-                    <p id="gameInstructions">Guide the boat upstream through the Missouri River. Dodge floating logs and rocks to reach your destination safely.</p>
-                    <div>
-                        <h3>How to Play</h3>
-                        <ul>
-                            <li>Use the left and right arrow keys to steer the boat.</li>
-                            <li>Avoid rocks and logs as they move down the river toward you.</li>
-                            <li>Each round is different — obstacles appear randomly.</li>
-                            <li>Reach the end of the river to complete the minigame.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="button-row"><button id="startButton" type="button">Start Game</button></div>
-            </div>
+    <canvas id="game"></canvas>
+
+    <!-- HUD -->
+    <div id="hud">
+        <div>Progress: <span id="distanceValue">0</span>%</div>
+        <div>Crashes: <span id="restartValue">0</span></div>
+        <div>Status: <span id="statusValue">Ready</span></div>
+    </div>
+
+    <!-- Start overlay -->
+    <div id="startOverlay">
+        <div class="modal-content">
+            <h2>Continue the Journey</h2>
+            <p>
+                The expedition has begun. New challenges lie ahead as you travel deeper
+                into the unknown.<br><br>
+                Use <strong>← →</strong> arrow keys to steer the boat and avoid rocks and logs!
+            </p>
+            <button id="startButton">START</button>
         </div>
-        <div class="overlay hidden" id="crashOverlay">
-            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="crashTitle">
-                <div class="modal-copy">
-                    <h2 id="crashTitle">Oh no!</h2>
-                    <p>Lewis and Clark had to repair the boat. Try again!</p>
-                </div>
-                <div class="button-row"><button id="tryAgainButton" type="button">Try Again</button></div>
-            </div>
+    </div>
+
+    <!-- Crash overlay -->
+    <div id="crashOverlay" class="hidden">
+        <div class="modal-content">
+            <h2>You Hit Something!</h2>
+            <p>The boat struck an obstacle. Try again!</p>
+            <button id="tryAgainButton">TRY AGAIN</button>
         </div>
-        <div class="overlay hidden" id="finishOverlay">
-            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="finishTitle">
-                <div class="modal-copy">
-                    <h2 id="finishTitle">Congratulations!</h2>
-                    <p>You have successfully sailed up the Missouri River.</p>
-                    <div>
-                        <h3>Great Work</h3>
-                        <p>River travel was one of the most important parts of the expedition. Steering carefully helped the crew protect their supplies and continue west.</p>
-                    </div>
-                </div>
-                <div class="button-row"><button id="nextMinigameButton" type="button">Continue to Next Minigame</button></div>
-            </div>
+    </div>
+
+    <!-- Finish overlay -->
+    <div id="finishOverlay" class="hidden">
+        <div class="modal-content">
+            <h2>Well Done!</h2>
+            <p>
+                You successfully completed this part of the journey.
+                The Corps of Discovery presses onward.
+            </p>
+            <button id="nextMinigameButton">CONTINUE ►</button>
         </div>
-    </main>
+    </div>
+
     <script>
         const canvas = document.getElementById('game');
         const ctx = canvas.getContext('2d');
@@ -302,7 +176,6 @@
 
         const keys = { left: false, right: false };
 
-        /* ── COLORS ─────────────────────────────────────────────────────────── */
         const C = {
             skyFar: '#3a5c7a', skyMid: '#4a6e8c', skyNear: '#5a7e9c',
             hillFar: '#2a4020', hillMid: '#364e28', hillNear: '#455f30',
@@ -326,7 +199,6 @@
             splashA: 'rgba(150,210,230,0.9)', splashB: 'rgba(220,245,255,0.8)',
         };
 
-        /* ── WORLD STATE ─────────────────────────────────────────────────────── */
         const world = {
             width: 1280, height: 720,
             riverLeft: 180, riverRight: 1100,
@@ -348,7 +220,6 @@
             wakePoints: [],
         };
 
-        /* ── RESIZE ──────────────────────────────────────────────────────────── */
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -363,8 +234,6 @@
         function buildBgDecor() {
             world.bgTrees = [];
             world.bgRocks = [];
-            const rw = world.riverRight - world.riverLeft;
-            // trees on both banks, positioned in canvas coords but in bank zones
             for (let i = 0; i < 60; i++) {
                 const side = i % 2;
                 const bx = side === 0
@@ -375,13 +244,12 @@
                     y: Math.random() * canvas.height,
                     h: 28 + Math.random() * 36,
                     w: 14 + Math.random() * 18,
-                    layer: Math.random() < 0.4 ? 0 : 1, // 0=far, 1=near
+                    layer: Math.random() < 0.4 ? 0 : 1,
                     variant: Math.floor(Math.random() * 3),
                 });
             }
         }
 
-        /* ── UTILITY ─────────────────────────────────────────────────────────── */
         function rnd(mn, mx) { return Math.random() * (mx - mn) + mn; }
         function clamp(v, mn, mx) { return Math.max(mn, Math.min(mx, v)); }
         function resetBoat() {
@@ -391,7 +259,6 @@
             boat.wakePoints = [];
         }
 
-        /* ── HAZARDS ─────────────────────────────────────────────────────────── */
         function spawnHazardAtNextSlot() {
             const type = Math.random() < 0.5 ? 'rock' : 'log';
             const width = type === 'rock' ? rnd(88, 140) : rnd(170, 250);
@@ -413,7 +280,6 @@
             while (world.hazards.length < world.minHazards) spawnHazardAtNextSlot();
         }
 
-        /* ── FOAM PARTICLES ──────────────────────────────────────────────────── */
         function makeFoam() {
             return {
                 x: rnd(world.riverLeft + 12, world.riverRight - 12),
@@ -424,7 +290,6 @@
             };
         }
 
-        /* ── SPLASH PARTICLES ────────────────────────────────────────────────── */
         function spawnSplash(x, y) {
             for (let i = 0; i < 28; i++) {
                 const ang = rnd(0, Math.PI * 2);
@@ -440,7 +305,6 @@
             }
         }
 
-        /* ── RESET ───────────────────────────────────────────────────────────── */
         function seedInitialObjects() {
             world.particles = [];
             for (let i = 0; i < 48; i++) world.particles.push(makeFoam());
@@ -459,7 +323,6 @@
             updateHud();
         }
 
-        /* ── HUD ─────────────────────────────────────────────────────────────── */
         function updateHud() {
             distanceValue.textContent = clamp(Math.floor(world.distance / world.maxDistance * 100), 0, 100);
             restartValue.textContent = world.restartCount;
@@ -467,7 +330,6 @@
             statusValue.textContent = map[world.state] || '';
         }
 
-        /* ── INPUT / PHYSICS ─────────────────────────────────────────────────── */
         function handleInput() {
             if (keys.left) boat.speedX -= boat.accel;
             if (keys.right) boat.speedX += boat.accel;
@@ -478,13 +340,11 @@
             boat.y = canvas.height - 120;
             if (Math.abs(boat.speedX) > 0.3) {
                 boat.paddleAnim += 0.18;
-                // wake trail
                 boat.wakePoints.unshift({ x: boat.x, y: boat.y + 40, age: 0 });
             }
             boat.wakePoints = boat.wakePoints.filter(p => { p.age += 1; return p.age < 18; });
         }
 
-        /* ── COLLISION ───────────────────────────────────────────────────────── */
         function detectCollisions() {
             const hx = boat.x - (boat.width * boat.hitboxScale) / 2;
             const hy = boat.y - (boat.height * boat.hitboxScale) / 2;
@@ -505,7 +365,6 @@
             updateHud();
         }
 
-        /* ── UPDATE ──────────────────────────────────────────────────────────── */
         function updateGame() {
             handleInput();
             world.time++;
@@ -516,7 +375,6 @@
             }
             if (world.crashFlash > 0) world.crashFlash--;
 
-            // foam
             for (const p of world.particles) {
                 p.y += p.spd + world.scrollSpeed * 0.5;
                 if (p.y > canvas.height + 8) {
@@ -524,7 +382,6 @@
                 }
             }
 
-            // hazards
             for (const h of world.hazards) {
                 h.y += world.scrollSpeed;
                 h.x += h.drift;
@@ -535,11 +392,9 @@
             world.hazards = world.hazards.filter(h => h.y <= canvas.height + 120);
             ensureHazards();
 
-            // splash particles
             for (const s of world.splashParticles) { s.x += s.vx; s.y += s.vy; s.vy += 0.28; s.life -= s.decay; }
             world.splashParticles = world.splashParticles.filter(s => s.life > 0);
 
-            // scroll bg trees
             for (const t of world.bgTrees) {
                 const spd = t.layer === 0 ? world.scrollSpeed * 0.25 : world.scrollSpeed * 0.55;
                 t.y += spd;
@@ -556,27 +411,17 @@
             updateHud();
         }
 
-        /* ══════════════════════════════════════════════════════════════════════
-           DRAWING
-        ══════════════════════════════════════════════════════════════════════ */
-        function px(x) { return Math.round(x); }
-        function py(y) { return Math.round(y); }
-
         function fillRect(x, y, w, h, col) {
-            ctx.fillStyle = col; ctx.fillRect(px(x), py(y), Math.round(w), Math.round(h));
+            ctx.fillStyle = col; ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
         }
 
-        /* ── SKY / DISTANT HILLS ─────────────────────────────────────────────── */
         function drawSkyAndHills() {
-            // Sky gradient via layered rects
             const H = canvas.height;
             const W = canvas.width;
             fillRect(0, 0, W, H * 0.38, C.skyFar);
             fillRect(0, H * 0.22, W, H * 0.16, C.skyMid);
             fillRect(0, H * 0.34, W, H * 0.06, C.skyNear);
 
-            // Distant hills (far-left and far-right beyond bank)
-            const t = world.time;
             drawHillLayer(0, H * 0.08, world.riverLeft + 40, H * 0.32, C.hillFar, 0.004, 0);
             drawHillLayer(world.riverRight - 40, H * 0.08, W, H * 0.32, C.hillFar, 0.004, 0);
             drawHillLayer(0, H * 0.16, world.riverLeft + 20, H * 0.32, C.hillMid, 0.006, 100);
@@ -586,47 +431,37 @@
         function drawHillLayer(x0, y0, x1, yBase, col, freq, off) {
             ctx.fillStyle = col;
             ctx.beginPath();
-            ctx.moveTo(px(x0), px(yBase));
+            ctx.moveTo(Math.round(x0), Math.round(yBase));
             for (let x = x0; x <= x1; x += 3) {
                 const vy = y0 + Math.sin((x + off) * freq + world.distance * 0.001) * 18 + Math.sin((x + off) * freq * 2.3) * 9;
-                if (x === x0) ctx.lineTo(px(x), px(vy));
-                else ctx.lineTo(px(x), px(vy));
+                ctx.lineTo(Math.round(x), Math.round(vy));
             }
-            ctx.lineTo(px(x1), px(yBase));
+            ctx.lineTo(Math.round(x1), Math.round(yBase));
             ctx.closePath(); ctx.fill();
         }
 
-        /* ── RIVER BANKS ─────────────────────────────────────────────────────── */
         function drawBanks() {
             const H = canvas.height; const W = canvas.width;
             const rl = world.riverLeft; const rr = world.riverRight;
 
-            // left bank layers
             fillRect(0, 0, rl + 4, H, C.bankDark);
             fillRect(0, 0, rl, H, C.bankMid);
-            // dirt edge at river
             fillRect(rl - 12, 0, 18, H, C.dirtMid);
             fillRect(rl - 6, 0, 10, H, C.dirtLight);
-            // grass highlight strip
             fillRect(rl - 20, 0, 10, H, C.bankLight);
-            // right bank
             fillRect(rr - 4, 0, W - rr + 4, H, C.bankDark);
             fillRect(rr, 0, W - rr, H, C.bankMid);
             fillRect(rr - 6, 0, 18, H, C.dirtMid);
             fillRect(rr - 4, 0, 10, H, C.dirtLight);
             fillRect(rr + 12, 0, 10, H, C.bankLight);
 
-            // bank edge shadow lines
             fillRect(rl - 2, 0, 3, H, C.edgeDark);
             fillRect(rr - 1, 0, 3, H, C.edgeDark);
         }
 
-        /* ── BANK VEGETATION ─────────────────────────────────────────────────── */
         function drawBankDecor() {
             const rl = world.riverLeft; const rr = world.riverRight;
-            const t = world.time;
 
-            // grass tufts scrolled
             const grassSeed = 12345;
             for (let i = 0; i < 30; i++) {
                 const seed = (i * 1234 + grassSeed) % 9999;
@@ -635,16 +470,14 @@
                     ? (seed % 1000) * 0.001 * (rl - 32) + 6
                     : rr + 8 + (seed % 1000) * 0.001 * (canvas.width - rr - 32);
                 const by = ((seed * 17) % 1000) * 0.001 * canvas.height;
-                const yd = (by + world.distance * 0.6 * (side === 0 ? 1 : 1)) % canvas.height;
+                const yd = (by + world.distance * 0.6) % canvas.height;
                 drawGrassTuft(bx, yd, 6 + seed % 8, side === 0);
             }
 
-            // trees
             for (const tr of world.bgTrees) {
                 drawPixelTree(tr.x, tr.y, tr.w, tr.h, tr.layer, tr.variant);
             }
 
-            // rocks on bank
             for (let i = 0; i < 14; i++) {
                 const seed = (i * 777 + 333) % 9999;
                 const side = i % 2;
@@ -676,16 +509,13 @@
             const ccol = layer === 0 ? '#283616' : '#344820';
             const chcol = layer === 0 ? '#364222' : '#4a5e30';
 
-            // trunk
             fillRect(x - trunkW / 2, y - trunkH, trunkW, trunkH, tcol);
 
             if (variant === 0) {
-                // round canopy
                 fillRect(x - canopyW / 2, y - h, canopyW, canopyH, ccol);
                 fillRect(x - canopyW / 2 + 3, y - h, canopyW - 6, canopyH - 6, chcol);
                 fillRect(x - canopyW / 2 + canopyW * 0.1, y - h + 2, canopyW * 0.5, 5, layer === 0 ? '#3e5428' : '#526838');
             } else if (variant === 1) {
-                // pointy pine
                 const levels = 3;
                 for (let l = 0; l < levels; l++) {
                     const lw = canopyW * (0.5 + l * 0.25);
@@ -693,56 +523,46 @@
                     fillRect(x - lw / 2, ly, lw, canopyH / levels + 4, l === 0 ? chcol : ccol);
                 }
             } else {
-                // wide flat
                 fillRect(x - canopyW * 0.6, y - h * 0.7, canopyW * 1.2, canopyH * 0.55, ccol);
                 fillRect(x - canopyW * 0.4, y - h * 0.82, canopyW * 0.8, canopyH * 0.4, chcol);
             }
         }
 
-        /* ── RIVER WATER ─────────────────────────────────────────────────────── */
         function drawRiver() {
             const rl = world.riverLeft; const rr = world.riverRight;
             const rw = rr - rl; const H = canvas.height;
             const t = world.time; const dist = world.distance;
 
-            // Base water layers
             fillRect(rl, 0, rw, H, C.waterDeep);
-            // mid tone strip
             fillRect(rl + rw * 0.15, 0, rw * 0.7, H, '#3a6070');
-            // lighter center
             fillRect(rl + rw * 0.28, 0, rw * 0.44, H, C.waterSurf);
-            // bright center highlight
             fillRect(rl + rw * 0.38, 0, rw * 0.24, H, C.waterSheen);
 
-            // Horizontal water shimmer lines scrolling down
             for (let y = 0; y < H; y += 18) {
                 const yy = (y + dist * 0.9) % H;
                 const wobL = Math.sin((yy + t * 0.5) * 0.04) * 22;
                 const wobR = Math.sin((yy + t * 0.5) * 0.04 + 1.8) * 18;
                 const alpha = 0.12 + 0.08 * Math.sin(yy * 0.07 + t * 0.03);
                 ctx.fillStyle = `rgba(160,220,235,${alpha})`;
-                ctx.fillRect(px(rl + 30 + wobL), py(yy), px(rw * 0.25), 3);
+                ctx.fillRect(Math.round(rl + 30 + wobL), Math.round(yy), Math.round(rw * 0.25), 3);
                 ctx.fillStyle = `rgba(160,220,235,${alpha * 0.7})`;
-                ctx.fillRect(px(rl + rw * 0.55 + wobR), py(yy + 6), px(rw * 0.2), 2);
+                ctx.fillRect(Math.round(rl + rw * 0.55 + wobR), Math.round(yy + 6), Math.round(rw * 0.2), 2);
             }
 
-            // Deep shadow near banks
             for (let i = 0; i < 18; i++) {
                 const alpha = (1 - i / 18) * 0.45;
                 ctx.fillStyle = `rgba(20,40,55,${alpha})`;
-                ctx.fillRect(px(rl + i * 1.2), 0, 2, H);
-                ctx.fillRect(px(rr - i * 1.2 - 2), 0, 2, H);
+                ctx.fillRect(Math.round(rl + i * 1.2), 0, 2, H);
+                ctx.fillRect(Math.round(rr - i * 1.2 - 2), 0, 2, H);
             }
 
-            // Foam particles
             for (const p of world.particles) {
                 ctx.globalAlpha = p.alpha * 0.8;
                 ctx.fillStyle = C.foamWhite;
-                ctx.fillRect(px(p.x), py(p.y), px(p.sz), 2);
+                ctx.fillRect(Math.round(p.x), Math.round(p.y), Math.round(p.sz), 2);
             }
             ctx.globalAlpha = 1;
 
-            // Circular ripple rings
             for (let i = 0; i < 8; i++) {
                 const seed = (i * 3137) % 1000;
                 const rx = rl + rw * 0.1 + seed * 0.001 * (rw * 0.8);
@@ -753,12 +573,11 @@
                 ctx.strokeStyle = `rgba(180,230,240,${0.12 + 0.08 * Math.cos(phase)})`;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.ellipse(px(rx), py(ry), rad, Math.round(rad * 0.35), 0, 0, Math.PI * 2);
+                ctx.ellipse(Math.round(rx), Math.round(ry), rad, Math.round(rad * 0.35), 0, 0, Math.PI * 2);
                 ctx.stroke();
             }
         }
 
-        /* ── HAZARDS ─────────────────────────────────────────────────────────── */
         function drawHazards() {
             for (const h of world.hazards) {
                 if (h.type === 'rock') drawRock(h);
@@ -771,26 +590,19 @@
             const bob = Math.sin(world.time * 0.04 + bobPhase) * 2.5;
             const yy = y + bob;
 
-            // underwater shadow
             ctx.globalAlpha = 0.35;
             fillRect(x + 6, yy + ht - 4, w - 8, 10, C.waterDeep);
             ctx.globalAlpha = 1;
 
-            // base shadow
             fillRect(x + 8, yy + ht - 8, w - 10, 14, C.rockShadow);
-            // main rock body (irregular shape via 3 rects)
             fillRect(x + 14, yy, w - 24, ht, C.rockDark);
             fillRect(x + 4, yy + 8, w - 8, ht - 10, C.rockMid);
             fillRect(x + 2, yy + ht * 0.35, w - 4, ht * 0.45, C.rockLight);
-            // top face
             fillRect(x + 16, yy + 2, w - 32, ht * 0.4, C.rockLight);
-            // highlight ridge
             fillRect(x + 22, yy + 4, w - 44, 5, C.rockHi);
             fillRect(x + 28, yy + 2, Math.max(4, w - 60), 3, C.rockGlow);
-            // crack detail
             fillRect(x + w * 0.4, yy + 12, 3, ht * 0.4, C.rockDark);
             fillRect(x + w * 0.4 + 2, yy + 18, 3, ht * 0.25, C.rockShadow);
-            // wet edge shimmer
             ctx.globalAlpha = 0.5;
             fillRect(x + 2, yy + ht - 6, w - 4, 4, C.waterSheen);
             ctx.globalAlpha = 1;
@@ -803,43 +615,34 @@
             const cx = x + w / 2, cy = yy + ht / 2;
 
             ctx.save();
-            ctx.translate(px(cx), py(cy));
+            ctx.translate(Math.round(cx), Math.round(cy));
             ctx.rotate(angle);
             const ox = Math.round(-w / 2), oy = Math.round(-ht / 2);
 
-            // water shadow beneath
             ctx.globalAlpha = 0.3;
             fillRect(ox + 4, oy + ht - 2, w - 4, 8, C.waterDeep);
             ctx.globalAlpha = 1;
 
-            // log end caps
             fillRect(ox - 8, oy + 3, 10, ht - 6, C.logMid);
             fillRect(ox - 6, oy + 5, 6, ht - 10, C.logLight);
             fillRect(ox + w - 2, oy + 3, 10, ht - 6, C.logMid);
             fillRect(ox + w, oy + 5, 6, ht - 10, C.logLight);
 
-            // main body
             fillRect(ox, oy, w, ht, C.logDark);
             fillRect(ox + 2, oy + 3, w - 4, ht - 6, C.logMid);
-            // top surface lighter
             fillRect(ox + 2, oy + 3, w - 4, Math.round(ht * 0.38), C.logLight);
-            // top highlight
             fillRect(ox + 4, oy + 4, w - 8, 5, '#b07838');
             fillRect(ox + 8, oy + 3, w - 16, 3, '#c08848');
-            // bark grain lines
             for (let gx = ox + 20; gx < ox + w - 20; gx += 16) {
                 fillRect(gx, oy + 4, 2, ht - 8, C.logGrain);
             }
-            // knot detail
             const kx = ox + Math.round(w * 0.35);
             fillRect(kx, oy + Math.round(ht * 0.3), 9, 9, C.logDark);
             fillRect(kx + 2, oy + Math.round(ht * 0.3) + 2, 5, 5, C.logMid);
-            // moss patches
             ctx.globalAlpha = 0.55;
             fillRect(ox + 10, oy + 3, 18, 5, '#5a7830');
             fillRect(ox + w - 28, oy + 3, 14, 4, '#4e6828');
             ctx.globalAlpha = 1;
-            // water shimmer on log
             ctx.globalAlpha = 0.4;
             fillRect(ox + 2, oy + ht - 5, w - 4, 4, C.waterBright);
             ctx.globalAlpha = 1;
@@ -847,9 +650,8 @@
             ctx.restore();
         }
 
-        /* ── BOAT ────────────────────────────────────────────────────────────── */
         function drawBoat() {
-            const x = px(boat.x), y = py(boat.y);
+            const x = Math.round(boat.x), y = Math.round(boat.y);
             const t = world.time;
             const bob = Math.sin(t * 0.07) * 2.2;
             const tilt = boat.speedX * 0.025;
@@ -859,7 +661,6 @@
             ctx.translate(x, py_);
             ctx.rotate(tilt);
 
-            // === WAKE TRAIL ===
             ctx.restore();
             for (let i = 0; i < boat.wakePoints.length; i++) {
                 const wp = boat.wakePoints[i];
@@ -868,63 +669,45 @@
                 const spread = 4 + i * 2.5;
                 ctx.globalAlpha = alpha;
                 ctx.fillStyle = C.foamWhite;
-                ctx.fillRect(px(wp.x - spread), py(wp.y + i * 1.5), px(spread * 2), 3);
+                ctx.fillRect(Math.round(wp.x - spread), Math.round(wp.y + i * 1.5), Math.round(spread * 2), 3);
             }
             ctx.globalAlpha = 1;
             ctx.save();
             ctx.translate(x, py_);
             ctx.rotate(tilt);
 
-            // === BOAT SHADOW ===
             ctx.globalAlpha = 0.28;
             fillRect(-28, 44, 56, 16, C.waterDeep);
             ctx.globalAlpha = 1;
 
-            // === HULL ===
-            // outer hull (dark wood)
             fillRect(-32, -20, 64, 68, C.woodHull);
-            // inner hull sides
             fillRect(-28, -14, 56, 58, C.woodDark);
-            // hull planks
             for (let py2 = -14; py2 < 44; py2 += 10) {
                 fillRect(-26, py2, 52, 8, C.woodMid);
             }
-            // hull highlight (port side)
             fillRect(-28, -14, 4, 58, C.woodLight);
-            // hull top edge
             fillRect(-32, -22, 64, 6, C.woodLight);
-            // bow (pointed front)
             fillRect(-14, -42, 28, 24, C.woodHull);
             fillRect(-10, -48, 20, 8, C.woodDark);
             fillRect(-6, -52, 12, 8, C.woodMid);
             fillRect(-3, -56, 6, 6, C.woodLight);
-            // bow detail stripe
             fillRect(-14, -42, 28, 4, C.woodLight);
 
-            // === INTERIOR ===
             fillRect(-22, -8, 44, 48, '#2a1a0a');
-            // floor boards
             fillRect(-20, -4, 40, 8, '#3a2810');
             fillRect(-20, 10, 40, 8, '#3a2810');
             fillRect(-20, 24, 40, 8, '#3a2810');
             fillRect(-20, 38, 40, 6, '#3a2810');
 
-            // === BENCH / THWART ===
             fillRect(-18, 4, 36, 8, '#a07848');
             fillRect(-16, 3, 32, 3, '#c09858');
 
-            // === ROWER FIGURE ===
-            // body
             fillRect(-8, -18, 16, 22, C.personCloth);
-            // head
             fillRect(-6, -32, 12, 14, C.personSkin);
-            // hat
             fillRect(-8, -38, 16, 6, C.personHat);
             fillRect(-10, -40, 20, 4, C.personHat);
-            // face detail
             fillRect(-3, -28, 2, 2, '#7a5030');
 
-            // === PADDLES / OARS ===
             const paddleAngle = Math.sin(t * 0.2) * 0.55;
             if (keys.left || keys.right || Math.abs(boat.speedX) > 0.1) {
                 drawOar(22, 8, paddleAngle, 1);
@@ -934,13 +717,10 @@
                 drawOar(-22, 8, -0.2, -1);
             }
 
-            // === CARGO ===
-            // supply crate
             fillRect(-18, 28, 16, 16, '#7a5c30');
             fillRect(-17, 29, 14, 14, '#8a6c40');
             fillRect(-17, 29, 14, 5, '#9a7c50');
             fillRect(-11, 29, 2, 14, '#6a4c20');
-            // barrel
             fillRect(6, 28, 14, 16, '#6a4818');
             fillRect(7, 29, 12, 14, '#7a5828');
             fillRect(5, 32, 16, 3, '#4a3010');
@@ -953,56 +733,47 @@
             ctx.save();
             ctx.translate(ox, oy);
             ctx.rotate(angle);
-            // handle
             fillRect(-2, -2, 4, 28, C.woodMid);
             fillRect(-2, -2, 2, 28, C.woodLight);
-            // blade
             fillRect(-5 * side, 26, 12, 10, '#d8c898');
             fillRect(-3 * side, 27, 8, 7, '#e8d8a8');
             ctx.restore();
         }
 
-        /* ── SPLASH PARTICLES ────────────────────────────────────────────────── */
         function drawSplash() {
             for (const s of world.splashParticles) {
                 ctx.globalAlpha = s.life;
                 ctx.fillStyle = s.col;
-                ctx.fillRect(px(s.x - s.sz / 2), py(s.y - s.sz / 2), Math.round(s.sz), Math.round(s.sz));
+                ctx.fillRect(Math.round(s.x - s.sz / 2), Math.round(s.y - s.sz / 2), Math.round(s.sz), Math.round(s.sz));
             }
             ctx.globalAlpha = 1;
         }
 
-        /* ── FOREGROUND / OVERLAY ────────────────────────────────────────────── */
         function drawForeground() {
             const rl = world.riverLeft; const rr = world.riverRight;
             const H = canvas.height; const W = canvas.width;
 
-            // bank overlap shadow into river
             for (let i = 0; i < 8; i++) {
                 const a = (1 - i / 8) * 0.3;
                 ctx.fillStyle = `rgba(10,20,10,${a})`;
-                ctx.fillRect(px(rl + i * 2), 0, 3, H);
-                ctx.fillRect(px(rr - i * 2 - 2), 0, 3, H);
+                ctx.fillRect(Math.round(rl + i * 2), 0, 3, H);
+                ctx.fillRect(Math.round(rr - i * 2 - 2), 0, 3, H);
             }
 
-            // Progress bar
             const pbX = 20, pbY = H - 40, pbW = Math.min(260, W - 40), pbH = 22;
             fillRect(pbX - 2, pbY - 2, pbW + 4, pbH + 4, '#2a1a0a');
             fillRect(pbX, pbY, pbW, pbH, '#f3e7c0');
             const prog = (world.distance / world.maxDistance);
             fillRect(pbX + 3, pbY + 3, Math.max(0, (pbW - 6) * prog), pbH - 6, '#9f5538');
-            // progress bar boat icon
             const bpx = pbX + 3 + (pbW - 6) * prog;
             fillRect(bpx - 3, pbY + 1, 6, pbH - 2, '#c07848');
             ctx.strokeStyle = '#2a1a0a'; ctx.lineWidth = 2;
-            ctx.strokeRect(px(pbX), py(pbY), px(pbW), py(pbH));
+            ctx.strokeRect(Math.round(pbX), Math.round(pbY), Math.round(pbW), Math.round(pbH));
 
-            // Distance label above progress bar
             ctx.fillStyle = '#2a1a0a';
             ctx.font = 'bold 13px "Pixelify Sans", sans-serif';
             ctx.fillText('DISTANCE', pbX, pbY - 6);
 
-            // crash flash
             if (world.crashFlash > 0) {
                 ctx.fillStyle = `rgba(255,80,20,${world.crashFlash / 36})`;
                 ctx.fillRect(0, 0, W, H);
@@ -1011,7 +782,6 @@
             }
         }
 
-        /* ── MAIN DRAW ───────────────────────────────────────────────────────── */
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawSkyAndHills();
@@ -1024,14 +794,12 @@
             drawForeground();
         }
 
-        /* ── LOOP ────────────────────────────────────────────────────────────── */
         function loop() {
             if (world.state === 'playing') updateGame();
             draw();
             requestAnimationFrame(loop);
         }
 
-        /* ── GAME FLOW ───────────────────────────────────────────────────────── */
         function startGame() {
             startOverlay.classList.add('hidden');
             crashOverlay.classList.add('hidden');
@@ -1043,10 +811,9 @@
             resetRun(true);
         }
         function continueToNextMinigame() {
-            alert('Continue to the next minigame here.');
+            window.location.href = "chapter-3.html";
         }
 
-        /* ── INPUT ───────────────────────────────────────────────────────────── */
         function setKey(code, pressed) {
             if (code === 'ArrowLeft') keys.left = pressed;
             if (code === 'ArrowRight') keys.right = pressed;
@@ -1063,7 +830,6 @@
         tryAgainButton.addEventListener('click', tryAgain);
         nextMinigameButton.addEventListener('click', continueToNextMinigame);
 
-        /* ── INIT ────────────────────────────────────────────────────────────── */
         resizeCanvas();
         updateHud();
         draw();

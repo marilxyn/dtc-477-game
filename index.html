@@ -2,12 +2,357 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lewis & Clark Expedition</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Journey Begins</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            font-family: Arial, sans-serif;
+        }
+
+        #gameArea {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: url("img/intro-1.png") no-repeat center center;
+            background-size: cover;
+            image-rendering: pixelated;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        #introScreen,
+        #packingScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            z-index: 100;
+        }
+
+        #packingScreen {
+            display: none;
+        }
+
+        .big-title {
+            color: gold;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 50px;
+            text-shadow: 4px 4px 0px #5c4033;
+        }
+
+        #scene-label {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #f4e7c3;
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid gold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: "Pixelify Sans", sans-serif;
+            display: none;
+        }
+
+        #dialogueBox {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-width: 900px;
+            height: 300px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 3px solid gold;
+            border-radius: 16px;
+            padding: 25px;
+            color: white;
+            display: none;
+            box-sizing: border-box;
+        }
+
+        .dlg-layout {
+            display: flex;
+            gap: 20px;
+            height: 100%;
+        }
+
+        #portrait-img {
+            width: 120px;
+            height: 120px;
+            border: 3px solid gold;
+            border-radius: 8px;
+            display: none;
+            object-fit: cover;
+            image-rendering: pixelated;
+            flex-shrink: 0;
+        }
+
+        .dlg-text-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-width: 0;
+        }
+
+        #speaker {
+            color: gold;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 26px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        #dlg-text {
+            flex: 1;
+            overflow-y: auto;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            padding-right: 8px;
+        }
+
+        #dlg-text.is-quote {
+            color: #f1c40f;
+            font-style: italic;
+        }
+
+        .dialogue-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            margin-top: auto;
+        }
+
+        #step-pips {
+            display: flex;
+            gap: 8px;
+        }
+
+        .pip {
+            width: 14px;
+            height: 14px;
+            background: #444;
+            border: 2px solid #888;
+            border-radius: 4px;
+        }
+
+        .pip.done {
+            background: #888;
+        }
+
+        .pip.current {
+            background: gold;
+            border-color: white;
+            box-shadow: 0 0 8px gold;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: gold;
+            border: none;
+            border-radius: 8px;
+            font-family: "Pixelify Sans", sans-serif;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: orange;
+        }
+
+        @media (max-width: 700px) {
+            #dialogueBox {
+                height: 380px;
+            }
+
+            .dlg-layout {
+                flex-direction: column;
+            }
+
+            #portrait-img {
+                width: 90px;
+                height: 90px;
+            }
+
+            .big-title {
+                font-size: 38px;
+            }
+        }
+    </style>
 </head>
 
 <body>
+
+    <div id="gameArea">
+
+        <div id="introScreen">
+            <h1 class="big-title">The Journey Begins</h1>
+            <button onclick="startIntro()">START JOURNEY</button>
+        </div>
+
+        <div id="scene-label"></div>
+
+        <div id="dialogueBox">
+            <div class="dlg-layout">
+                <img id="portrait-img" alt="character portrait">
+
+                <div class="dlg-text-container">
+                    <div id="speaker"></div>
+                    <div id="dlg-text"></div>
+
+                    <div class="dialogue-footer">
+                        <div id="step-pips"></div>
+                        <button onclick="advanceStory()" id="next-btn">NEXT ►</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="packingScreen">
+            <h1 class="big-title">What Are You Packing?</h1>
+            <button onclick="startPackingGame()">START PACKING</button>
+        </div>
+
+    </div>
+
+    <script>
+        const STORY = [
+            {
+                bg: 'url("img/intro-1.png")',
+                label: 'ST. LOUIS – 1804',
+                speaker: 'NARRATOR',
+                text: 'The United States has just doubled in size after the Louisiana Purchase.\n\nBut much of this land is still unknown.'
+            },
+            {
+                bg: 'url("img/intro-1.png")',
+                label: 'CAMP DUBOIS – 1804',
+                speaker: 'NARRATOR',
+                text: 'At Camp Dubois near St. Louis, the Corps of Discovery prepares for a journey into the unknown.'
+            },
+            {
+                bg: 'url("img/intro-1.png")',
+                label: 'MISSION FROM JEFFERSON',
+                speaker: 'THOMAS JEFFERSON',
+                img: 'img/thomas-jefferson-portrait.png',
+                text: '"Explore this new land. Map its rivers, meet its people, and find a route to the Pacific Ocean."',
+                isQuote: true
+            },
+            {
+                bg: 'url("img/intro-1.png")',
+                label: 'PREPARATION',
+                speaker: 'NARRATOR',
+                text: 'Now it is your turn to help prepare.\n\nWhat should they pack?',
+                isLast: true,
+                nextLabel: 'PACK ►'
+            }
+        ];
+
+        let step = 0;
+        let typing = false;
+        let fullText = "";
+        let timer;
+
+        function startIntro() {
+            document.getElementById("introScreen").style.display = "none";
+            document.getElementById("scene-label").style.display = "block";
+            document.getElementById("dialogueBox").style.display = "block";
+            loadStep(0);
+        }
+
+        function typewrite(str, el) {
+            clearInterval(timer);
+            el.innerHTML = "";
+            typing = true;
+
+            let i = 0;
+
+            timer = setInterval(() => {
+                el.innerHTML += str[i] === "\n" ? "<br>" : str[i];
+                i++;
+
+                if (i >= str.length) {
+                    clearInterval(timer);
+                    typing = false;
+                }
+            }, 25);
+        }
+
+        function loadStep(i) {
+            const s = STORY[i];
+
+            document.getElementById("gameArea").style.backgroundImage = s.bg;
+            document.getElementById("scene-label").textContent = s.label;
+            document.getElementById("speaker").textContent = s.speaker;
+
+            const portrait = document.getElementById("portrait-img");
+
+            if (s.img) {
+                portrait.src = s.img;
+                portrait.style.display = "block";
+            } else {
+                portrait.style.display = "none";
+            }
+
+            const text = document.getElementById("dlg-text");
+            text.className = s.isQuote ? "is-quote" : "";
+
+            document.getElementById("next-btn").textContent = s.nextLabel || "NEXT ►";
+
+            buildPips(i);
+
+            fullText = s.text;
+            typewrite(s.text, text);
+        }
+
+        function buildPips(current) {
+            const c = document.getElementById("step-pips");
+            c.innerHTML = "";
+
+            STORY.forEach((_, i) => {
+                const d = document.createElement("div");
+                d.className = "pip" + (i < current ? " done" : i === current ? " current" : "");
+                c.appendChild(d);
+            });
+        }
+
+        function advanceStory() {
+            if (typing) {
+                clearInterval(timer);
+                typing = false;
+                document.getElementById("dlg-text").innerHTML = fullText.replace(/\n/g, "<br>");
+                return;
+            }
+
+            if (STORY[step].isLast) {
+                document.getElementById("dialogueBox").style.display = "none";
+                document.getElementById("scene-label").style.display = "none";
+                document.getElementById("packingScreen").style.display = "flex";
+                return;
+            }
+
+            step++;
+            loadStep(step);
+        }
+
+        function startPackingGame() {
+            window.location.href = "chapter-1.html";
+        }
+    </script>
 
 </body>
 
