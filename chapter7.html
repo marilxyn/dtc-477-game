@@ -56,7 +56,8 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
 
         #introScreen {
             position: absolute;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             width: 100vw;
             height: 100vh;
             background: rgba(0, 0, 0, 0.85);
@@ -130,7 +131,8 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
 
         #scoreBarFill {
             height: 100%;
-            width: 0%; /* Starts at 0 */
+            width: 0%;
+            /* Starts at 0 */
             border-radius: 8px;
             background: gold;
             box-shadow: 0 0 12px gold;
@@ -181,7 +183,7 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
         #journal-img {
             display: none;
             width: 100%;
-            max-height: 350px; 
+            max-height: 350px;
             object-fit: cover;
             border: 3px solid gold;
             border-radius: 8px;
@@ -191,7 +193,8 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
 
         #winScreen {
             position: absolute;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             width: 100vw;
             height: 100vh;
             background: rgba(0, 0, 0, 0.9);
@@ -234,7 +237,7 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
         <div id="journalBox">
             <h2 id="journalTitle">New Entry!</h2>
             <p id="journalContent">Fact goes here.</p>
-            
+
             <img id="journal-img" src="" alt="Real Life Photo">
 
             <button id="closeJournalBtn">Close Journal</button>
@@ -269,15 +272,15 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
 
     <script>
 
-        const sfxBGM = new Audio("sounds/music_ch.7.mp3"); 
+        const sfxBGM = new Audio("sounds/music_ch.7.mp3");
         sfxBGM.loop = true;
-        sfxBGM.volume = 0.4; 
+        sfxBGM.volume = 0.4;
 
         const sfxClick = new Audio("sounds/button_click.mp3");
-        const sfxDiscover = new Audio("sounds/correct.mp3"); 
+        const sfxDiscover = new Audio("sounds/correct.mp3");
 
         function playSound(audioObj) {
-            audioObj.currentTime = 0; 
+            audioObj.currentTime = 0;
             audioObj.play().catch(e => console.log("Audio play blocked by browser:", e));
         }
 
@@ -295,7 +298,7 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
         const winScreen = document.getElementById('winScreen');
         const continueBtn = document.getElementById('continueBtn');
 
-        let isPaused = true; 
+        let isPaused = true;
         let score = 0;
         const maxScore = 5;
 
@@ -309,17 +312,17 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
 
         const palettes = {
             'x': 'transparent',
-            'b': '#000000', 
-            'w': '#ffffff', 
-            'y': '#f1c40f', 
-            'g': '#27ae60', 
-            'd': '#8B4513', 
-            'l': '#D2B48C', 
-            'r': '#e74c3c', 
-            'p': '#ffb6c1', 
-            'c': '#FFDEAD', 
-            's': '#95a5a6', 
-            'm': '#2c3e50'  
+            'b': '#000000',
+            'w': '#ffffff',
+            'y': '#f1c40f',
+            'g': '#27ae60',
+            'd': '#8B4513',
+            'l': '#D2B48C',
+            'r': '#e74c3c',
+            'p': '#ffb6c1',
+            'c': '#FFDEAD',
+            's': '#95a5a6',
+            'm': '#2c3e50'
         };
 
         const spritesData = {
@@ -527,7 +530,7 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
             requestAnimationFrame(loop);
         }
 
-        
+
         function updateScoreBar() {
             let percent = (score / maxScore) * 100;
             scoreBarFill.style.width = percent + "%";
@@ -537,7 +540,7 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
         startBtn.addEventListener("click", () => {
             playSound(sfxClick);
             sfxBGM.play().catch(e => console.log("BGM Blocked:", e));
-            
+
             introScreen.style.display = "none";
             scoreBarContainer.style.display = "block";
             isPaused = false;
@@ -552,11 +555,11 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
             const clickX = (e.clientX - rect.left) * scaleX;
             const clickY = (e.clientY - rect.top) * scaleY;
 
-            const hitboxPadding = 30; 
+            const hitboxPadding = 30;
 
             targets.forEach(t => {
                 let drawX = t.x - cameraX;
-                
+
                 let leftBound = drawX - hitboxPadding;
                 let rightBound = drawX + t.spriteHidden.w + hitboxPadding;
                 let topBound = t.y - hitboxPadding;
@@ -568,18 +571,18 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
                     clickY >= topBound &&
                     clickY <= bottomBound) {
 
-                    playSound(sfxDiscover); 
+                    playSound(sfxDiscover);
                     t.discovered = true;
                     score++;
                     updateScoreBar();
-                    
+
                     isPaused = true;
                     journalTitle.innerText = "JOURNAL ENTRY: " + t.name;
                     journalContent.innerText = t.fact;
-                    
+
                     journalImg.src = t.imgSrc;
                     journalImg.style.display = "block";
-                    
+
                     journalBox.style.display = "block";
                 }
             });
@@ -588,7 +591,7 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
         closeJournalBtn.addEventListener("click", () => {
             playSound(sfxClick);
             journalBox.style.display = "none";
-            
+
             if (score >= maxScore) {
                 winScreen.style.display = "flex";
                 scoreBarContainer.style.display = "none";
@@ -600,11 +603,12 @@ Code Help: https://gemini.google.com/share/a6eae9d74b9e
         continueBtn.addEventListener("click", () => {
             playSound(sfxClick);
             setTimeout(() => {
-                window.location.href = 'outro.html'; 
+                window.location.href = 'outro.html';
             }, 300);
         });
 
         loop();
     </script>
 </body>
+
 </html>

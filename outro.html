@@ -10,22 +10,22 @@
 AI CHATS USED:
 - HTML5 GAME MENTOR: https://chatgpt.com/share/69ed9697-1c7c-83e8-9628-272cf4ac69cc
 - Backgrounds and Images: https://gemini.google.com/share/368a919f998b 
-- Some Code and Background Images for Outro: https://gemini.google.com/share/1392a6073abd 
+- Code Help and Background Images for Outro: https://gemini.google.com/share/1392a6073abd 
 - For Background Images: https://chatgpt.com/share/69ed916c-fc6c-83e8-9e88-70c73d72c206 
-- Some Code: https://gemini.google.com/share/df6319c225fa
+- Code Help: https://gemini.google.com/share/df6319c225fa
 -->
 
 
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Outro: Ocean in View!</title>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
     <style>
-
         body {
             margin: 0;
             overflow: hidden;
@@ -46,7 +46,8 @@ AI CHATS USED:
 
         #introScreen {
             position: absolute;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             width: 100vw;
             height: 100vh;
             background: rgba(0, 0, 0, 0.95);
@@ -88,7 +89,7 @@ AI CHATS USED:
             color: white;
             font-size: 20px;
             z-index: 20;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
             display: none;
             flex-direction: column;
         }
@@ -142,20 +143,29 @@ AI CHATS USED:
             margin-top: 10px;
         }
 
-        #step-pips { 
-            display: flex; 
-            gap: 8px; 
+        #step-pips {
+            display: flex;
+            gap: 8px;
         }
-        
+
         .pip {
-            width: 14px; 
+            width: 14px;
             height: 14px;
             background: #444;
             border: 2px solid #888;
             border-radius: 4px;
         }
-        .pip.done    { background: #888; border-color: #aaa; }
-        .pip.current { background: gold; border-color: white; box-shadow: 0 0 8px gold;}
+
+        .pip.done {
+            background: #888;
+            border-color: #aaa;
+        }
+
+        .pip.current {
+            background: gold;
+            border-color: white;
+            box-shadow: 0 0 8px gold;
+        }
 
         button.main-btn {
             padding: 12px 25px;
@@ -169,12 +179,18 @@ AI CHATS USED:
             color: black;
             transition: background 0.2s, transform 0.1s;
         }
-        button.main-btn:hover { background: orange; }
-        button.main-btn:active { transform: scale(0.95); }
 
-        
+        button.main-btn:hover {
+            background: orange;
+        }
+
+        button.main-btn:active {
+            transform: scale(0.95);
+        }
+
+
         #journal-overlay {
-            display: none; 
+            display: none;
             margin-top: 15px;
             background: rgba(244, 231, 195, 0.95);
             border: 4px solid #3e2723;
@@ -200,9 +216,9 @@ AI CHATS USED:
             gap: 20px;
         }
 
-        .journal-col { 
-            flex: 1; 
-            text-align: center; 
+        .journal-col {
+            flex: 1;
+            text-align: center;
         }
 
         .journal-col h4 {
@@ -222,11 +238,12 @@ AI CHATS USED:
 
         #credits-screen {
             position: absolute;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             width: 100vw;
             height: 100vh;
             background: rgba(0, 0, 0, 0.95);
-            display: none; 
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -251,7 +268,7 @@ AI CHATS USED:
             object-fit: cover;
             border: 6px solid gold;
             border-radius: 12px;
-            background: #87CEEB; 
+            background: #87CEEB;
             image-rendering: pixelated;
         }
 
@@ -271,258 +288,267 @@ AI CHATS USED:
             line-height: 2;
             margin-bottom: 40px;
         }
-
+        .btn-group {
+            display: flex;
+            gap: 20px;
+        }
+        
     </style>
 </head>
+
 <body>
 
-<div id="gameArea">
+    <div id="gameArea">
 
-    <div id="introScreen">
-        <h1 style="color: gold; font-family: 'Pixelify Sans', sans-serif; font-size: 40px; margin-bottom: 20px;">Journey's End</h1>
-        <button class="main-btn" id="start-btn" onclick="startOutro()">▶ VIEW OUTRO</button>
-    </div>
+        <div id="introScreen">
+            <h1 style="color: gold; font-family: 'Pixelify Sans', sans-serif; font-size: 40px; margin-bottom: 20px;">
+                Journey's End</h1>
+            <button class="main-btn" id="start-btn" onclick="startOutro()">▶ VIEW OUTRO</button>
+        </div>
 
-    <div id="scene-label">NOVEMBER 7, 1805</div>
+        <div id="scene-label">NOVEMBER 7, 1805</div>
 
-    <div id="dialogueBox">
-        <div class="dlg-layout">
-            <img id="portrait-img" src="" alt="portrait" style="display: none;">
-            
-            <div class="dlg-text-container">
-                <div id="speaker">NARRATOR</div>
-                <div id="dlg-text">...</div>
-                
-                <div id="journal-overlay">
-                    <h3>📖 EXPEDITION SUMMARY</h3>
-                    <div class="journal-cols">
-                        <div class="journal-col">
-                            <h4>DISCOVERIES</h4>
-                            <p>122 Animal Species<br>178 Plant Species<br>Pacific Ocean Route</p>
-                        </div>
-                        <div class="journal-col">
-                            <h4>HARDSHIPS</h4>
-                            <p>Grizzly Bears<br>Freezing Winters<br>Starvation<br>Dangerous Rapids</p>
-                        </div>
-                        <div class="journal-col">
-                            <h4>ALLIANCES</h4>
-                            <p>Mandan Nation<br>Shoshone Tribe<br>Nez Perce<br>Clatsop People</p>
+        <div id="dialogueBox">
+            <div class="dlg-layout">
+                <img id="portrait-img" src="" alt="portrait" style="display: none;">
+
+                <div class="dlg-text-container">
+                    <div id="speaker">NARRATOR</div>
+                    <div id="dlg-text">...</div>
+
+                    <div id="journal-overlay">
+                        <h3>EXPEDITION SUMMARY</h3>
+                        <div class="journal-cols">
+                            <div class="journal-col">
+                                <h4>DISCOVERIES</h4>
+                                <p>122 Animal Species<br>178 Plant Species<br>Pacific Ocean Route</p>
+                            </div>
+                            <div class="journal-col">
+                                <h4>HARDSHIPS</h4>
+                                <p>Grizzly Bears<br>Freezing Winters<br>Starvation<br>Dangerous Rapids</p>
+                            </div>
+                            <div class="journal-col">
+                                <h4>ALLIANCES</h4>
+                                <p>Mandan Nation<br>Shoshone Tribe<br>Nez Perce<br>Clatsop People</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="dialogue-footer">
-                    <div id="step-pips"></div>
-                    <button class="main-btn" id="next-btn" onclick="advanceStory()">NEXT ►</button>
+                    <div class="dialogue-footer">
+                        <div id="step-pips"></div>
+                        <button class="main-btn" id="next-btn" onclick="advanceStory()">NEXT ►</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="credits-screen">
-        <div class="c-big-title">THE END</div>
-        
-        <img id="credits-end-img" src="img/outro_6.png" alt="end card"
-             onerror="this.style.background='#4a6b7c';">
-             
-        <div class="c-quote">"We have crossed a continent.<br>And now we must find our way home."</div>
-        
-        <div class="c-creators">
-            A Lewis & Clark Educational Game<br>
-            Created by Dalila, Marilyn & Sophia
+        <div id="credits-screen">
+            <div class="c-big-title">THE END</div>
+
+            <img id="credits-end-img" src="img/outro_6.png" alt="end card" onerror="this.style.background='#4a6b7c';">
+
+            <div class="c-quote">"We have crossed a continent.<br>And now we must find our way home."</div>
+
+            <div class="c-creators">
+                A Lewis & Clark Educational Game<br>
+                Created by Dalila, Marilyn & Sophia
+            </div>
+
+            <div class="btn-group">
+                <button class="main-btn" onclick="playAgain()">↺ PLAY AGAIN</button>
+                <button class="main-btn" onclick="window.location.href='about.html'">ABOUT</button>
+            </div>
         </div>
-        
-        <button class="main-btn" onclick="playAgain()">↺ PLAY AGAIN</button>
+
     </div>
 
-</div>
+    <script>
 
-<script>
+        const sfxBGM = new Audio("sounds/music_outro.mp3");
+        sfxBGM.loop = true;
+        sfxBGM.volume = 0.4;
 
-const sfxBGM = new Audio("sounds/music_outro.mp3");
-sfxBGM.loop = true;
-sfxBGM.volume = 0.4; 
+        const sfxClick = new Audio("sounds/button_click.mp3");
+        const sfxType = new Audio("sounds/talking_noise.mp3");
+        sfxType.volume = 0.4;
 
-const sfxClick = new Audio("sounds/button_click.mp3");
-const sfxType = new Audio("sounds/talking_noise.mp3"); 
-sfxType.volume = 0.4; 
-
-function playSound(audioObj) {
-    audioObj.currentTime = 0; 
-    audioObj.play().catch(e => console.log("Audio play blocked:", e));
-}
-
-
-const STORY = [
-    {
-        bg:      'url("img/outro_1.png")',
-        label:   'NOVEMBER 7, 1805',
-        speaker: 'NARRATOR',
-        text:    'After 18 months and 4,000 miles, the Columbia River opens wide.\n\nThe Pacific Ocean is finally in view.',
-    },
-    {
-        bg:      'url("img/outro_1.png")',
-        label:   'NOVEMBER 7, 1805',
-        speaker: 'WILLIAM CLARK',
-        img:     'img/clark_front.webp',
-        text:    '"Ocian in view! O! the joy!"\n\nThe men cheered, fired rifles, and wept.',
-        isQuote: true,
-    },
-    {
-        bg:      'url("img/outro_2.png")',
-        label:   'WINTER 1805',
-        speaker: 'NARRATOR',
-        text:    'Winter arrived fast. The crew voted together on a camp location and built Fort Clatsop to survive the bitter cold.',
-    },
-    {
-        bg:      'url("img/outro_3.png")',
-        label:   'THE LONG DARK',
-        speaker: 'MERIWETHER LEWIS',
-        img:     'img/lewis_front.webp',
-        text:    '"We have been wet and uncomfortable for so many days..."\n\nThey endured freezing rain, fleas, and sickness.',
-        isQuote: true,
-    },
-    {
-        bg:          'url("img/outro_4.png")',
-        label:       'JOURNAL COMPLETE',
-        speaker:     'NARRATOR',
-        text:        'Yet, they succeeded. They mapped new rivers, recorded hundreds of new species, and made vital tribal alliances.',
-        showJournal: true,
-    },
-    {
-        bg:        'url("img/outro_5.png")',
-        label:     'SPRING 1806',
-        speaker:   'MERIWETHER LEWIS',
-        img:       'img/lewis_front.webp',
-        text:      '"We have crossed a continent. And now we must find our way home."\n\nThe Corps returned to St. Louis as heroes.',
-        isQuote:   true,
-        nextLabel: 'FINISH ►',
-        isLast:    true,
-    },
-];
-
-
-let step      = 0;
-let typeTimer = null;
-let typing    = false;
-let fullText  = '';
-
-function startOutro() {
-    playSound(sfxClick);
-    sfxBGM.play().catch(e => console.log("BGM Blocked:", e));
-    
-    document.getElementById('introScreen').style.display = 'none';
-    document.getElementById('scene-label').style.display = 'block';
-    document.getElementById('dialogueBox').style.display = 'flex';
-    
-    loadStep(0);
-}
-
-
-function typewrite(str, el) {
-    clearInterval(typeTimer);
-    el.innerHTML = '';
-    typing = true;
-    let i = 0;
-    
-    typeTimer = setInterval(() => {
-        const ch = str[i];
-        el.innerHTML += (ch === '\n') ? '<br>' : ch;
-        
-        if (i % 3 === 0) playSound(sfxType);
-        
-        i++;
-        if (i >= str.length) {
-            clearInterval(typeTimer);
-            typing = false;
-            sfxType.pause();
-            sfxType.currentTime = 0;
+        function playSound(audioObj) {
+            audioObj.currentTime = 0;
+            audioObj.play().catch(e => console.log("Audio play blocked:", e));
         }
-    }, 25);
-}
 
 
-function loadStep(idx) {
-    const s = STORY[idx];
+        const STORY = [
+            {
+                bg: 'url("img/outro_1.png")',
+                label: 'NOVEMBER 7, 1805',
+                speaker: 'NARRATOR',
+                text: 'After 18 months and 4,000 miles, the Columbia River opens wide.\n\nThe Pacific Ocean is finally in view.',
+            },
+            {
+                bg: 'url("img/outro_1.png")',
+                label: 'NOVEMBER 7, 1805',
+                speaker: 'WILLIAM CLARK',
+                img: 'img/clark_front.webp',
+                text: '"Ocian in view! O! the joy!"\n\nThe men cheered, fired rifles, and wept.',
+                isQuote: true,
+            },
+            {
+                bg: 'url("img/outro_2.png")',
+                label: 'WINTER 1805',
+                speaker: 'NARRATOR',
+                text: 'Winter arrived fast. The crew voted together on a camp location and built Fort Clatsop to survive the bitter cold.',
+            },
+            {
+                bg: 'url("img/outro_3.png")',
+                label: 'THE LONG DARK',
+                speaker: 'MERIWETHER LEWIS',
+                img: 'img/lewis_front.webp',
+                text: '"We have been wet and uncomfortable for so many days..."\n\nThey endured freezing rain, fleas, and sickness.',
+                isQuote: true,
+            },
+            {
+                bg: 'url("img/outro_4.png")',
+                label: 'JOURNAL COMPLETE',
+                speaker: 'NARRATOR',
+                text: 'Yet, they succeeded. They mapped new rivers, recorded hundreds of new species, and made vital tribal alliances.',
+                showJournal: true,
+            },
+            {
+                bg: 'url("img/outro_5.png")',
+                label: 'SPRING 1806',
+                speaker: 'MERIWETHER LEWIS',
+                img: 'img/lewis_front.webp',
+                text: '"We have crossed a continent. And now we must find our way home."\n\nThe Corps returned to St. Louis as heroes.',
+                isQuote: true,
+                nextLabel: 'FINISH ►',
+                isLast: true,
+            },
+        ];
 
-    document.getElementById('gameArea').style.backgroundImage = s.bg;
 
-    const labelEl = document.getElementById('scene-label');
-    if (s.label) {
-        labelEl.textContent = s.label;
-        labelEl.style.opacity = 1;
-    } else {
-        labelEl.style.opacity = 0;
-    }
+        let step = 0;
+        let typeTimer = null;
+        let typing = false;
+        let fullText = '';
 
-    const portraitImg = document.getElementById('portrait-img');
-    if (s.img) {
-        portraitImg.src = s.img;
-        portraitImg.style.display = 'block';
-    } else {
-        portraitImg.style.display = 'none';
-    }
-    
-    document.getElementById('speaker').textContent = s.speaker || '';
+        function startOutro() {
+            playSound(sfxClick);
+            sfxBGM.play().catch(e => console.log("BGM Blocked:", e));
 
-    document.getElementById('journal-overlay').style.display = s.showJournal ? 'block' : 'none';
+            document.getElementById('introScreen').style.display = 'none';
+            document.getElementById('scene-label').style.display = 'block';
+            document.getElementById('dialogueBox').style.display = 'flex';
 
-    const textEl = document.getElementById('dlg-text');
-    textEl.className = s.isQuote ? 'is-quote' : '';
-
-    document.getElementById('next-btn').textContent = s.nextLabel || 'NEXT ►';
-
-    buildPips(idx);
-
-    fullText = s.text;
-    typewrite(s.text, textEl);
-}
+            loadStep(0);
+        }
 
 
-function buildPips(current) {
-    const container = document.getElementById('step-pips');
-    container.innerHTML = '';
-    STORY.forEach((_, i) => {
-        const d = document.createElement('div');
-        d.className = 'pip' + (i < current ? ' done' : i === current ? ' current' : '');
-        container.appendChild(d);
-    });
-}
+        function typewrite(str, el) {
+            clearInterval(typeTimer);
+            el.innerHTML = '';
+            typing = true;
+            let i = 0;
+
+            typeTimer = setInterval(() => {
+                const ch = str[i];
+                el.innerHTML += (ch === '\n') ? '<br>' : ch;
+
+                if (i % 3 === 0) playSound(sfxType);
+
+                i++;
+                if (i >= str.length) {
+                    clearInterval(typeTimer);
+                    typing = false;
+                    sfxType.pause();
+                    sfxType.currentTime = 0;
+                }
+            }, 25);
+        }
 
 
-function advanceStory() {
-    playSound(sfxClick);
+        function loadStep(idx) {
+            const s = STORY[idx];
 
-    if (typing) {
-        clearInterval(typeTimer);
-        sfxType.pause();
-        sfxType.currentTime = 0;
-        typing = false;
-        const textEl = document.getElementById('dlg-text');
-        textEl.innerHTML = fullText.replace(/\n/g, '<br>');
-        return;
-    }
+            document.getElementById('gameArea').style.backgroundImage = s.bg;
 
-    const s = STORY[step];
+            const labelEl = document.getElementById('scene-label');
+            if (s.label) {
+                labelEl.textContent = s.label;
+                labelEl.style.opacity = 1;
+            } else {
+                labelEl.style.opacity = 0;
+            }
 
-    if (s.isLast) {
-        document.getElementById('dialogueBox').style.display = 'none';
-        document.getElementById('scene-label').style.display = 'none';
-        document.getElementById('credits-screen').style.display = 'flex';
-        return;
-    }
+            const portraitImg = document.getElementById('portrait-img');
+            if (s.img) {
+                portraitImg.src = s.img;
+                portraitImg.style.display = 'block';
+            } else {
+                portraitImg.style.display = 'none';
+            }
 
-    step++;
-    loadStep(step);
-}
+            document.getElementById('speaker').textContent = s.speaker || '';
 
-function playAgain() {
-    playSound(sfxClick);
-    setTimeout(() => {
-        window.location.reload();
-    }, 200);
-}
+            document.getElementById('journal-overlay').style.display = s.showJournal ? 'block' : 'none';
 
-</script>
+            const textEl = document.getElementById('dlg-text');
+            textEl.className = s.isQuote ? 'is-quote' : '';
+
+            document.getElementById('next-btn').textContent = s.nextLabel || 'NEXT ►';
+
+            buildPips(idx);
+
+            fullText = s.text;
+            typewrite(s.text, textEl);
+        }
+
+
+        function buildPips(current) {
+            const container = document.getElementById('step-pips');
+            container.innerHTML = '';
+            STORY.forEach((_, i) => {
+                const d = document.createElement('div');
+                d.className = 'pip' + (i < current ? ' done' : i === current ? ' current' : '');
+                container.appendChild(d);
+            });
+        }
+
+
+        function advanceStory() {
+            playSound(sfxClick);
+
+            if (typing) {
+                clearInterval(typeTimer);
+                sfxType.pause();
+                sfxType.currentTime = 0;
+                typing = false;
+                const textEl = document.getElementById('dlg-text');
+                textEl.innerHTML = fullText.replace(/\n/g, '<br>');
+                return;
+            }
+
+            const s = STORY[step];
+
+            if (s.isLast) {
+                document.getElementById('dialogueBox').style.display = 'none';
+                document.getElementById('scene-label').style.display = 'none';
+                document.getElementById('credits-screen').style.display = 'flex';
+                return;
+            }
+
+            step++;
+            loadStep(step);
+        }
+
+        function playAgain() {
+            playSound(sfxClick);
+            setTimeout(() => {
+                window.location.reload();
+            }, 200);
+        }
+
+    </script>
 </body>
+
 </html>
