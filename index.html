@@ -225,12 +225,14 @@
 
         <div id="packingScreen">
             <h1 class="big-title">What Are You Packing?</h1>
-            <button onclick="startPackingGame()">START PACKING</button>
+            <a href="chapter-1.html"><button>START PACKING</button></a>
         </div>
 
     </div>
 
     <script>
+
+
         const STORY = [
             {
                 bg: 'url("img/intro-1.png")',
@@ -268,6 +270,7 @@
         let timer;
 
         function startIntro() {
+
             document.getElementById("introScreen").style.display = "none";
             document.getElementById("scene-label").style.display = "block";
             document.getElementById("dialogueBox").style.display = "block";

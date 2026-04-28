@@ -328,7 +328,7 @@
                     Lewis later wrote that grizzlies were far more dangerous than expected.
                     Some bears charged repeatedly, and rifles sometimes failed to stop them quickly.
                 </p>
-                <button id="continueBtn">Continue</button>
+                <a href="chapter-5.html"><button id="continueBtn">Continue</button></a>
             </div>
         </div>
 
@@ -538,12 +538,6 @@
             state = "fail";
             failScreen.style.display = "flex";
         });
-
-
-        continueBtn.addEventListener("click", () => {
-            alert("Continue button works! (connect to Chapter 5 later)");
-        });
-
 
         restartBtn.addEventListener("click", () => {
             resetGame();
