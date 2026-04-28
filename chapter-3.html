@@ -284,6 +284,19 @@
         #outlinePanel h2 {
             font-family: "Pixelify Sans", sans-serif;
         }
+
+        #gameFooter {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 14px;
+            color: white;
+            background: rgba(0, 0, 0, 0.55);
+            padding: 6px 10px;
+            border-radius: 10px;
+            z-index: 100;
+        }
     </style>
 </head>
 
@@ -300,7 +313,8 @@
                     <b>How to Play:</b><br>
                     - Click an animal or plant hiding in the landscape.<br>
                     - Then click the matching black outline on the right. <br>
-                    - Match all animals to win! <br>
+                    - Don't forget to read about each animal and plant. <br>
+                    - Match all 6 to win! <br>
                 </p>
                 <button id="startBtn">Start Game</button>
             </div>
@@ -337,6 +351,10 @@
 
         </div>
 
+        <footer id="gameFooter">
+            (C) Sophia Deason, Marilyn Gable, & Dalila Drugovic 2026
+        </footer>
+
         <!-- RIGHT OUTLINE PANEL -->
         <div id="outlinePanel">
             <h2>Match the Outlines</h2>
@@ -369,8 +387,32 @@
     </div>
 
     <script>
+        // Developer and Designer - Sophia Deason //
+
+        // Logic Steps - Chapter 3 starts, and the user sees an intro screen. 
+        // The intro screen has a title, a short description of the expedition, how to play information, and a start game button that connects the user to the game.
+        // About a little more than half the screen is a PNG image of the unknown lands, and three colored pixelated 
+        // PNGs of animals recorded during the expedition, and three colored pixelated PNGs of plants also recorded during the expedition. 
+        // The other portion of the screen has a dark background, with a title of match the outlines, and there are three filled-in
+        // black PNGs of the animals and three filled-in black PNGs of the plants. 
+        // The user clicks on the pixelated animal and then clicks on the corresponding outline. 
+        // When the user clicks the corresponding outline, a little text information about that plant or animal pops up. 
+        // Also, when the user clicks the corresponding outline, if it's one of the three animals, then the noise of that animal starts, 
+        // but stops when the user matches the outline of another animal. 
+        // The prairie dog and bison sounds are longer than the grizzly bear's because those animals are more vocal than grizzly bears.
+        // If the user's match is incorrect, then the outline has a red stroke, the box shakes, and the text box in red pops up saying
+        // something like that’s not a match Lewis and Clark would make. 
+        // There is a slight delay after the last animal is matched, so the user has enough time to read the text box. 
+        // After the delay is over, a win screen pops up. 
+        // The win screen has a win title, a short description, and a continue button that connects to the journal.  
+
         // HTML JS Menor Link - https://chatgpt.com/share/69ded585-e448-83e8-962d-da16570ed73f //
         // HTML JS Mentor Link 2 - https://chatgpt.com/share/69eab560-8e20-83e8-ad06-7331acb46a23 //
+        // HTML JS Mentor Link 3 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 //
+
+        // ==============================
+        // CHAPTER 3 - Into Unknown Land GAME
+        // ==============================
 
         let selectedItem = null;
         let matchedCount = 0;
@@ -399,7 +441,7 @@
 
             pine: "Lewis and Clark relied on pine trees for wood used in shelters, tools, and campfires.",
 
-            cactus: "Lewis and Clark suffered injuries from prickly pear cactus during the Great Falls portage."
+            cactus: "Lewis and Clark suffered many injuries from prickly pear cactus during the Great Falls journey."
 
         };
 
@@ -411,9 +453,26 @@
             prairiedog: new Audio("sounds/prairiedog.mp3")
         };
 
+        const buttonClickSound = new Audio("sounds/button_click.mp3");
 
+        function stopAllSounds() {
+            Object.values(sounds).forEach(function (sound) {
+                sound.pause();
+                sound.currentTime = 0;
+            });
+
+            if (currentSound) {
+                currentSound.pause();
+                currentSound.currentTime = 0;
+                currentSound = null;
+            }
+        }
 
         startBtn.addEventListener("click", function () {
+
+            buttonClickSound.currentTime = 0;
+            buttonClickSound.play();
+
             introScreen.style.display = "none";
         });
 
@@ -493,10 +552,11 @@
                         factPopup.innerText = facts[lastItem];
 
                         setTimeout(function () {
+                            stopAllSounds();
                             winScreen.style.display = "flex";
                             factPopup.style.display = "none";
                             errorPopup.style.display = "none";
-                        }, 6000);
+                        }, 3000);
                     }
 
                 } else {
@@ -521,7 +581,11 @@
         });
 
         continueWinBtn.addEventListener("click", function () {
-            alert("Continue button works! (connect to Chapter 4 later)");
+
+            buttonClickSound.currentTime = 0;
+            buttonClickSound.play();
+
+            winScreen.style.display = "none";
         });
     </script>
 

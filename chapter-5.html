@@ -102,7 +102,7 @@
 
         #dialogueBox {
             position: absolute;
-            bottom: 20px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
             width: 85%;
@@ -117,7 +117,6 @@
             z-index: 20;
         }
 
-        /* REUSING YOUR SPEED BAR STYLE AS STAMINA BAR */
         #staminaBarContainer {
             position: absolute;
             top: 20px;
@@ -206,10 +205,29 @@
         #failScreen h1 {
             font-family: "Pixelify Sans", sans-serif;
         }
+
+        #gameFooter {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 14px;
+            color: white;
+            background: rgba(0, 0, 0, 0.55);
+            padding: 6px 10px;
+            border-radius: 10px;
+            z-index: 1000;
+            /* higher than intro/win/fail screens */
+            text-shadow: 1px 1px 2px black;
+        }
     </style>
 </head>
 
 <body>
+
+    <footer id="gameFooter">
+        (C) Sophia Deason, Marilyn Gable, & Dalila Drugovic 2026
+    </footer>
 
     <div id="gameArea">
 
@@ -275,6 +293,28 @@
 
     <script>
         //HTML JS Mentor Link - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6//
+        // Developer and Designer - Sophia Deason //
+
+        // Logic Steps - Chapter 5 starts, and the user sees an intro scene that gives a small bit of 
+        // background context for that certain part of the expedition the game is based on. 
+        // The intro scene will also display the title and instructions on how to play and win. 
+        // The intro scene will also feature a start button game that directs the player to the main game.
+        // Once the start game is clicked, then the game begins. 
+        // There is a background image, an empty stamina/win meter, and a small bit of text that prompts the user on what to do.
+        // The space bar is what takes the user through the text bits and to the choices 
+        // The user presses space and is prompted with a situation that Lewis and Clark would have faced, and is given two choices.
+        // One choice is correct, and that will take them to a bit of text and to the next question, and the stamina/win meter will fill
+        // The other question is false, and that will take them to a bit of text and then back to that same question, 
+        // so the user can answer the correct question, and then once they answer the correct question, they are taken to a bit of text and onto the next question. 
+        // For every right answer, the stamina meter fills, and for every wrong answer, it decreases, but after the wrong answer,
+        // when they get taken back to that question they got wrong and answer it correctly, the meter fills. 
+        // This sequence follows for 7 questions, and then the user wins, the meter fills, and they are prompted with a win outro scene.
+        // The win outro scene says a little you win type of title and then gives some background on that part of the 
+        // expedition with a continue button that connects to the journal.  //
+
+        // HTML JS Mentor Link - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6 //
+        // HTML JS Mentor Link 2 - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6 //
+        // HTML JS Mentor Link 3 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 //
 
         // ==============================
         // CHAPTER 5 - ROCKY MOUNTAINS GAME
@@ -300,6 +340,10 @@
         const restartBtn = document.getElementById("restartBtn");
         const gameArea = document.getElementById("gameArea");
 
+        const buttonSound = new Audio("sounds/button_click.mp3");
+        const correctSound = new Audio("sounds/correct.mp3");
+        const incorrectSound = new Audio("sounds/incorrect.mp3");
+
         let state = "intro";
 
         // stamina is BOTH progress and survival
@@ -310,6 +354,7 @@
         let stepIndex = 0;
         let waitingForSpace = false;
         let nextAction = null;
+        let wrongAnswers = {};
 
         // ==============================
         // STORY STEPS (LINEAR 5-7)
@@ -337,7 +382,10 @@
                 correctText: "You ration food carefully. The expedition stays strong enough to continue.",
                 wrongText: "Skipping meals weakens the group. The cold hits harder and you are forced to stop and ration anyway.",
                 staminaGain: 16,
-                staminaLoss: 12
+                staminaLoss: 12,
+
+                bgCorrect: "img/rations.png",
+                bgWrong: "img/no_rations.png"
             },
             {
                 question: "Horses are exhausted in the snow. Do you rest them or force them onward?",
@@ -347,7 +395,10 @@
                 correctText: "You rest the horses. Without them, carrying supplies would be nearly impossible.",
                 wrongText: "You push the horses too hard. Several collapse, and you are forced to rest and recover.",
                 staminaGain: 17,
-                staminaLoss: 12
+                staminaLoss: 12,
+
+                bgCorrect: "img/rest.png",
+                bgWrong: "img/no_rest.png"
             },
             {
                 question: "The expedition loses direction in the mountains. Do you seek Native guidance or guess the route yourself?",
@@ -411,6 +462,11 @@
             }, 700);
         }
 
+        function playSound(sound) {
+            sound.currentTime = 0;
+            sound.play();
+        }
+
         function showStep() {
             state = "choice";
 
@@ -455,7 +511,16 @@
             choiceScreen.style.display = "none";
 
             if (playerPick === step.correct) {
+                playSound(correctSound);
                 changeBackground(step.bgCorrect);
+
+               
+
+                if (wrongAnswers[stepIndex]) {
+                    stamina += step.staminaLoss;
+                    wrongAnswers[stepIndex] = false;
+                }
+
                 stamina += step.staminaGain;
                 updateStaminaBar();
                 flashStamina("good");
@@ -471,27 +536,33 @@
                     } else {
                         state = "win";
                         winScreen.style.display = "flex";
-                        choiceScreen.style.display = "none";
                         dialogueBox.style.display = "none";
                         staminaBarContainer.style.display = "none";
                     }
                 };
 
             } else {
+                playSound(incorrectSound);
                 changeBackground(step.bgWrong);
+
                 stamina -= step.staminaLoss;
+                if (stamina < 0) stamina = 0; 
+
+                wrongAnswers[stepIndex] = true;
+
                 updateStaminaBar();
                 flashStamina("bad");
+                checkFail();
 
                 showDialogue(step.wrongText + "<br><br><b>(Press SPACE to try again)</b>");
 
-                // stay on same question
                 waitingForSpace = true;
                 nextAction = () => {
-                    showStep(); // repeat SAME question
+                    showStep();
                 };
             }
         }
+
         // ==============================
         // RESET GAME
         // ==============================
@@ -501,6 +572,8 @@
             gameArea.style.backgroundImage = "url('img/intro_scene.png')";
             stamina = 0;
             stepIndex = 0;
+
+            wrongAnswers = {};
 
             waitingForSpace = false;
             nextAction = null;
@@ -532,6 +605,7 @@
         });
 
         startBtn.addEventListener("click", () => {
+            playSound(buttonSound);
             introScreen.style.display = "none";
             gameArea.style.backgroundImage = "url('img/rocky_mountains_bg.png')";
 
@@ -556,6 +630,7 @@
         });
 
         restartBtn.addEventListener("click", () => {
+            playSound(buttonSound);
             resetGame();
         });
 
