@@ -192,6 +192,7 @@
             font-size: 18px;
             line-height: 1.5;
             color: white;
+            text-align: left;
         }
 
 
@@ -316,10 +317,10 @@
             <div id="introBox">
                 <h1>Chapter 4: Grizzly Country</h1>
                 <p>
-                    Lewis and Clark are journaling in the now Montana wilderness.<br><br>
+                    Lewis and Clark are journaling in what is now the Montana wilderness.<br><br>
                     The forest is silent... too silent.<br>
                     Something heavy moves through the brush.<br><br>
-                    A grizzly steps into the open.
+                    A grizzly bear steps into the open.
                 </p>
                 <button id="startBtn">Start Game</button>
             </div>
@@ -339,8 +340,21 @@
             <div id="winBox">
                 <h1>You Escaped the Grizzly!</h1>
                 <p>
-                    Lewis later wrote that grizzlies were far more dangerous than expected.
-                    Some bears charged repeatedly, and rifles sometimes failed to stop them quickly.
+                    Lewis and Clark&apos;s encounters with grizzly bears marked some of the most intense moments of
+                    their journey through the northern wilderness. Unlike anything they had previously faced, these
+                    animals influenced how the expedition moved through
+                    the landscape, often forcing longer, more cautious travel routes.<br><br>
+
+                    In their journals, they noted how grizzlies could appear suddenly in thick brush and react with
+                    surprising strength and aggression. They described how grizzlies often charged unexpectedly and
+                    could survive multiple gunshot wounds.
+                    These encounters made it clear that survival in this region required constant awareness and careful
+                    decision-making while traveling through dense forests and river valleys in what is now
+                    Montana.<br><br>
+
+                    Despite the danger, these observations became important scientific records.
+                    Lewis and Clark documented grizzly behavior, habitat, and range. Their accounts revealed just how
+                    untamed and unpredictable the northern land truly was.
                 </p>
                 <a href="chapter-5.html"><button id="continueBtn">Continue</button></a>
             </div>
@@ -352,8 +366,8 @@
             <div id="failBox">
                 <h1>They Did Not Survive...</h1>
                 <p>
-                    Standing your ground against a grizzly was extremely dangerous.
-                    Lewis wrote that grizzlies were far more powerful than they expected.
+                    Standing your ground against a grizzly bear was extremely dangerous.
+                    Lewis wrote that grizzly bears were far more powerful than they expected.
                 </p>
                 <button id="restartBtn">Restart</button>
             </div>
@@ -383,16 +397,22 @@
         // If the user doesn’t escape the grizzly, then the user is directed to the same fail screen from guessing stand their ground. 
         // But if the user fills the stamina meter and wins, then they are taken to a win outro screen.
         // The outro win screen has a you win type of title, with a short description of that part of the
-        // description and a continue button that connects to the journal.
+        // description and a continue button that connects to the next minigame/chapter.
 
-
-        // HTML JS Mentor Link - https://chatgpt.com/share/69e53c9d-60e0-83e8-8a2b-760bcffd9590 //
-        // HTML JS Mentor Link 2 - https://chatgpt.com/share/69eab560-8e20-83e8-ad06-7331acb46a23 //
-        // HTML JS Mentor Link 3 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 //
+        // HTML JS Mentor Link 1 - https://chatgpt.com/share/69e53c9d-60e0-83e8-8a2b-760bcffd9590 // 
+        // HTML JS Mentor Link 2 - https://chatgpt.com/share/69eab560-8e20-83e8-ad06-7331acb46a23 // 
+        // HTML JS Mentor Link 3 - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6 // 
+        // HTML JS Mentor Link 4 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 //
+        // HTML JS Mentor Link 5 - https://chatgpt.com/share/69f2612c-c2dc-83e8-a3f8-641d414df636 // 
+        // HTML JS Mentor Link 6 - https://chatgpt.com/share/69f265b0-4d78-83e8-814e-add98f7d5c70 // 
 
         // ==============================
         // CHAPTER 4 - Grizzly Country GAME
         // ==============================
+
+        // ADD COMMENTS OF LOGIC THROUGHOUT WITH CHAT GPT //
+        // BACKGROUND MUSIC //
+
 
         const introScreen = document.getElementById("introScreen");
         const startBtn = document.getElementById("startBtn");

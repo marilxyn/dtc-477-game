@@ -189,6 +189,7 @@
             font-size: 18px;
             line-height: 1.4;
             color: white;
+            text-align: left;
         }
 
         #continueWinBtn {
@@ -310,11 +311,12 @@
                 <h1>Chapter 3: Into Unknown Land</h1>
                 <p>
                     Lewis and Clark are exploring new lands in 1805!<br><br>
+
                     <b>How to Play:</b><br>
-                    - Click an animal or plant hiding in the landscape.<br>
-                    - Then click the matching black outline on the right. <br>
-                    - Don't forget to read about each animal and plant. <br>
-                    - Match all 6 to win! <br>
+                    - Click an animal or plant hidden in the landscape.<br>
+                    - Then click the matching black outline on the right.<br>
+                    - Don&apos;t forget to read about each animal and plant.<br>
+                    - Match all 6 to win!
                 </p>
                 <button id="startBtn">Start Game</button>
             </div>
@@ -325,8 +327,20 @@
             <div id="winBox">
                 <h1>You Found Everything!</h1>
                 <p>
-                    Lewis and Clark carefully recorded new animals and plants during their expedition.
-                    Their journals helped Americans learn what the western lands were like.
+                    During the “Unknown Land” portion of the expedition, Lewis and Clark traveled through territory
+                    that most Americans had never seen before. Every day brought new landscapes, unfamiliar weather, and
+                    animals that people back east could not
+                    describe accurately.<br><br>
+
+                    The Corps of Discovery carefully observed and recorded what they found, including massive bison
+                    herds, prairie dogs, and dangerous grizzly bears.
+                    They also studied plants like sagebrush, pine trees, and cactus, because these affected
+                    travel, survival, and the ability to build shelters and fires.<br><br>
+
+                    Lewis and Clark kept detailed journals, drew sketches, and collected specimens to document what
+                    existed in the West. Their discoveries helped create one of the first major scientific records of
+                    the land beyond the Mississippi River. Even though the journey was difficult, their notes and
+                    observations changed how Americans understood the western frontier.
                 </p>
                 <a href="chapter-4.html"><button id="continueWinBtn">Continue</button></a>
             </div>
@@ -404,15 +418,22 @@
         // something like that’s not a match Lewis and Clark would make. 
         // There is a slight delay after the last animal is matched, so the user has enough time to read the text box. 
         // After the delay is over, a win screen pops up. 
-        // The win screen has a win title, a short description, and a continue button that connects to the journal.  
+        // The win screen has a win title, a short description, and a continue button that connects to the next minigame/chapter.  
 
-        // HTML JS Menor Link - https://chatgpt.com/share/69ded585-e448-83e8-962d-da16570ed73f //
+        // HTML JS Menor Link 1 - https://chatgpt.com/share/69ded585-e448-83e8-962d-da16570ed73f // 
         // HTML JS Mentor Link 2 - https://chatgpt.com/share/69eab560-8e20-83e8-ad06-7331acb46a23 //
-        // HTML JS Mentor Link 3 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 //
+        // HTML JS Mentor Link 3 - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6 // 
+        // HTML JS Mentor Link 4 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 // 
+        // HTML JS Mentor Link 5 - https://chatgpt.com/share/69f2612c-c2dc-83e8-a3f8-641d414df636 // 
+        // HTML JS Mentor Link 6 - https://chatgpt.com/share/69f26480-7c1c-83e8-bbd0-efb2363da66d // 
+        // HTML JS Mentor Link 7 - https://chatgpt.com/share/69f265b0-4d78-83e8-814e-add98f7d5c70 //
 
         // ==============================
         // CHAPTER 3 - Into Unknown Land GAME
         // ==============================
+
+        // ADD COMMENTS OF LOGIC THROUGHOUT WITH CHAT GPT //
+        // BACKGROUND MUSIC //
 
         let selectedItem = null;
         let matchedCount = 0;
@@ -433,15 +454,15 @@
         const facts = {
             bison: "Lewis and Clark recorded massive herds of bison across the Great Plains during their expedition.",
 
-            grizzly: "Lewis and Clark described grizzly bears as extremely dangerous and much harder to stop than expected.",
+            grizzly: "Lewis and Clark described grizzly bears as extremely dangerous and much harder to stop than they expected.",
 
-            prairiedog: "Lewis and Clark studied prairie dogs closely and even sent one back east as a living specimen.",
+            prairiedog: "Lewis and Clark closely studied prairie dogs and even sent one back east as a living specimen.",
 
             sagebrush: "Lewis and Clark traveled through vast plains covered in sagebrush and recorded it in their journals.",
 
             pine: "Lewis and Clark relied on pine trees for wood used in shelters, tools, and campfires.",
 
-            cactus: "Lewis and Clark suffered many injuries from prickly pear cactus during the Great Falls journey."
+            cactus: "Lewis and Clark suffered many injuries from prickly pear cactus during their journey through the Great Falls region."
 
         };
 
@@ -585,7 +606,10 @@
             buttonClickSound.currentTime = 0;
             buttonClickSound.play();
 
-            winScreen.style.display = "none";
+            setTimeout(function () {
+                window.location.href = "chapter-4.html";
+            }, 200);
+
         });
     </script>
 

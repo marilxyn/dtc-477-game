@@ -186,6 +186,7 @@
             font-size: 18px;
             line-height: 1.5;
             color: white;
+            text-align: left;
         }
 
         #failScreen {
@@ -250,8 +251,8 @@
                     <b>How to Play:</b><br>
                     - Choose the best survival decision.<br>
                     - Correct answers fill your stamina meter.<br>
-                    - Wrong answers drain stamina.<br>
-                    - Fill stamina meter to win!<br><br>
+                    - Wrong answers drain your stamina.<br>
+                    - Fill the stamina meter to win!<br><br>
 
                     <b>Press SPACE during the story to continue.</b>
                 </p>
@@ -272,9 +273,20 @@
             <div id="winBox">
                 <h1>You Survived the Rocky Mountains!</h1>
                 <p>
-                    Lewis and Clark struggled through brutal snow and steep terrain.
-                    They depended on horses, rationing, and guidance from Native tribes.
-                    Crossing the Rockies was one of the most difficult parts of the journey.
+                    Lewis and Clark struggled through brutal snow, steep cliffs, and freezing winds while crossing the
+                    Rocky Mountains. The terrain was so rough that horses collapsed, supplies were lost, and every step
+                    forward drained
+                    the expedition&apos;s strength.<br><br>
+
+                    Food became dangerously scarce, forcing the men to ration carefully and survive on whatever they
+                    could find.
+                    Many were weak from hunger and exhaustion, and the freezing temperatures made traveling even harder.
+                    At night, they had to build shelters and fires quickly or risk frostbite or death.<br><br>
+
+                    The expedition also relied heavily on Native tribes for guidance and survival knowledge.
+                    Without their help, Lewis and Clark could have become lost in the endless mountain valleys.
+                    Crossing the Rockies became one of the most difficult and life-threatening parts of their journey
+                    west.
                 </p>
                 <a href="chapter6.html"><button id="continueBtn">Continue</button></a>
             </div>
@@ -284,7 +296,7 @@
         <div id="failScreen">
             <h1>The Expedition Collapsed...</h1>
             <p style="color:white; font-size:20px; max-width:700px;">
-                The Rocky Mountains were deadly. Starvation and exposure could end the journey.
+                The Rocky Mountains were deadly. Starvation and exposure could have ended the journey.
             </p>
             <button id="restartBtn">Restart</button>
         </div>
@@ -292,7 +304,6 @@
     </div>
 
     <script>
-        //HTML JS Mentor Link - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6//
         // Developer and Designer - Sophia Deason //
 
         // Logic Steps - Chapter 5 starts, and the user sees an intro scene that gives a small bit of 
@@ -310,15 +321,23 @@
         // when they get taken back to that question they got wrong and answer it correctly, the meter fills. 
         // This sequence follows for 7 questions, and then the user wins, the meter fills, and they are prompted with a win outro scene.
         // The win outro scene says a little you win type of title and then gives some background on that part of the 
-        // expedition with a continue button that connects to the journal.  //
+        // expedition with a continue button that connects to the next minigame/chapter.  //
 
-        // HTML JS Mentor Link - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6 //
-        // HTML JS Mentor Link 2 - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6 //
-        // HTML JS Mentor Link 3 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 //
+        // HTML JS Mentor Link 1 - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6 // 
+        // HTML JS Mentor Link 2 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 // 
+        // HTML JS Mentor Link 3 - https://chatgpt.com/share/69f2612c-c2dc-83e8-a3f8-641d414df636 //
+        // HTML JS Mentor Link 4 - https://chatgpt.com/share/69f26480-7c1c-83e8-bbd0-efb2363da66d //
+        // HTML JS Mentor Link 5 - https://chatgpt.com/share/69f265b0-4d78-83e8-814e-add98f7d5c70 // 
 
         // ==============================
         // CHAPTER 5 - ROCKY MOUNTAINS GAME
         // ==============================
+
+        // ADD COMMENTS OF LOGIC THROUGHOUT WITH CHAT GPT //
+        // ADD THE REST OF IMAGES //
+        // BACKGROUND MUSIC //
+        
+
 
         const introScreen = document.getElementById("introScreen");
         const startBtn = document.getElementById("startBtn");
@@ -366,8 +385,8 @@
                 choiceAText: "Follow the guide",
                 choiceBText: "Take the shortcut",
                 correct: "A",
-                correctText: "You follow the guide. The path is slow, but safer in deep snow.",
-                wrongText: "You take the shortcut... cliffs block the route forcing you back to the guides trail.",
+                correctText: "You follow the guide. The path is slow, but safer.",
+                wrongText: "You take the shortcut... cliffs block the route, forcing you back.",
                 staminaGain: 18,
                 staminaLoss: 10,
 
@@ -379,8 +398,8 @@
                 choiceAText: "Ration supplies",
                 choiceBText: "Skip meals to save time",
                 correct: "A",
-                correctText: "You ration food carefully. The expedition stays strong enough to continue.",
-                wrongText: "Skipping meals weakens the group. The cold hits harder and you are forced to stop and ration anyway.",
+                correctText: "You ration food carefully. The expedition remains strong enough to continue.",
+                wrongText: "Skipping meals weakens the group. The cold hits harder, and you are forced to stop.",
                 staminaGain: 16,
                 staminaLoss: 12,
 
@@ -397,8 +416,8 @@
                 staminaGain: 17,
                 staminaLoss: 12,
 
-                bgCorrect: "img/rest.png",
-                bgWrong: "img/no_rest.png"
+                bgCorrect: "img/resting.png", // improve //
+                bgWrong: "img/not_resting.png" // improve //
             },
             {
                 question: "The expedition loses direction in the mountains. Do you seek Native guidance or guess the route yourself?",
@@ -406,19 +425,25 @@
                 choiceBText: "Guess the route",
                 correct: "A",
                 correctText: "You seek guidance. Local knowledge prevents the expedition from becoming lost.",
-                wrongText: "You guess the route... and waste days in the wrong valleys. Eventually, you must seek guidance anyway.",
+                wrongText: "You guess the route and waste days in the wrong valleys. Eventually, you must seek guidance anyway.",
                 staminaGain: 18,
-                staminaLoss: 15
+                staminaLoss: 15,
+
+                bgCorrect: "img/guidance.png",
+                bgWrong: "img/guess.png"
             },
             {
                 question: "A freezing river blocks the path. Do you build a safer crossing or rush through quickly?",
                 choiceAText: "Build a safe crossing",
                 choiceBText: "Rush through the river",
                 correct: "A",
-                correctText: "You build a safer crossing. Wet clothing in freezing weather can be deadly.",
-                wrongText: "You rush through... people get soaked. You are forced to stop and build shelter to recover.",
+                correctText: "You safely cross the freezing river.",
+                wrongText: "You rush through... people get soaked. You are forced to stop and build shelter to prevent frostbite.",
                 staminaGain: 16,
-                staminaLoss: 12
+                staminaLoss: 12,
+
+                bgCorrect: "img/safe.png", // improve //
+                bgWrong: "img/rush.png" // get //
             },
             {
                 question: "A blizzard begins at night. Do you build shelter immediately or keep moving?",
@@ -428,7 +453,10 @@
                 correctText: "You build shelter. The blizzard passes, and the group survives the night.",
                 wrongText: "You keep moving... visibility disappears. You are forced to stop and build shelter anyway.",
                 staminaGain: 15,
-                staminaLoss: 14
+                staminaLoss: 14,
+
+                bgCorrect: "img/build.png", // get //
+                bgWrong: "img/moving.png" // get //
             }
         ];
 
@@ -514,7 +542,7 @@
                 playSound(correctSound);
                 changeBackground(step.bgCorrect);
 
-               
+
 
                 if (wrongAnswers[stepIndex]) {
                     stamina += step.staminaLoss;
@@ -546,7 +574,7 @@
                 changeBackground(step.bgWrong);
 
                 stamina -= step.staminaLoss;
-                if (stamina < 0) stamina = 0; 
+                if (stamina < 0) stamina = 0;
 
                 wrongAnswers[stepIndex] = true;
 
