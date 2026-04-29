@@ -302,6 +302,19 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
         .hidden {
             display: none !important;
         }
+
+        #gameFooter {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 14px;
+            color: white;
+            background: rgba(0, 0, 0, 0.55);
+            padding: 6px 10px;
+            border-radius: 10px;
+            z-index: 100;
+        }
     </style>
 </head>
 
@@ -313,12 +326,14 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
             <div id="introBox">
                 <h1>Chapter 6: Nez Perce Help</h1>
                 <p>
-                    <strong style="color:gold">Fall 1805. Idaho Territory.</strong><br><br>
-                    After crossing the brutal Bitterroot Mountains, Lewis and Clark's men arrive starving, exhausted,
-                    and sick.<br><br>
+                    After crossing the mountains, Lewis and Clark's men arrive starving, exhausted, and sick.
+                    They spot a neighboring tribe nearby and want to ask for help!
+                </p>
+                <p>
                     <b>How to Play:</b><br>
-                    Help Lewis and Clark secure the trust of the Nez Perce people by choosing the most diplomatic
-                    dialogue. Fill your Trust Bar to succeed!
+                    - Help Lewis and Clark secure the trust of the Nez Perce people by choosing the most diplomatic
+                    dialogue.<br>
+                    - Fill your Trust Bar to succeed!
                 </p>
                 <button class="main-btn" id="start-btn">▶ START GAME</button>
             </div>
@@ -348,8 +363,13 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
             <div class="end-box">
                 <h1>Great Alliance!</h1>
                 <p class="end-desc">
-                    The Nez Perce helped you recover, build canoes, and continue west toward the Pacific Ocean. Your
-                    diplomacy saved the expedition!
+                    The Nez Perce helped Lewis and Clark recover, build canoes, and continue west toward the Pacific
+                    Ocean.
+                </p>
+                <p class="end-desc">
+                    In 1805, the Nez Perce provided vital food, shelter, and horses, with Chief Twisted Hair even
+                    mapping the river routes on elk hide.<br><br>
+                    Without them, the expedition would have likely failed!
                 </p>
                 <a href="chapter7.html"><button class="main-btn" id="next-btn">▶ CONTINUE</button></a>
             </div>
@@ -365,6 +385,10 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
                 <button class="main-btn" onclick="location.reload()">↺ TRY AGAIN</button>
             </div>
         </div>
+
+        <footer id="gameFooter">
+            (C) Sophia Deason, Marilyn Gable, & Dalila Drugovic 2026
+        </footer>
 
     </div>
 
