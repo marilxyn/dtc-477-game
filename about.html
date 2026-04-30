@@ -275,12 +275,12 @@
                 </section>
 
                 <section>
-                    <h2>Role & Name</h2>
-                    <p>....... was responsible for the following:</p>
+                    <h2>Developer Marilyn Gable</h2>
+                    <p>Marilyn Gable was responsible for the following:</p>
                     <ul>
-                        <li>...........</li>
-                        <li>...........</li>
-                        <li>...........</li>
+                        <li>Title and Intro Page - Following Dalila's Styling for the outro section.</li>
+                        <li>Chapter 1: What are you packing?</li>
+                        <li>Chapter 2: Up the Missouri River</li>
                     </ul>
                 </section>
 
@@ -328,8 +328,7 @@
                         <div class="ai-card">
                             <h3>Chat GPT</h3>
                             <ul>
-                                <li><a href="https://chatgpt.com/share/69ed916c-fc6c-83e8-9e88-70c73d72c206"
-                                        target="_blank">Chat Log 1</a></li>
+                                <li><a href="https://chatgpt.com/share/69ed916c-fc6c-83e8-9e88-70c73d72c206" target="_blank">Chat Log 1</a></li>
                                 <li><a href="" target="_blank">Chat Log 2</a></li>
                                 <li><a href="#" target="_blank">Chat Log 3</a></li>
                             </ul>
@@ -352,8 +351,7 @@
                         <div class="ai-card">
                             <h3>Claude</h3>
                             <ul>
-                                <li><a href="https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0 "
-                                        target="_blank">Chat Log 1</a></li>
+                                <li><a href="https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0 " target="_blank">Chat Log 1</a></li>
                                 <li><a href="" target="_blank">Chat Log 2</a></li>
                                 <li><a href="" target="_blank">Chat Log 3</a></li>
                             </ul>
@@ -369,7 +367,7 @@
     </div>
 
     <script>
-        
+
         const sfxBGM = new Audio("sounds/music_outro.mp3");
         sfxBGM.loop = true;
         sfxBGM.volume = 0.4;
@@ -383,7 +381,7 @@
             });
         }, 1000);
 
-        document.body.addEventListener("click", function() {
+        document.body.addEventListener("click", function () {
             if (sfxBGM.paused) {
                 sfxBGM.play();
                 clearInterval(playAttempt);
@@ -399,12 +397,12 @@
             if (playPromise !== undefined) {
                 playPromise.then(_ => {
                     // Change history.back() to window.location.href
-                    setTimeout(() => { window.location.href='outro.html'; }, 150);
+                    setTimeout(() => { window.location.href = 'outro.html'; }, 150);
                 }).catch(error => {
-                    window.location.href='outro.html';
+                    window.location.href = 'outro.html';
                 });
             } else {
-                window.location.href='outro.html';
+                window.location.href = 'outro.html';
             }
         });
     </script>

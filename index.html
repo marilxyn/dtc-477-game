@@ -27,6 +27,201 @@
             transition: background-image 0.5s ease-in-out;
         }
 
+        #landingModal {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.92);
+        }
+
+        .modal-box {
+            position: relative;
+            width: min(560px, 90vw);
+            background: #0d0a06;
+            border: 4px solid gold;
+            border-radius: 16px;
+            padding: 48px 40px 40px;
+            text-align: center;
+            box-shadow: 0 0 0 8px #3a2a00, 0 0 60px rgba(255, 200, 0, 0.25);
+        }
+
+        .modal-box::before,
+        .modal-box::after {
+            content: '✦';
+            position: absolute;
+            color: gold;
+            font-size: 18px;
+            opacity: 0.6;
+        }
+
+        .modal-box::before {
+            top: 12px;
+            left: 16px;
+        }
+
+        .modal-box::after {
+            top: 12px;
+            right: 16px;
+        }
+
+        .modal-corner-bl,
+        .modal-corner-br {
+            position: absolute;
+            color: gold;
+            font-size: 18px;
+            opacity: 0.6;
+        }
+
+        .modal-corner-bl {
+            bottom: 12px;
+            left: 16px;
+        }
+
+        .modal-corner-br {
+            bottom: 12px;
+            right: 16px;
+        }
+
+        .modal-eyebrow {
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 13px;
+            letter-spacing: 4px;
+            color: #b8860b;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .modal-title {
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: clamp(26px, 5vw, 40px);
+            color: gold;
+            text-shadow: 3px 3px 0 #5c4033, 0 0 30px rgba(255, 200, 0, 0.4);
+            line-height: 1.2;
+            margin: 0 0 8px;
+        }
+
+        .modal-subtitle {
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 15px;
+            color: #c8a96e;
+            letter-spacing: 1px;
+            margin-bottom: 36px;
+        }
+
+        .modal-divider {
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, gold, transparent);
+            margin: 0 auto 36px;
+            opacity: 0.5;
+        }
+
+        .modal-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .btn-start {
+            width: 220px;
+            padding: 14px 0;
+            background: gold;
+            border: none;
+            border-radius: 8px;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 20px;
+            cursor: pointer;
+            color: #2a1a00;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 0 #7a5c00, 0 6px 20px rgba(255, 200, 0, 0.3);
+            transition: transform 0.08s, box-shadow 0.08s;
+        }
+
+        .btn-start:hover {
+            background: #ffb700;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #7a5c00, 0 10px 30px rgba(255, 200, 0, 0.4);
+        }
+
+        .btn-start:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #7a5c00;
+        }
+
+        .btn-about {
+            width: 220px;
+            padding: 12px 0;
+            background: transparent;
+            border: 2px solid #7a5c00;
+            border-radius: 8px;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+            color: #c8a96e;
+            letter-spacing: 2px;
+            transition: border-color 0.15s, color 0.15s, background 0.15s;
+        }
+
+        .btn-about:hover {
+            border-color: gold;
+            color: gold;
+            background: rgba(255, 200, 0, 0.07);
+        }
+
+        #aboutPanel {
+            display: none;
+            text-align: left;
+        }
+
+        #aboutPanel.visible {
+            display: block;
+        }
+
+        #mainPanel.hidden {
+            display: none;
+        }
+
+        .about-back {
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 13px;
+            color: #b8860b;
+            cursor: pointer;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .about-back:hover {
+            color: gold;
+        }
+
+        .about-title {
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 24px;
+            color: gold;
+            margin-bottom: 18px;
+            text-shadow: 2px 2px 0 #5c4033;
+        }
+
+        .about-body {
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 14px;
+            color: #d4b98a;
+            line-height: 1.8;
+        }
+
+        .about-body p {
+            margin: 0 0 14px;
+        }
+
+        .about-body strong {
+            color: gold;
+        }
+
         #introScreen,
         #packingScreen {
             position: absolute;
@@ -175,6 +370,43 @@
             background: orange;
         }
 
+        #mute-btn {
+            position: fixed;
+            bottom: 18px;
+            right: 18px;
+            z-index: 300;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #7a5c00;
+            border-radius: 8px;
+            color: gold;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.15s, background 0.15s;
+        }
+
+        #mute-btn:hover {
+            background: rgba(255, 200, 0, 0.12);
+            border-color: gold;
+        }
+
+        footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #dadada;
+            position: relative;
+            z-index: 999;
+            width: 100%;
+            bottom: 48px;
+            font-family: pixelify sans, sans-serif;
+        }
+
         @media (max-width: 700px) {
             #dialogueBox {
                 height: 380px;
@@ -192,11 +424,57 @@
             .big-title {
                 font-size: 38px;
             }
+
+            .modal-box {
+                padding: 40px 24px 32px;
+            }
         }
     </style>
 </head>
 
 <body>
+
+    <audio id="bgMusic" src="sounds/ch-1-bg-music.mp3" loop></audio>
+    <audio id="clickSound" src="sounds/button_click.mp3"></audio>
+
+    <div id="landingModal">
+        <div class="modal-box">
+            <span class="modal-corner-bl">✦</span>
+            <span class="modal-corner-br">✦</span>
+
+            <div id="mainPanel">
+                <div class="modal-eyebrow">★ An Educational Game ★</div>
+                <h1 class="modal-title">The Adventures of<br>Lewis &amp; Clark</h1>
+                <p class="modal-subtitle">Corps of Discovery · 1804</p>
+                <div class="modal-divider"></div>
+                <div class="modal-btn-group">
+                    <button class="btn-start" onclick="closeLanding()">▶ START</button>
+                    <button class="btn-about" onclick="showAbout()">ABOUT</button>
+                </div>
+            </div>
+
+            <div id="aboutPanel">
+                <span class="about-back" onclick="showMain()">◄ BACK</span>
+                <div class="about-title">About This Game</div>
+                <div class="about-body">
+                    <p>
+                        <strong>The Adventures of Lewis &amp; Clark</strong> is an interactive educational game that puts you in the boots of the Corps of Discovery on their historic 1804–1806 expedition across the American West.
+                    </p>
+                    <p>
+                        Make real decisions about what to pack, who to trust, and how to navigate — just as Meriwether Lewis and William Clark did more than 200 years ago.
+                    </p>
+                    <p>
+                        <strong>Learning Objectives:</strong> U.S. westward expansion, geography, Native American diplomacy, and frontier survival.
+                    </p>
+                    <p>
+                        Recommended for grades <strong>4 – 8</strong>.
+                    </p>
+                    <a href="about.html" target="_blank"><button>About the Team</button></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
     <div id="gameArea">
 
@@ -230,8 +508,48 @@
 
     </div>
 
-    <script>
+    <button id="mute-btn" onclick="toggleMute()" title="Toggle music">♪</button>
 
+    <footer>&copy; 2026 Dalila Drugovik, Sofia Deason, Marilyn Gable </footer>
+
+    <script>
+        // Developed by Marilyn Gable
+        // Template by Dalila Drugovik (see outro page)
+        // Assitance from ChatGPT game mentor, Claude, and the DTC 477 class at WSUV Spring 2026
+
+        const music = document.getElementById("bgMusic");
+        const clickSound = document.getElementById("clickSound");
+        music.volume = 0.5;
+        clickSound.volume = 0.8;
+
+        function playClick() {
+            clickSound.currentTime = 0;
+            clickSound.play();
+        }
+
+        function closeLanding() {
+            playClick();
+            document.getElementById("landingModal").style.display = "none";
+            music.play();
+        }
+
+        function toggleMute() {
+            playClick();
+            music.muted = !music.muted;
+            document.getElementById("mute-btn").textContent = music.muted ? "♩" : "♪";
+        }
+
+        function showAbout() {
+            playClick();
+            document.getElementById("mainPanel").classList.add("hidden");
+            document.getElementById("aboutPanel").classList.add("visible");
+        }
+
+        function showMain() {
+            playClick();
+            document.getElementById("aboutPanel").classList.remove("visible");
+            document.getElementById("mainPanel").classList.remove("hidden");
+        }
 
         const STORY = [
             {
@@ -270,7 +588,7 @@
         let timer;
 
         function startIntro() {
-
+            playClick();
             document.getElementById("introScreen").style.display = "none";
             document.getElementById("scene-label").style.display = "block";
             document.getElementById("dialogueBox").style.display = "block";
@@ -281,13 +599,10 @@
             clearInterval(timer);
             el.innerHTML = "";
             typing = true;
-
             let i = 0;
-
             timer = setInterval(() => {
                 el.innerHTML += str[i] === "\n" ? "<br>" : str[i];
                 i++;
-
                 if (i >= str.length) {
                     clearInterval(timer);
                     typing = false;
@@ -297,13 +612,11 @@
 
         function loadStep(i) {
             const s = STORY[i];
-
             document.getElementById("gameArea").style.backgroundImage = s.bg;
             document.getElementById("scene-label").textContent = s.label;
             document.getElementById("speaker").textContent = s.speaker;
 
             const portrait = document.getElementById("portrait-img");
-
             if (s.img) {
                 portrait.src = s.img;
                 portrait.style.display = "block";
@@ -313,11 +626,9 @@
 
             const text = document.getElementById("dlg-text");
             text.className = s.isQuote ? "is-quote" : "";
-
             document.getElementById("next-btn").textContent = s.nextLabel || "NEXT ►";
 
             buildPips(i);
-
             fullText = s.text;
             typewrite(s.text, text);
         }
@@ -325,7 +636,6 @@
         function buildPips(current) {
             const c = document.getElementById("step-pips");
             c.innerHTML = "";
-
             STORY.forEach((_, i) => {
                 const d = document.createElement("div");
                 d.className = "pip" + (i < current ? " done" : i === current ? " current" : "");
@@ -334,6 +644,7 @@
         }
 
         function advanceStory() {
+            playClick();
             if (typing) {
                 clearInterval(timer);
                 typing = false;
@@ -355,6 +666,7 @@
         function startPackingGame() {
             window.location.href = "chapter-1.html";
         }
+
     </script>
 
 </body>

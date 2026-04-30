@@ -100,7 +100,6 @@
             transform: scale(0.95);
         }
 
-        /* HUD */
         #hud {
             position: fixed;
             top: 12px;
@@ -113,20 +112,58 @@
             text-align: right;
             pointer-events: none;
         }
+
+        /* Mute button */
+        #muteBtn {
+            position: fixed;
+            bottom: 14px;
+            right: 16px;
+            z-index: 600;
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid gold;
+            border-radius: 8px;
+            color: gold;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-size: 14px;
+            padding: 5px 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #muteBtn:hover {
+            background: rgba(80, 60, 0, 0.7);
+        }
+
+        footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #dadada;
+            position: relative;
+            z-index: 999;
+            width: 100%;
+            bottom: 48px;
+            font-family: pixelify sans, sans-serif;
+        }
     </style>
 </head>
 
 <body>
     <canvas id="game"></canvas>
 
-    <!-- HUD -->
+    <!-- Background music -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="sounds/ch-2-music.mp3" type="audio/mpeg">
+    </audio>
+
     <div id="hud">
         <div>Progress: <span id="distanceValue">0</span>%</div>
         <div>Crashes: <span id="restartValue">0</span></div>
         <div>Status: <span id="statusValue">Ready</span></div>
     </div>
 
-    <!-- Start overlay -->
+    <button id="muteBtn" class="hidden">🔊 Mute</button>
+
     <div id="startOverlay">
         <div class="modal-content">
             <h2>Continue the Journey</h2>
@@ -139,7 +176,6 @@
         </div>
     </div>
 
-    <!-- Crash overlay -->
     <div id="crashOverlay" class="hidden">
         <div class="modal-content">
             <h2>You Hit Something!</h2>
@@ -148,7 +184,6 @@
         </div>
     </div>
 
-    <!-- Finish overlay -->
     <div id="finishOverlay" class="hidden">
         <div class="modal-content">
             <h2>Well Done!</h2>
@@ -156,11 +191,41 @@
                 You successfully completed this part of the journey.
                 The Corps of Discovery presses onward.
             </p>
+            <p>As Lewis and Clark traveled up the Missouri River, the journey became physically demanding and unpredictable. The river's strong currents, shifting sandbars, and hidden obstacles made travel slow and dangerous, often forcing the crew to push or pull their boats upstream by hand. They faced extreme weather, from intense heat to sudden storms, and had to rely on teamwork to keep moving forward. Along the way, they met Native American tribes who provided guidance, supplies, and important knowledge of the land. This part of the journey tested their endurance and problem-solving skills as they pushed deeper into unfamiliar territory.</p>
             <button id="nextMinigameButton">CONTINUE ►</button>
         </div>
     </div>
 
+    <footer>&copy; 2026 Dalila Drugovik, Sofia Deason, Marilyn Gable </footer>
+
     <script>
+        // Developed by Marilyn Gable
+        // Assitance from ChatGPT game mentor, Claude, and the DTC 477 class at WSUV Spring 2026
+
+        // LOGIC STEPS:
+        // CHAPTER 2: UP THE MISSOURI RIVER
+
+        // 1. Before the game starts, the user is presented with a modal that gives a brief overview
+        //    of what the minigame is and controls/instructions. A start game button will be present
+        //    at the bottom of the modal. When the user hits that button, the modal will close and
+        //    the game will begin.
+
+        // 2. The game will be composed of a boat sprite - made to look like its going up a river
+        //    with javascript canvas. There will also be a rock sprite and a log sprite.
+
+        // 3. The user can use the left and right arrow keys to steer the boat - and the goal is
+        //    to avoid the rock and log obstacles.
+
+        // 4. If the user hits an obstacle, a modal will pop up saying "Oh no! Lewis and Clark had
+        //    to repair the boat. Try again!" There will also be a try again button. When the user
+        //    hits the try again button, the modal will close and the game will reset.
+
+        // 5. Obstacles are placed on the canvas randomly - so each game experience is different.
+
+        // 6. When the user reaches the end of the game, an outro modal will appear that says
+        //    something like "congratulations! You have successfully sailed up the missouri river!"
+        //    and there will be a button to continue to the next minigame.
+
         const canvas = document.getElementById('game');
         const ctx = canvas.getContext('2d');
 
@@ -173,6 +238,33 @@
         const distanceValue = document.getElementById('distanceValue');
         const restartValue = document.getElementById('restartValue');
         const statusValue = document.getElementById('statusValue');
+
+        // --- Music ---
+        const bgMusic = document.getElementById('bgMusic');
+        const muteBtn = document.getElementById('muteBtn');
+        let musicStarted = false;
+
+        function startMusic() {
+            if (musicStarted) return;
+            bgMusic.volume = 0.6;
+            bgMusic.play().then(() => {
+                musicStarted = true;
+                muteBtn.classList.remove('hidden');
+            }).catch(() => {
+                // Autoplay blocked; music simply won't play
+            });
+        }
+
+        muteBtn.addEventListener('click', () => {
+            if (bgMusic.muted) {
+                bgMusic.muted = false;
+                muteBtn.textContent = '🔊 Mute';
+            } else {
+                bgMusic.muted = true;
+                muteBtn.textContent = '🔇 Unmute';
+            }
+        });
+        // --- End Music ---
 
         const keys = { left: false, right: false };
 
@@ -550,8 +642,8 @@
             }
 
             for (let i = 0; i < 18; i++) {
-                const alpha = (1 - i / 18) * 0.45;
-                ctx.fillStyle = `rgba(20,40,55,${alpha})`;
+                const a = (1 - i / 18) * 0.45;
+                ctx.fillStyle = `rgba(20,40,55,${a})`;
                 ctx.fillRect(Math.round(rl + i * 1.2), 0, 2, H);
                 ctx.fillRect(Math.round(rr - i * 1.2 - 2), 0, 2, H);
             }
@@ -805,12 +897,15 @@
             crashOverlay.classList.add('hidden');
             finishOverlay.classList.add('hidden');
             resetRun(false);
+            startMusic(); // Begin music on START
         }
         function tryAgain() {
             crashOverlay.classList.add('hidden');
             resetRun(true);
         }
         function continueToNextMinigame() {
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
             window.location.href = "chapter-3.html";
         }
 
