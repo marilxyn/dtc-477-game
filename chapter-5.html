@@ -12,7 +12,6 @@
         body {
             margin: 0;
             overflow: hidden;
-            background: url("img/rocky_mountains_bg.png");
             background-size: cover;
             background-position: center;
             font-family: "ariel", sans-serif;
@@ -20,11 +19,11 @@
 
         #gameArea {
             position: relative;
-            z-index: 1;
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            background: url("img/rocky_mountains_bg.png");
+
+            background-image: url("img/rocky_mountains_bg.png");
             background-size: cover;
             background-position: center;
         }
@@ -38,7 +37,10 @@
             position: absolute;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
+
+            /* this is the IMPORTANT part */
+            background: rgba(0, 0, 0, 0.55);
+
             display: flex;
             justify-content: center;
             align-items: center;
@@ -53,6 +55,8 @@
             max-width: 650px;
             text-align: center;
             border-radius: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         #introBox h1 {
@@ -339,6 +343,27 @@
         // CHAPTER 5 - ROCKY MOUNTAIN CROSSING GAME
         // ===================================
 
+        const preloadImages = [
+            "img/rocky_mountains_bg.png",
+            "img/rocky_path_safe.png",
+            "img/trail_blocked.png",
+            "img/rations.png",
+            "img/no_rations.png",
+            "img/resting.png",
+            "img/not_resting.png",
+            "img/guidance.png",
+            "img/guess.png",
+            "img/safe.png",
+            "img/rush.png",
+            "img/build.png",
+            "img/moving.png"
+        ];
+
+        preloadImages.forEach(src => {
+            const img = new Image();
+            img.src = src;
+        });
+
         // ==============================
         // DOM ELEMENTS (UI REFERENCES)
         // ==============================
@@ -459,7 +484,7 @@
                 staminaGain: 16,
                 staminaLoss: 12,
 
-                bgCorrect: "img/safe.png", // improve //
+                bgCorrect: "img/safe.png",
                 bgWrong: "img/rush.png"
             },
             {
@@ -473,7 +498,7 @@
                 staminaLoss: 14,
 
                 bgCorrect: "img/build.png",
-                bgWrong: "img/moving.png" // get //
+                bgWrong: "img/moving.png"
             }
         ];
 
@@ -565,6 +590,8 @@
 
         function changeBackground(imagePath) {
             gameArea.style.backgroundImage = `url('${imagePath}')`;
+            gameArea.style.backgroundSize = "cover";
+            gameArea.style.backgroundPosition = "center";
         }
 
         // ==============================
@@ -639,7 +666,10 @@
 
         function resetGame() {
             state = "intro";
-            gameArea.style.backgroundImage = "url('img/intro_scene.png')";
+
+            gameArea.style.backgroundSize = "cover";
+            gameArea.style.backgroundPosition = "center";
+
             stamina = 0;
             stepIndex = 0;
 
