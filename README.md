@@ -62,44 +62,36 @@ The game consists of an **intro cutscene, 7 chapters (mini-games), and an outro 
 
 ---
 
-## Chapter 3: Into Unknown Land (Spring 1805)
-**Setting:** Leaving Fort Mandan → Rocky Mountains  
+## Chapter 3: Into Unknown Land
+**Setting:** Left Great Plains going into the Northwestern Rocky Mountains
 
 **Gameplay:**  
-- Journal collection mini-game  
-- Click plants and animals to collect entries  
-
-**Journal Modal: Sioux Territory**
-- Dialogue explaining historical context  
-- Map showing location  
+- Click hidden plants and animals in the landscape and match them to their black outlines
+- When animals and plants are correctly matched, a little fact will pop up
+- When the game is won (all 6 are matched), a win screen will pop up with more detailed information about that part of the expedition
 
 ---
 
 ## Chapter 4: Grizzly Country
-**Setting:** Montana plains / foothills  
+**Setting:** Montana plains/foothills  
 
 **Gameplay:**  
 - Bear encounter  
-- Player rapidly presses spacebar to escape  
-
-**Journal Modal: The Three Forks Decision**
-- Missouri River splits into:
-  - Jefferson River  
-  - Madison River  
-  - Gallatin River  
-- Decision point:
-  - Expedition follows **Jefferson River** toward Shoshone territory  
+- Player rapidly presses the spacebar so Lewis and Clark can escape  
+- When the game is won (successfully escapes the bear), a win screen will pop up with more detailed information about that part of the expedition
 
 ---
 
-## Chapter 5: Crossing the Rockies (Bitterroot Mountains)
-**Setting:** Rocky Mountains  
+## Chapter 5: Rocky Mountain Crossing
+**Setting:** Rocky Mountains 
 
 **Gameplay:**  
-- Path decision mechanic  
+- Path decision mechanic (perceived user choice)  
 - Choice:
-  - Shortcut → leads to cliffs and snowstorm (failure)  
-  - Follow guide → correct path  
+  - Shortcut → path is blocked (failure)  
+  - Follow the guide → correct path  
+- This setup continues for 7 questions (each showing a different picture)
+- When the game is won (answers all 7 questions correctly and win meter fills), a win screen will pop up with more detailed information about that part of the expedition
 
 ---
 
