@@ -418,22 +418,26 @@
         // something like that’s not a match Lewis and Clark would make. 
         // There is a slight delay after the last animal is matched, so the user has enough time to read the text box. 
         // After the delay is over, a win screen pops up. 
-        // The win screen has a win title, a short description, and a continue button that connects to the next minigame/chapter.  
+        // The win screen has a win title, a short description, and a continue button that connects to the next minigame/chapter. //
 
-        // HTML JS Menor Link 1 - https://chatgpt.com/share/69ded585-e448-83e8-962d-da16570ed73f // 
-        // HTML JS Mentor Link 2 - https://chatgpt.com/share/69eab560-8e20-83e8-ad06-7331acb46a23 //
-        // HTML JS Mentor Link 3 - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6 // 
-        // HTML JS Mentor Link 4 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 // 
-        // HTML JS Mentor Link 5 - https://chatgpt.com/share/69f2612c-c2dc-83e8-a3f8-641d414df636 // 
-        // HTML JS Mentor Link 6 - https://chatgpt.com/share/69f26480-7c1c-83e8-bbd0-efb2363da66d // 
-        // HTML JS Mentor Link 7 - https://chatgpt.com/share/69f265b0-4d78-83e8-814e-add98f7d5c70 //
+        //*I meant to use HTML5 Mentor, but I would accidentally click on and use JS Mentor sometimes // 
+
+        // HTML5 Menor Link 1 - https://chatgpt.com/share/69ded585-e448-83e8-962d-da16570ed73f // 
+        // JS Mentor Link 2 - https://chatgpt.com/share/69eab560-8e20-83e8-ad06-7331acb46a23 // 
+        // HTML5 Mentor Link 3 - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6 // 
+        // HTML5 Mentor Link 4 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 //
+        // ChatGPT Link 5 - https://chatgpt.com/share/69f2612c-c2dc-83e8-a3f8-641d414df636 //
+        // ChatGPT Link 6 - https://chatgpt.com/share/69f26480-7c1c-83e8-bbd0-efb2363da66d //
+        // JS Mentor Link 7 - https://chatgpt.com/share/69f265b0-4d78-83e8-814e-add98f7d5c70 // 
+        // ChatGPT Link 8 - https://chatgpt.com/share/69f3a84a-6b2c-83e8-9d72-2d597b38ddab //
 
         // ==============================
         // CHAPTER 3 - Into Unknown Land GAME
         // ==============================
 
-        // ADD COMMENTS OF LOGIC THROUGHOUT WITH CHAT GPT //
-        // BACKGROUND MUSIC //
+        // ==============================
+        // GAME STATE VARIABLES
+        // ==============================
 
         let selectedItem = null;
         let matchedCount = 0;
@@ -450,6 +454,10 @@
         const errorPopup = document.getElementById("errorPopup");
         const winScreen = document.getElementById("winScreen");
         const continueWinBtn = document.getElementById("continueWinBtn");
+
+        // ==============================
+        // EDUCATIONAL FACTS DATABASE
+        // ==============================
 
         const facts = {
             bison: "Lewis and Clark recorded massive herds of bison across the Great Plains during their expedition.",
@@ -468,6 +476,10 @@
 
         let currentSound = null;
 
+        // ==============================
+        // AUDIO SYSTEM (SOUNDS & MUSIC)
+        // ==============================
+
         const sounds = {
             bison: new Audio("sounds/bison.mp3"),
             grizzly: new Audio("sounds/grizzly.mp3"),
@@ -476,26 +488,50 @@
 
         const buttonClickSound = new Audio("sounds/button_click.mp3");
 
+        const backgroundMusic = new Audio("sounds/music_outro.mp3");
+        backgroundMusic.loop = true;
+        backgroundMusic.volume = 0.50; // low so sound effects are still heard
+
+        // ==============================
+        // STOP ALL AUDIO FUNCTION
+        // ==============================
+
         function stopAllSounds() {
+            // stop animal sounds
             Object.values(sounds).forEach(function (sound) {
                 sound.pause();
                 sound.currentTime = 0;
             });
 
+            // stop current animal sound
             if (currentSound) {
                 currentSound.pause();
                 currentSound.currentTime = 0;
                 currentSound = null;
             }
+
+            // stop background music
+            backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
         }
+
+        // ==============================
+        // GAME START EVENT
+        // ==============================
 
         startBtn.addEventListener("click", function () {
 
             buttonClickSound.currentTime = 0;
             buttonClickSound.play();
 
+            backgroundMusic.play();
+
             introScreen.style.display = "none";
         });
+
+        // ==============================
+        // ITEM SELECTION SYSTEM
+        // ==============================
 
         // CLICKING LANDSCAPE ITEMS
         hiddenItems.forEach(function (item) {
@@ -517,6 +553,10 @@
             });
         });
 
+        // ==============================
+        // MATCHING SYSTEM (CORE GAMEPLAY)
+        // ==============================
+
         // CLICKING OUTLINE SLOTS
         outlineSlots.forEach(function (slot) {
             slot.addEventListener("click", function () {
@@ -529,7 +569,7 @@
                     return;
                 }
 
-                // Correct match
+                // --- Correct Match Logic ---
                 if (slot.dataset.name === selectedItem) {
                     let lastItem = selectedItem;
                     errorPopup.style.display = "none";
@@ -567,6 +607,10 @@
                     selectedItem = null;
                     matchedCount++;
 
+                    // ==============================
+                    // WIN CONDITION CHECK
+                    // ==============================
+
                     if (matchedCount === totalItems) {
 
                         factPopup.style.display = "block";
@@ -581,7 +625,7 @@
                     }
 
                 } else {
-                    // Wrong match
+                    // --- Wrong Match Logic ---
                     slot.classList.add("wrongMatch");
 
                     errorPopup.style.display = "block";
@@ -601,10 +645,17 @@
             continueBtn.style.display = "none";
         });
 
+        // ==============================
+        // LEVEL TRANSITION (CHAPTER CHANGE)
+        // ==============================
+
         continueWinBtn.addEventListener("click", function () {
 
             buttonClickSound.currentTime = 0;
             buttonClickSound.play();
+
+            backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
 
             setTimeout(function () {
                 window.location.href = "chapter-4.html";

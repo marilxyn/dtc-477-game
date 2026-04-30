@@ -114,7 +114,7 @@
 
         #dialogueBox {
             position: absolute;
-            bottom: 20px;
+            bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
             width: 85%;
@@ -382,7 +382,7 @@
 
     <script>
         // Developer and Designer - Sophia Deason //
-
+        
         // Logic Steps - Chapter 4 starts, and the user sees an intro scene. 
         // The intro scene contains the title, a slight description of what's happening, and a start game button. 
         // The start button connects to the game. 
@@ -397,22 +397,25 @@
         // If the user doesn’t escape the grizzly, then the user is directed to the same fail screen from guessing stand their ground. 
         // But if the user fills the stamina meter and wins, then they are taken to a win outro screen.
         // The outro win screen has a you win type of title, with a short description of that part of the
-        // description and a continue button that connects to the next minigame/chapter.
+        // description and a continue button that connects to the next minigame/chapter. //
 
-        // HTML JS Mentor Link 1 - https://chatgpt.com/share/69e53c9d-60e0-83e8-8a2b-760bcffd9590 // 
-        // HTML JS Mentor Link 2 - https://chatgpt.com/share/69eab560-8e20-83e8-ad06-7331acb46a23 // 
-        // HTML JS Mentor Link 3 - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6 // 
-        // HTML JS Mentor Link 4 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 //
-        // HTML JS Mentor Link 5 - https://chatgpt.com/share/69f2612c-c2dc-83e8-a3f8-641d414df636 // 
-        // HTML JS Mentor Link 6 - https://chatgpt.com/share/69f265b0-4d78-83e8-814e-add98f7d5c70 // 
+        //*I meant to use HTML5 Mentor, but I would accidentally click on and use JS Mentor sometimes //
+
+        // HTML5 Mentor Link 1 - https://chatgpt.com/share/69e53c9d-60e0-83e8-8a2b-760bcffd9590 // 
+        // JS Mentor Link 2 - https://chatgpt.com/share/69eab560-8e20-83e8-ad06-7331acb46a23 // 
+        // HTML5 Mentor Link 3 - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6 // 
+        // HTML5 Mentor Link 4 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 // 
+        // ChatGPT Link 5 - https://chatgpt.com/share/69f2612c-c2dc-83e8-a3f8-641d414df636 // 
+        // JS Mentor Link 6 - https://chatgpt.com/share/69f265b0-4d78-83e8-814e-add98f7d5c70 // 
+        // ChatGPT Link 7 - https://chatgpt.com/share/69f3a84a-6b2c-83e8-9d72-2d597b38ddab //
 
         // ==============================
         // CHAPTER 4 - Grizzly Country GAME
         // ==============================
 
-        // ADD COMMENTS OF LOGIC THROUGHOUT WITH CHAT GPT //
-        // BACKGROUND MUSIC //
-
+        // ==============================
+        // DOM ELEMENTS (SCREEN + UI REFERENCES)
+        // ==============================
 
         const introScreen = document.getElementById("introScreen");
         const startBtn = document.getElementById("startBtn");
@@ -435,14 +438,15 @@
 
 
         const failScreen = document.getElementById("failScreen");
-        const restartBtn = document.getElementById("restartBtn");
-
 
         const lewis = document.getElementById("lewis");
         const clark = document.getElementById("clark");
         const bear = document.getElementById("bear");
 
-        // SOUNDS
+        // ==============================
+        // SOUND SYSTEM (AUDIO SETUP)
+        // ==============================
+
         const runningSound = new Audio("sounds/running.mp3");
         const bearRunningSound = new Audio("sounds/running_bear.mp3");
         bearRunningSound.volume = 1.0;
@@ -450,23 +454,44 @@
         const buttonClickSound = new Audio("sounds/button_click.mp3");
         const correctSound = new Audio("sounds/correct.mp3");
         const incorrectSound = new Audio("sounds/incorrect.mp3");
+        const backgroundMusic = new Audio("sounds/music_ch.7.mp3");
+        backgroundMusic.loop = true;
+        backgroundMusic.volume = 0.20;
 
-        // make them loop so they don’t restart every frame
-        runningSound.loop = true;
-        bearRunningSound.loop = true;
+        const failBox = document.getElementById("failBox");
 
-        // optional volume control
+        function stopAllSounds() {
+            backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
+
+            runningSound.pause();
+            runningSound.currentTime = 0;
+
+            bearRunningSound.pause();
+            bearRunningSound.currentTime = 0;
+        }
+
+        // volume control
         runningSound.volume = 0.6;
-        bearRunningSound.volume = 0.6;
+        bearRunningSound.volume = 1.0;
 
+        // ==============================
+        // GAME STATE VARIABLES
+        // ==============================
 
         let state = "intro";
+        let failReason = "";
 
-
-        // positions
+        // ==============================
+        // POSITION SYSTEM (PLAYER / BEAR)
+        // ==============================
         let playerX = 300;
         let bearX = 1200;
         let gameStarted = false;
+
+        // ==============================
+        // SPRITESHEET ANIMATION SYSTEM
+        // ==============================
 
         const sheetCols = 6;
         const sheetRows = 6;
@@ -502,8 +527,10 @@
         let bearSpeed = 1.2;
         let playerSpeed = 0;
 
+        // ==============================
+        // SPEED / STAMINA METER SYSTEM
+        // ==============================
 
-        // speed meter system
         let speedMeter = 0;
         let maxSpeedMeter = 90;
         let animTick = 0;
@@ -511,6 +538,9 @@
 
         let spacePressed = false;
 
+        // ==============================
+        // RESET GAME FUNCTION
+        // ==============================
 
         function resetGame() {
             state = "intro";
@@ -548,6 +578,9 @@
             speedBarContainer.style.display = "none";
         }
 
+        // ==============================
+        // SPRITE POSITION UPDATES
+        // ==============================
 
         function updateSprites() {
             lewis.style.left = playerX + "px";
@@ -563,6 +596,10 @@
             bear.style.top = bearY + "px";
         }
 
+        // ==============================
+        // BUTTON EVENTS (INTRO + CHOICE SCREEN)
+        // ==============================
+
         startBtn.addEventListener("click", () => {
             buttonClickSound.currentTime = 0;
             buttonClickSound.play();
@@ -575,6 +612,9 @@
         runBtn.addEventListener("click", () => {
             correctSound.currentTime = 0;
             correctSound.play();
+
+            backgroundMusic.currentTime = 0;
+            backgroundMusic.play();
 
             choiceScreen.style.display = "none";
             state = "escape";
@@ -601,24 +641,49 @@
             bearRunningSound.play();
         });
 
+        // ==============================
+        // FAIL SYSTEM (STAND / CAUGHT)
+        // ==============================
+
         standBtn.addEventListener("click", () => {
+
+            failReason = "stand";
 
             incorrectSound.currentTime = 0;
             incorrectSound.play();
 
+            stopAllSounds();
+
             choiceScreen.style.display = "none";
             state = "fail";
+
+            if (failReason === "stand") {
+                failBox.querySelector("h1").textContent = "Wrong Choice...";
+                failBox.querySelector("p").textContent =
+                    "Standing still in grizzly territory was extremely dangerous. In unfamiliar wilderness, hesitation often gave predators the advantage.";
+            }
+
             failScreen.style.display = "flex";
         });
 
-        restartBtn.addEventListener("click", () => {
+        document.addEventListener("click", (e) => {
+            if (e.target.id === "restartBtn") {
+                buttonClickSound.currentTime = 0;
+                buttonClickSound.play();
 
-            buttonClickSound.currentTime = 0;
-            buttonClickSound.play();
-
-            resetGame();
+                stopAllSounds();
+                resetGame();
+            }
         });
 
+        continueBtn.addEventListener("click", () => {
+            backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
+        });
+
+        // ==============================
+        // INPUT SYSTEM (SPACE BAR RUN CONTROL)
+        // ==============================
 
         document.addEventListener("keydown", (e) => {
             if (e.code === "Space") {
@@ -663,6 +728,10 @@
             clark.style.backgroundPosition =
                 `-${clarkFrameX * clarkFrame.w}px -${clarkFrameY * clarkFrame.h}px`;
         }
+
+        // ==============================
+        // 🔁 MAIN GAME LOOP (CORE LOGIC)
+        // ==============================
 
         function gameLoop() {
             if (state === "escape" && !gameStopped) {
@@ -763,6 +832,9 @@
                     state = "win";
                     gameStopped = true;
 
+                    backgroundMusic.pause();
+                    backgroundMusic.currentTime = 0;
+
                     // 🔇 STOP ALL SOUNDS
                     runningSound.pause();
                     bearRunningSound.pause();
@@ -779,9 +851,21 @@
 
                 // FAIL
                 if (Math.abs(bearX - playerX) < 40) {
+
+                    failReason = "caught";
                     state = "fail";
                     gameStopped = true;
 
+                    incorrectSound.currentTime = 0;
+                    incorrectSound.play();
+
+                    stopAllSounds();
+
+                    if (failReason === "caught") {
+                        failBox.querySelector("h1").textContent = "The Grizzly Caught Them...";
+                        failBox.querySelector("p").textContent =
+                            "Even experienced explorers could not outrun a charging grizzly in dense wilderness. Once the bear closed the distance, escape became nearly impossible.";
+                    }
 
                     failScreen.style.display = "flex";
                     dialogueBox.style.display = "none";
@@ -795,6 +879,9 @@
             requestAnimationFrame(gameLoop);
         }
 
+        // ==============================
+        // START GAME INITIALIZATION
+        // ==============================
 
         resetGame();
         gameStopped = false;

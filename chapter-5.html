@@ -12,12 +12,15 @@
         body {
             margin: 0;
             overflow: hidden;
-            background: black;
+            background: url("img/rocky_mountains_bg.png");
+            background-size: cover;
+            background-position: center;
             font-family: "ariel", sans-serif;
         }
 
         #gameArea {
             position: relative;
+            z-index: 1;
             width: 100vw;
             height: 100vh;
             overflow: hidden;
@@ -321,23 +324,26 @@
         // when they get taken back to that question they got wrong and answer it correctly, the meter fills. 
         // This sequence follows for 7 questions, and then the user wins, the meter fills, and they are prompted with a win outro scene.
         // The win outro scene says a little you win type of title and then gives some background on that part of the 
-        // expedition with a continue button that connects to the next minigame/chapter.  //
+        // expedition with a continue button that connects to the next minigame/chapter. //
 
-        // HTML JS Mentor Link 1 - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6 // 
-        // HTML JS Mentor Link 2 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 // 
-        // HTML JS Mentor Link 3 - https://chatgpt.com/share/69f2612c-c2dc-83e8-a3f8-641d414df636 //
-        // HTML JS Mentor Link 4 - https://chatgpt.com/share/69f26480-7c1c-83e8-bbd0-efb2363da66d //
-        // HTML JS Mentor Link 5 - https://chatgpt.com/share/69f265b0-4d78-83e8-814e-add98f7d5c70 // 
+        //*I meant to use HTML5 Mentor, but I would accidentally click on and use JS Mentor sometimes//
+
+        // HTML5 Mentor Link 1 - https://chatgpt.com/share/69e5543f-0664-83e8-aaae-4c56c618c3a6 //
+        // HTML5 Mentor Link 2 - https://chatgpt.com/share/69f0f307-c9a0-83e8-bbb8-473600ab09d2 // 
+        // ChatGPT Link 3 - https://chatgpt.com/share/69f2612c-c2dc-83e8-a3f8-641d414df636 //
+        // ChatGPT Link 4 - https://chatgpt.com/share/69f26480-7c1c-83e8-bbd0-efb2363da66d // 
+        // JS Mentor Link 5 - https://chatgpt.com/share/69f265b0-4d78-83e8-814e-add98f7d5c70 // 
+        // ChatGPT Link 6 - https://chatgpt.com/share/69f3a84a-6b2c-83e8-9d72-2d597b38ddab //
+
+        // ===================================
+        // CHAPTER 5 - ROCKY MOUNTAIN CROSSING GAME
+        // ===================================
 
         // ==============================
-        // CHAPTER 5 - ROCKY MOUNTAINS GAME
+        // DOM ELEMENTS (UI REFERENCES)
         // ==============================
 
-        // ADD COMMENTS OF LOGIC THROUGHOUT WITH CHAT GPT //
         // ADD THE REST OF IMAGES //
-        // BACKGROUND MUSIC //
-        
-
 
         const introScreen = document.getElementById("introScreen");
         const startBtn = document.getElementById("startBtn");
@@ -359,9 +365,20 @@
         const restartBtn = document.getElementById("restartBtn");
         const gameArea = document.getElementById("gameArea");
 
+        // ==============================
+        // AUDIO SYSTEM
+        // ==============================
+
         const buttonSound = new Audio("sounds/button_click.mp3");
         const correctSound = new Audio("sounds/correct.mp3");
         const incorrectSound = new Audio("sounds/incorrect.mp3");
+        const backgroundMusic = new Audio("sounds/music_outro.mp3");
+        backgroundMusic.loop = true;
+        backgroundMusic.volume = 0.50; // keeps sound effects audible
+
+        // ==============================
+        // GAME STATE VARIABLES
+        // ==============================
 
         let state = "intro";
 
@@ -416,8 +433,8 @@
                 staminaGain: 17,
                 staminaLoss: 12,
 
-                bgCorrect: "img/resting.png", // improve //
-                bgWrong: "img/not_resting.png" // improve //
+                bgCorrect: "img/resting.png",
+                bgWrong: "img/not_resting.png"
             },
             {
                 question: "The expedition loses direction in the mountains. Do you seek Native guidance or guess the route yourself?",
@@ -443,7 +460,7 @@
                 staminaLoss: 12,
 
                 bgCorrect: "img/safe.png", // improve //
-                bgWrong: "img/rush.png" // get //
+                bgWrong: "img/rush.png"
             },
             {
                 question: "A blizzard begins at night. Do you build shelter immediately or keep moving?",
@@ -455,13 +472,13 @@
                 staminaGain: 15,
                 staminaLoss: 14,
 
-                bgCorrect: "img/build.png", // get //
+                bgCorrect: "img/build.png",
                 bgWrong: "img/moving.png" // get //
             }
         ];
 
         // ==============================
-        // UI FUNCTIONS
+        // UI FUNCTIONS (STAMINA + DISPLAY)
         // ==============================
 
         function updateStaminaBar() {
@@ -490,10 +507,18 @@
             }, 700);
         }
 
+        // ==============================
+        // AUDIO HELPERS
+        // ==============================
+
         function playSound(sound) {
             sound.currentTime = 0;
             sound.play();
         }
+
+        // ==============================
+        // STORY FLOW SYSTEM
+        // ==============================
 
         function showStep() {
             state = "choice";
@@ -514,10 +539,14 @@
             dialogueBox.innerHTML = text;
         }
 
+        // ==============================
+        // FAIL CHECK SYSTEM
+        // ==============================
+
         function checkFail() {
-            // optional fail condition if stamina hits 0 late game
             if (stamina <= 0 && stepIndex > 2) {
                 state = "fail";
+                stopAllAudio();
                 failScreen.style.display = "flex";
                 choiceScreen.style.display = "none";
                 dialogueBox.style.display = "none";
@@ -525,13 +554,23 @@
             }
         }
 
-        // ==============================
-        // MAIN CHOICE HANDLER
-        // ==============================
+        function stopAllAudio() {
+            backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
+        }
+
+        // =======================================
+        // MAIN CHOICE HANDLER / BACKGROUND SWITCHING
+        // =======================================
 
         function changeBackground(imagePath) {
             gameArea.style.backgroundImage = `url('${imagePath}')`;
         }
+
+        // ==============================
+        // CHOICE HANDLER (CORE GAME LOGIC)
+        // ==============================
+
         function handleChoice(playerPick) {
             if (state !== "choice") return;
 
@@ -563,6 +602,9 @@
                         showStep();
                     } else {
                         state = "win";
+
+                        stopAllAudio(); // ✅ STOP MUSIC HERE
+
                         winScreen.style.display = "flex";
                         dialogueBox.style.display = "none";
                         staminaBarContainer.style.display = "none";
@@ -618,7 +660,7 @@
         }
 
         // ==============================
-        // BUTTON EVENTS
+        // BUTTON EVENTS / Input System 
         // ==============================
         document.addEventListener("keydown", (e) => {
             if (e.code === "Space") {
@@ -632,8 +674,16 @@
             }
         });
 
+        // ==============================
+        // BUTTON EVENTS
+        // ==============================
+
         startBtn.addEventListener("click", () => {
             playSound(buttonSound);
+
+            backgroundMusic.currentTime = 0;
+            backgroundMusic.play();
+
             introScreen.style.display = "none";
             gameArea.style.backgroundImage = "url('img/rocky_mountains_bg.png')";
 
@@ -659,7 +709,16 @@
 
         restartBtn.addEventListener("click", () => {
             playSound(buttonSound);
+
+            backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
+
             resetGame();
+        });
+
+        continueBtn.addEventListener("click", () => {
+            backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
         });
 
         // ==============================
