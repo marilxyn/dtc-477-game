@@ -61,7 +61,6 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
             z-index: 50;
         }
 
-        /* The starting box style */
         #introBox {
             background: #111;
             border: 4px solid gold;
@@ -80,7 +79,7 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
         }
 
         #introBox p {
-            font-size: 18px;
+            font-size: 21px;
             line-height: 1.5;
             color: white;
         }
@@ -93,6 +92,7 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
             max-width: 650px;
             text-align: center;
             border-radius: 20px;
+            font-size: 20px;
         }
 
         button.main-btn {
@@ -139,7 +139,7 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
             left: 0;
             color: gold;
             font-family: "Pixelify Sans", sans-serif;
-            font-size: 18px;
+            font-size: 20px;
             text-shadow: 2px 2px 0px black;
             width: 350px;
         }
@@ -166,7 +166,7 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
             border-radius: 16px;
             padding: 25px;
             color: white;
-            font-size: 18px;
+            font-size: 20px;
             display: none;
             z-index: 20;
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
@@ -174,7 +174,7 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
 
         .dlg-layout {
             display: flex;
-            gap: 20px;
+            gap: 18px;
             align-items: flex-start;
         }
 
@@ -222,7 +222,7 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
             padding: 12px 15px;
             border-radius: 8px;
             font-family: "Pixelify Sans", sans-serif;
-            font-size: 14px;
+            font-size: 18px;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -253,6 +253,7 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
             font-family: "Pixelify Sans", sans-serif;
             font-weight: bold;
             cursor: pointer;
+            font-size: 18px;
         }
 
         #cont-btn:hover {
@@ -280,7 +281,13 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
             font-size: 40px;
             margin-top: 0;
             font-family: "Pixelify Sans", sans-serif;
-            /* Applied pixel font */
+        }
+
+        #winScreen p {
+            font-size: 20px;
+            line-height: 1.5;
+            color: white;
+            text-align: left;
         }
 
         #failScreen h1 {
@@ -288,7 +295,6 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
             font-size: 40px;
             margin-top: 0;
             font-family: "Pixelify Sans", sans-serif;
-            /* Applied pixel font */
         }
 
         .end-desc {
@@ -364,11 +370,10 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
                 <h1>Great Alliance!</h1>
                 <p class="end-desc">
                     The Nez Perce helped Lewis and Clark recover, build canoes, and continue west toward the Pacific
-                    Ocean.
+                    Ocean. In 1805, the Nez Perce provided vital food, shelter, and horses, with Chief Twisted Hair even
+                    mapping the river routes on elk hide.
                 </p>
                 <p class="end-desc">
-                    In 1805, the Nez Perce provided vital food, shelter, and horses, with Chief Twisted Hair even
-                    mapping the river routes on elk hide.<br><br>
                     Without them, the expedition would have likely failed!
                 </p>
                 <a href="chapter7.html"><button class="main-btn" id="next-btn">▶ CONTINUE</button></a>
@@ -412,20 +417,20 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
         const DLGS = [
             {
                 spk: 'NARRATOR', text: '"Strangers from the east... You look hungry and very worn. Why do you come to our lands?"', isQ: true, choices: [
-                    { t: 'A) "We come in peace. We are explorers making our way across the continent."', cor: true, pts: 1 },
-                    { t: 'B) "I forgot."', cor: false, pts: 0 },
-                    { t: 'C) "Give us food immediately! We are soldiers of America!"', cor: false, pts: 0 },
-                    { t: 'D) "We come to ask for your help."', cor: true, pts: 1 }
+                    { t: 'A) "Give us food immediately! We are soldiers of America!"', cor: false, pts: 0 },    
+                    { t: 'B) "We come in peace. We are explorers making our way across the continent."', cor: true, pts: 1 },
+                    { t: 'C) "We come to ask for your help."', cor: true, pts: 1 },
+                    { t: 'D) "I forgot."', cor: false, pts: 0 }
                 ]
             },
             { spk: 'CHIEF TWISTED HAIR', text: 'The chief studies you carefully. "I see..."', cont: true },
 
             {
                 spk: 'NARRATOR', text: '"Where are you going, and what do you seek beyond these mountains?"', isQ: true, choices: [
-                    { t: 'A) "We are looking for a water route to the great ocean."', cor: true, pts: 1 },
-                    { t: 'B) "We are mapping these lands so American settlers can sail there one day."', cor: false, pts: 0 },
-                    { t: 'C) "We need to reach the ocean and return east. We mean no harm to your people."', cor: true, pts: 1 },
-                    { t: 'D) "Just tell us how to get to the river!"', cor: false, pts: 0 }
+                    { t: 'A) "We are mapping these lands so American settlers can sail there one day."', cor: false, pts: 0 },
+                    { t: 'B) "We need to reach the ocean and return east. We mean no harm to your people."', cor: true, pts: 1 },
+                    { t: 'C) "Just tell us how to get to the river!"', cor: false, pts: 0 },
+                    { t: 'D) "We are looking for a water route to the great ocean."', cor: true, pts: 1 }
                 ]
             },
             { spk: 'CHIEF TWISTED HAIR', text: '"Well...we know very well of the rivers here."', cont: true },
@@ -433,18 +438,18 @@ Code Help: https://claude.ai/share/4d898e67-b02c-4142-abc7-056c7ba507d0
             {
                 spk: 'NARRATOR', text: '"We can help you with your horses and canoes, but first you must rest and eat with us."', isQ: true, choices: [
                     { t: 'A) Accept gratefully and share your goods.', cor: true, pts: 1 },
-                    { t: 'B) "We must continue."', cor: false, pts: 0 },
-                    { t: 'C) "Sorry dude..."', cor: false, pts: 0 },
-                    { t: 'D) Thank them warmly and trade fairly.', cor: true, pts: 1 }
+                    { t: 'B) Thank them warmly and trade fairly.', cor: true, pts: 1 },
+                    { t: 'C) "We must continue."', cor: false, pts: 0 },
+                    { t: 'D) "Sorry dude..."', cor: false, pts: 0 },
                 ]
             },
             { spk: 'CHIEF TWISTED HAIR', text: '"Very well."', cont: true },
 
             {
                 spk: 'NARRATOR', text: '"Before you go, what offerings do you bring?"', isQ: true, choices: [
-                    { t: 'A) Offer medals and cloth.', cor: true, pts: 1 },
-                    { t: 'B) Slip away quietly.', cor: false, pts: 0 },
-                    { t: 'C) Offer a plant.', cor: false, pts: 0 },
+                    { t: 'A) Offer a plant.', cor: false, pts: 0 },
+                    { t: 'B) Offer medals and cloth.', cor: true, pts: 1 },
+                    { t: 'C) Slip away quietly.', cor: false, pts: 0 },
                     { t: 'D) Offer tobacco and beads.', cor: true, pts: 1 }
                 ]
             },
